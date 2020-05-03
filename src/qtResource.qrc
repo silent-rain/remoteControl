@@ -1,0 +1,33 @@
+<RCC>
+  <qresource prefix="/">
+    <!--系统UI-->
+    <file>images/mainUi/background.png</file>
+    <file>images/mainUi/app.png</file>
+    <file>images/mainUi/confirm.png</file>
+
+    <!--导航栏-->
+    <file>images/menubar/exit.png</file>
+    <file>images/menubar/save.png</file>
+    <file>images/menubar/about.png</file>
+
+    <!--工具栏图标-->
+    <file>images/toolsMain/file.png</file>
+    <file>images/toolsMain/desktop.png</file>
+    <file>images/toolsMain/videoMonitor.png</file>
+    <file>images/toolsMain/voiceMonitor.png</file>
+    <file>images/toolsMain/keyboard.png</file>
+    <file>images/toolsMain/terminal.png</file>
+    <file>images/toolsMain/DDos.png</file>
+    <file>images/toolsMain/client.png</file>
+    <file>images/toolsMain/filtrate.png</file>
+    <file>images/toolsMain/exit.png</file>
+    <file>images/toolsMain/registry.png</file>
+    <file>images/toolsMain/serviceManage.png</file>
+    <file>images/toolsMain/host.png</file>
+
+    <!--服务器开关-->
+    <file>images/toolsMain/startServer.png</file>
+    <file>images/toolsMain/stopServer.png</file>
+
+  </qresource>
+</RCC>
