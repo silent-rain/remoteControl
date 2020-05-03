@@ -1,0 +1,40 @@
+<RCC>
+  <qresource prefix="/images">
+    <!--系统UI-->
+    <file>/mainUi/background.png</file>
+    <file>/mainUi/app.png</file>
+    <file>/mainUi/confirm.png</file>
+
+    <!--导航栏-->
+    <file>/menubar/exit.png</file>
+    <file>/menubar/save.png</file>
+    <file>/menubar/about.png</file>
+
+    <!--工具栏图标-->
+    <file>/toolbar/file.png</file>
+    <file>/toolbar/desktop.png</file>
+    <file>/toolbar/videoMonitor.png</file>
+    <file>/toolbar/voiceMonitor.png</file>
+    <file>/toolbar/keyboard.png</file>
+    <file>/toolbar/terminal.png</file>
+    <file>/toolbar/DDos.png</file>
+    <file>/toolbar/client.png</file>
+    <file>/toolbar/filtrate.png</file>
+    <file>/toolbar/exit.png</file>
+    <file>/toolbar/registry.png</file>
+    <file>/toolbar/serviceManage.png</file>
+    <file>/toolbar/host.png</file>
+
+    <!--服务器开关-->
+    <file>/toolbar/startServer.png</file>
+    <file>/toolbar/stopServer.png</file>
+  </qresource>
+
+  <qresource prefix="/sound">
+    <!--音频-->
+    <file>/offline.wav</file>
+    <file>/online.wav</file>
+    <file>/setting.wav</file>
+  </qresource>
+
+</RCC>

@@ -40,6 +40,8 @@
    </attribute>
   </widget>
  </widget>
- <resources/>
+ <resources>
+  <include location="../src/qtResource.qrc"/>
+ </resources>
  <connections/>
 </ui>
