@@ -25,5 +25,5 @@ if __name__ == '__main__':
 
     # 恢复文件
     path = "../conf/config.ini"
-    from libs.initConfig import config_data
-    py_to_file(path, config_data)
+    from lib.config_init import CONFIG_DATA
+    config_py_to_file(path, CONFIG_DATA)

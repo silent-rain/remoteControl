@@ -7,9 +7,16 @@ _translate = QCoreApplication.translate
 
 
 class MenubarUI(object):
+    def __new__(cls, *args, **kwargs) -> object:
+        if not hasattr(cls, "_instance"):  # 反射
+            cls._instance = object.__new__(cls)
+        return cls._instance
+
     def __init__(self, main_window: QMainWindow):
-        self.main_window = main_window
-        self.menubar = QMenuBar(main_window)
+        if not hasattr(self, "_init_flag"):  # 反射
+            self._init_flag = True  # 只初始化一次
+            self.main_window = main_window
+            self.menubar = QMenuBar(main_window)
 
     def setup_ui(self) -> None:
         font = QFont()

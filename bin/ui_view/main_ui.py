@@ -17,11 +17,18 @@ HTML颜色:
 """
 
 
-# noinspection PyArgumentList
 class MainWindowUI(object):
+    def __new__(cls, *args, **kwargs) -> object:
+        if not hasattr(cls, "_instance"):  # 反射
+            cls._instance = object.__new__(cls)
+        return cls._instance
+
     def __init__(self, main_window: QMainWindow):
-        self.main_window = main_window
-        self.centralwidget = QWidget(main_window, Qt.WindowFlags())
+        if not hasattr(self, "_init_flag"):  # 反射
+            self._init_flag = True  # 只初始化一次
+            self.main_window = main_window
+            # 中心窗口
+            self.centralwidget = QWidget(self.main_window, Qt.WindowFlags())
 
     def setup_ui(self) -> None:
         self.main_window.setObjectName("main_window")
@@ -30,7 +37,7 @@ class MainWindowUI(object):
         self.centralwidget.setObjectName("centralwidget")
         self.main_window.setCentralWidget(self.centralwidget)
 
-        # noinspection PyCallByClass
+        # noinspection PyArgumentList,PyCallByClass
         QMetaObject.connectSlotsByName(self.main_window)
 
     def retranslate_ui(self) -> None:

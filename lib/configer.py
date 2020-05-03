@@ -50,6 +50,6 @@ class ReadConfig(object):
 
 
 if __name__ == '__main__':
-    from libs import settings
+    from lib import settings
     config = ReadConfig(settings.CONFIG_FILE).start()
     print(config)

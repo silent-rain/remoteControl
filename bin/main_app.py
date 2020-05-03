@@ -19,28 +19,17 @@ class MainView(object):
         self.ui_view_list = []
 
     def add_ui_view(self, view: object) -> None:
-        self.ui_view_list.append(view)
+        if view not in self.ui_view_list:
+            self.ui_view_list.append(view)
 
-    @staticmethod
-    def setup_ui(view: QObject) -> None:
-        view.setup_ui()
-
-    @staticmethod
-    def retranslate_ui(view: QObject) -> None:
-        view.retranslate_ui()
-
-    def middleware(self) -> None:
-        """
-        中间层
-        :return:
-        """
+    def setup_ui(self) -> None:
         self.add_ui_view(MainWindowView(self.main_window))  # 主窗口
         self.add_ui_view(ToolbarView(self.main_window))  # 工具栏
         self.add_ui_view(StatusbarView(self.main_window))  # 状态栏
         self.add_ui_view(MenubarView(self.main_window))  # 菜单栏
 
     def main(self) -> None:
-        self.middleware()
+        self.setup_ui()
 
         for view in self.ui_view_list:
             view.setup_ui()
