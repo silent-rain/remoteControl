@@ -21,7 +21,6 @@ dist/
 downloads/
 eggs/
 .eggs/
-lib/
 lib64/
 parts/
 sdist/
@@ -110,3 +109,5 @@ venv.bak/
 
 # mypy
 .mypy_cache/
+
+# log
