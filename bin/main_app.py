@@ -3,10 +3,10 @@ import sys
 from PyQt5.QtCore import Qt, QObject
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
-from bin.ui_view.main_ui import MainWindowView
-from bin.ui_view.toolbar_view import ToolbarView
-from bin.ui_view.statusbar_view import StatusbarView
-from bin.ui_view.menubar_view import MenubarView
+from bin.ui_view.main_window import MainWindowView
+from bin.ui_view.toolbar import ToolbarView
+from bin.ui_view.statusbar import StatusbarView
+from bin.ui_view.menubar import MenubarView
 
 
 class MainView(object):

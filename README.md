@@ -28,6 +28,7 @@ sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
 - 设置信息模块
 - 修复配置文件转换bug
 - 优化单例模式
+- 模块名优化
 
 
 
