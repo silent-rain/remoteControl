@@ -61,8 +61,3 @@ class MainApp(object):
         self.setup_ui()
         self.main_window.show()
         sys.exit(self.app.exec_())
-
-
-if __name__ == '__main__':
-    app = MainApp()
-    app.main()
