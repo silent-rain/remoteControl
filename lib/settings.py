@@ -75,6 +75,7 @@ DATA_DB = abspath(join(BASE_PATH, "src", "data.db"))  # IP数据库
 
 # 读取外部配置文件
 if not exists(CONFIG_FILE):
+    # 外置配置文件不存在生成配置文件
     config_file_to_py.config_py_to_file(CONFIG_FILE, config_init.CONFIG_DATA)
 CONFIG = configer.ReadConfig(CONFIG_FILE, config_init.CONFIG_DATA).start()
 
@@ -84,16 +85,21 @@ mkdir(SOUND_DIR) if not exists(SOUND_DIR) else None  # 初始化音频资源文�
 SOUND_OFFLINE = abspath(join(BASE_PATH, "src", "sound", "offline.wav"))  # 下线
 SOUND_ONLINE = abspath(join(BASE_PATH, "src", "sound", "online.wav"))  # 上线
 SOUND_SETTING = abspath(join(BASE_PATH, "src", "sound", "setting.wav"))  # 自动上线设置
-SOUND_ON = eval(CONFIG["default"].get("sound_on", "1"))  # 声音是否开启;0：关闭; 1：开启
+SOUND_ON = eval(CONFIG["audio"].get("sound_on", "1"))  # 声音是否开启;0：关闭; 1：开启
 
 # 日志配置
 LOG_DIR = abspath(join(BASE_PATH, "logs"))  # 日志文件夹
 mkdir(LOG_DIR) if not exists(LOG_DIR) else None  # 初始化日志文件夹
-
 LOGGING_LEVEL = CONFIG["default"].get("logging_level", "INFO")  # 日志打印级别; DEBUG/INFO/WARNING/ERROR/CRITICAL
 
+# =========================== 系统控制 # ===========================
 # 调试模式
 DEBUG = True
 
 # 进程数
-PROCESSES = eval(CONFIG["default"].get("processes", "4"))
+PROCESSES = eval(CONFIG["system"].get("processes", "4"))
+
+# 扩展是否显示
+# ;0： 隐藏
+# ;1： 显示
+TOOLS_SHOW = eval(CONFIG["system"].get("tools_extension_show", "1"))

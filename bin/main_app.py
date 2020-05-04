@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
 import sys
-from PyQt5.QtCore import Qt, QObject
+from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow
 
 from bin.ui_view.main_window import MainWindowView
 from bin.ui_view.toolbar import ToolbarView
 from bin.ui_view.statusbar import StatusbarView
 from bin.ui_view.menubar import MenubarView
+from bin.ui_view.tools_extension.tools_extension import ToolsExtensionView
 
 
 class MainView(object):
@@ -27,6 +28,7 @@ class MainView(object):
         self.add_ui_view(ToolbarView(self.main_window))  # 工具栏
         self.add_ui_view(StatusbarView(self.main_window))  # 状态栏
         self.add_ui_view(MenubarView(self.main_window))  # 菜单栏
+        self.add_ui_view(ToolsExtensionView(self.main_window))  # 工具栏
 
     def main(self) -> None:
         self.setup_ui()
