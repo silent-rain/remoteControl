@@ -110,7 +110,7 @@ class ToolsExtensionView(BaseDockOne):
         # self.tab_widget.setGeometry(QRect(0, 0, 850, 200))
         self.dock_widget.size = QSize(850, 200)
 
-        if not settings.TOOLS_SHOW:
+        if not settings.TOOLS_EXTENSION_SHOW:
             self.dock_widget.hide()
 
     def setup_ui(self) -> None:

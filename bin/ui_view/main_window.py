@@ -49,7 +49,7 @@ class MainWindowView(MainWindowUI):
         super().setup_ui()
 
         self.set_window_icon()
-        self.set_window_background()
+        # self.set_window_background()
         self.center()
         # self.main_window.resizeEvent = self.resize_event
         self.main_window.closeEvent = self.close_event

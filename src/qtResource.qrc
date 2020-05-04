@@ -1,31 +1,35 @@
 <RCC>
-  <qresource prefix="ui">
-    <file>images/mainUi/background.png</file>
-    <file>images/mainUi/app.png</file>
-    <file>images/mainUi/confirm.png</file>
-    <file>images/menubar/exit.png</file>
-    <file>images/menubar/save.png</file>
-    <file>images/menubar/about.png</file>
-    <file>images/toolbar/file.png</file>
-    <file>images/toolbar/desktop.png</file>
-    <file>images/toolbar/videoMonitor.png</file>
-    <file>images/toolbar/voiceMonitor.png</file>
-    <file>images/toolbar/keyboard.png</file>
-    <file>images/toolbar/terminal.png</file>
-    <file>images/toolbar/DDos.png</file>
-    <file>images/toolbar/client.png</file>
-    <file>images/toolbar/filtrate.png</file>
-    <file>images/toolbar/exit.png</file>
-    <file>images/toolbar/registry.png</file>
-    <file>images/toolbar/serviceManage.png</file>
-    <file>images/toolbar/host.png</file>
-    <file>images/toolbar/startServer.png</file>
-    <file>images/toolbar/stopServer.png</file>
-  </qresource>
+    <qresource prefix="ui">
+        <file>images/mainUi/background.png</file>
+        <file>images/mainUi/app.png</file>
 
-<!--  <qresource prefix="sound">-->
-<!--    <file>sound/offline.wav</file>-->
-<!--    <file>sound/online.wav</file>-->
-<!--    <file>sound/setting.wav</file>-->
-<!--  </qresource>-->
+        <file>images/menubar/about.png</file>
+        <file>images/menubar/exit.png</file>
+        <file>images/menubar/view.png</file>
+        <file>images/menubar/options.png</file>
+        <file>images/menubar/make_server.png</file>
+        <file>images/menubar/setting.png</file>
+
+        <file>images/toolbar/file.png</file>
+        <file>images/toolbar/desktop.png</file>
+        <file>images/toolbar/videoMonitor.png</file>
+        <file>images/toolbar/voiceMonitor.png</file>
+        <file>images/toolbar/keyboard.png</file>
+        <file>images/toolbar/terminal.png</file>
+        <file>images/toolbar/DDos.png</file>
+        <file>images/toolbar/client.png</file>
+        <file>images/toolbar/filtrate.png</file>
+        <file>images/toolbar/exit.png</file>
+        <file>images/toolbar/registry.png</file>
+        <file>images/toolbar/serviceManage.png</file>
+        <file>images/toolbar/host.png</file>
+        <file>images/toolbar/startServer.png</file>
+        <file>images/toolbar/stopServer.png</file>
+    </qresource>
+
+    <!--  <qresource prefix="sound">-->
+    <!--    <file>sound/offline.wav</file>-->
+    <!--    <file>sound/online.wav</file>-->
+    <!--    <file>sound/setting.wav</file>-->
+    <!--  </qresource>-->
 </RCC>

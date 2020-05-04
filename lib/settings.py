@@ -12,14 +12,17 @@ from lib import fix_qt_import_error  # Qt
 MAIN_UI = {
     "app": ':/ui/images/mainUi/app.png',
     "background": ':/ui/images/mainUi/background.png',
-    "confirm": ':/ui/images/mainUi/confirm.png',
+    # "confirm": ':/ui/images/mainUi/confirm.png',
 }
 
 # 菜单图标
 MENUBAR_UI = {
     "about": ':/ui/images/menubar/about.png',
-    "save": ':/ui/images/menubar/save.png',
     "exit": ':/ui/images/menubar/exit.png',
+    "view": ':/ui/images/menubar/view.png',
+    "options": ':/ui/images/menubar/options.png',
+    "make_server": ':/ui/images/menubar/make_server.png',
+    "setting": ':/ui/images/menubar/setting.png',
 }
 
 # 工具导航栏
@@ -99,7 +102,14 @@ DEBUG = True
 # 进程数
 PROCESSES = eval(CONFIG["system"].get("processes", "4"))
 
-# 扩展是否显示
-# ;0： 隐藏
-# ;1： 显示
-TOOLS_SHOW = eval(CONFIG["system"].get("tools_extension_show", "1"))
+# 工具箱扩展是否显示
+# ;0： 隐藏  1： 显示
+TOOLS_EXTENSION_SHOW = eval(CONFIG["system"].get("tools_extension_show", "1"))
+
+# 工具栏是否显示
+# ;0： 隐藏  1： 显示
+TOOLBAR_SHOW = eval(CONFIG["system"].get("toolbar_show", "1"))
+
+# 状态栏是否显示
+# ;0： 隐藏  1： 显示
+STATUSBAR_SHOW = eval(CONFIG["system"].get("statusbar_show", "1"))

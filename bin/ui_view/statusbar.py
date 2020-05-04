@@ -3,6 +3,8 @@ from PyQt5.QtWidgets import QStatusBar, QMainWindow
 from PyQt5.QtGui import QFont
 from PyQt5.QtCore import QCoreApplication
 
+from lib import settings
+
 _translate = QCoreApplication.translate
 
 
@@ -36,6 +38,9 @@ class StatusbarUI(object):
 class StatusbarView(StatusbarUI):
     def setup_ui(self) -> None:
         super().setup_ui()
+
+        if not settings.STATUSBAR_SHOW:
+            self.statusbar.hide()
 
     def retranslate_ui(self) -> None:
         super().retranslate_ui()

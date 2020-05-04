@@ -29,5 +29,6 @@ sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
 - 模块名优化
 - 添加皮肤模块,尚未引用
 - 添加扩展模块框架: 日志模块,批量操作模块
+- 添加菜单栏框架
 
 

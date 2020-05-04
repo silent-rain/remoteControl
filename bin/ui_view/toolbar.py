@@ -2,6 +2,8 @@
 from PyQt5.QtCore import QSize, Qt, QCoreApplication
 from PyQt5.QtWidgets import QToolBar, QMainWindow
 
+from lib import settings
+
 _translate = QCoreApplication.translate
 
 
@@ -34,12 +36,15 @@ class ToolbarUI(object):
         self.main_window.addToolBar(Qt.TopToolBarArea, self.toolBar)
 
     def retranslate_ui(self) -> None:
-        self.toolBar.setWindowTitle(_translate("ToolbarUI", "工具导航"))
+        self.toolBar.setWindowTitle(_translate("ToolbarUI", "工具栏"))
 
 
 class ToolbarView(ToolbarUI):
     def setup_ui(self) -> None:
         super().setup_ui()
+
+        if not settings.TOOLBAR_SHOW:
+            self.toolBar.hide()
 
     def retranslate_ui(self) -> None:
         super().retranslate_ui()
