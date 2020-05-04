@@ -36,7 +36,7 @@ class ToolbarUI(object):
         self.main_window.addToolBar(Qt.TopToolBarArea, self.toolBar)
 
     def retranslate_ui(self) -> None:
-        self.toolBar.setWindowTitle(_translate("ToolbarUI", "工具栏"))
+        self.toolBar.setWindowTitle(_translate("ToolbarUI", "工具导航"))
 
 
 class ToolbarView(ToolbarUI):

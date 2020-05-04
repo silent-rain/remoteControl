@@ -25,13 +25,10 @@ class MainView(object):
 
     def setup_ui(self) -> None:
         self.add_ui_view(MainWindowView(self.main_window))  # 主窗口
-        self.add_ui_view(ToolbarView(self.main_window))  # 工具栏
-        self.add_ui_view(StatusbarView(self.main_window))  # 状态栏
         self.add_ui_view(MenubarView(self.main_window))  # 菜单栏
-        self.add_ui_view(ToolsExtensionView(self.main_window))  # 工具栏
-
-    def main(self) -> None:
-        self.setup_ui()
+        self.add_ui_view(ToolbarView(self.main_window))  # 工具导航
+        self.add_ui_view(ToolsExtensionView(self.main_window))  # 工具扩展
+        self.add_ui_view(StatusbarView(self.main_window))  # 状态栏
 
         for view in self.ui_view_list:
             view.setup_ui()
@@ -46,7 +43,7 @@ class MainApp(object):
         self.main_ui = MainView(self.main_window)
 
     def setup_ui(self) -> None:
-        self.main_ui.main()
+        self.main_ui.setup_ui()
 
     def main(self) -> None:
         self.setup_ui()

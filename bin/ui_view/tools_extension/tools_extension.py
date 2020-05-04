@@ -5,6 +5,7 @@ from PyQt5.QtCore import Qt, QCoreApplication, QRect, QSize
 from bin.ui_view.tools_extension.loginfo import LOGInfo
 from bin.ui_view.tools_extension.batch_operation import BatchOperation
 from lib import settings
+from lib.communicate import communicate
 
 _translate = QCoreApplication.translate
 
@@ -54,12 +55,9 @@ class BaseDockOne(object):
         # MainWindow.addDockWidget(Qt.DockWidgetArea(8), self.dock_widget)
         self.main_window.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
 
-    def set_layout(self, widget: QWidget):
-        self.layout.addWidget(widget, 0, 0)
-
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
-        self.dock_widget.setWindowTitle(_translate("ToolsExtensionView", "工具箱"))
+        self.dock_widget.setWindowTitle(_translate("ToolsExtensionView", "工具扩展"))
 
 
 class ToolsExtensionView(BaseDockOne):
@@ -83,7 +81,7 @@ class ToolsExtensionView(BaseDockOne):
         参数设置
         :return:
         """
-        self.tab_widget.setObjectName("tabWidget")
+        self.tab_widget.setObjectName("tab_widget")
 
         # 设置焦点
         self.tab_widget.setFocusPolicy(Qt.TabFocus)
@@ -127,3 +125,9 @@ class ToolsExtensionView(BaseDockOne):
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
         super().retranslate_ui()
+
+    def communicate_connect(self):
+        communicate.tools_extension_show.connect(self.tools_extension_show_receive)
+
+    def tools_extension_show_receive(self, flag):
+        print(flag)

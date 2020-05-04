@@ -27,21 +27,21 @@ MENUBAR_UI = {
 
 # 工具导航栏
 TOOLBAR_UI = {
-    "host": ':/ui/images/toolsMain/host.png',
-    "startServer": ':/ui/images/toolsMain/startServer.png',
-    "file": ':/ui/images/toolsMain/file.png',
-    "desktop": ':/ui/images/toolsMain/desktop.png',
-    "video_monitor": ':/ui/images/toolsMain/videoMonitor.png',
-    "voice_monitor": ':/ui/images/toolsMain/voiceMonitor.png',
-    "keyboard": ':/ui/images/toolsMain/keyboard.png',
-    "terminal": ':/ui/images/toolsMain/terminal.png',
-    "DDos": ':/ui/images/toolsMain/DDos.png',
-    "client": ':/ui/images/toolsMain/client.png',
-    "filtrate": ':/ui/images/toolsMain/filtrate.png',
-    "service_manage": ':/ui/images/toolsMain/serviceManage.png',
-    "registry": ':/ui/images/toolsMain/registry.png',
-    "exit": ':/ui/images/toolsMain/exit.png',
-    "stopServer": ':/ui/images/toolsMain/stopServer.png',
+    "host": ':/ui/images/toolbar/host.png',
+    "startServer": ':/ui/images/toolbar/startServer.png',
+    "file": ':/ui/images/toolbar/file.png',
+    "desktop": ':/ui/images/toolbar/desktop.png',
+    "video_monitor": ':/ui/images/toolbar/videoMonitor.png',
+    "voice_monitor": ':/ui/images/toolbar/voiceMonitor.png',
+    "keyboard": ':/ui/images/toolbar/keyboard.png',
+    "terminal": ':/ui/images/toolbar/terminal.png',
+    "DDos": ':/ui/images/toolbar/DDos.png',
+    "client": ':/ui/images/toolbar/client.png',
+    "filtrate": ':/ui/images/toolbar/filtrate.png',
+    "service_manage": ':/ui/images/toolbar/serviceManage.png',
+    "registry": ':/ui/images/toolbar/registry.png',
+    "exit": ':/ui/images/toolbar/exit.png',
+    "stopServer": ':/ui/images/toolbar/stopServer.png',
 }
 
 # 设置
@@ -95,21 +95,30 @@ LOG_DIR = abspath(join(BASE_PATH, "logs"))  # 日志文件夹
 mkdir(LOG_DIR) if not exists(LOG_DIR) else None  # 初始化日志文件夹
 LOGGING_LEVEL = CONFIG["default"].get("logging_level", "INFO")  # 日志打印级别; DEBUG/INFO/WARNING/ERROR/CRITICAL
 
-# =========================== 系统控制 # ===========================
+# =========================== 系统控制 ===========================
 # 调试模式
 DEBUG = True
 
 # 进程数
 PROCESSES = eval(CONFIG["system"].get("processes", "4"))
 
+
+# =========================== 模块显示 ===========================
 # 工具箱扩展是否显示
 # ;0： 隐藏  1： 显示
-TOOLS_EXTENSION_SHOW = eval(CONFIG["system"].get("tools_extension_show", "1"))
+TOOLS_EXTENSION_SHOW = eval(CONFIG["view"].get("tools_extension_show", "1"))
 
 # 工具栏是否显示
 # ;0： 隐藏  1： 显示
-TOOLBAR_SHOW = eval(CONFIG["system"].get("toolbar_show", "1"))
+TOOLBAR_SHOW = eval(CONFIG["view"].get("toolbar_show", "1"))
 
 # 状态栏是否显示
 # ;0： 隐藏  1： 显示
-STATUSBAR_SHOW = eval(CONFIG["system"].get("statusbar_show", "1"))
+STATUSBAR_SHOW = eval(CONFIG["view"].get("statusbar_show", "1"))
+
+
+# =========================== 监听配置 ===========================
+# 监听地址
+IP = CONFIG["address"].get("statusbar_show", "")
+# 监听端口
+PORT = eval(CONFIG["address"].get("statusbar_show", "2020"))

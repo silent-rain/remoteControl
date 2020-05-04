@@ -21,7 +21,7 @@ sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
 
 
 # 更新日志
-## 20200504
+## 2020.05.04
 - 创建三个显示模块:主窗口,菜单栏,工具栏,状态栏
 - 设置信息模块
 - 修复配置文件转换bug
@@ -30,5 +30,4 @@ sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
 - 添加皮肤模块,尚未引用
 - 添加扩展模块框架: 日志模块,批量操作模块
 - 添加菜单栏框架
-
-
+- 添加状态栏框架
