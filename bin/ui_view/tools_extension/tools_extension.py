@@ -92,7 +92,7 @@ class ToolsExtensionView(BaseDockOne):
 
         # 全背景填充
         # self.tab_widget.setAutoFillBackground(False)
-        self.tab_widget.setStyleSheet("background-color: rgb(85, 170, 255);")
+        # self.tab_widget.setStyleSheet("background-color: rgb(85, 170, 255);")
 
         # tab位置
         self.tab_widget.setTabPosition(QTabWidget.South)
