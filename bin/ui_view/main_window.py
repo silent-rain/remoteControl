@@ -8,12 +8,7 @@ from lib import settings
 _translate = QCoreApplication.translate
 
 """
-HTML颜色:
-    # 导航栏透明(linux无效): border-top-color: transparent;
-    # 背景透明(linux背景漆黑): background:transparent;
-    # 边框透明(linux无效果): border: transparent;
-    # 背景色: background-color: rgb(100, 200, 255);
-    # 图片背景: background-image: url(:/images/background.png);
+主窗口模块
 """
 
 

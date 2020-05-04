@@ -10,7 +10,7 @@ from lib.communicate import communicate
 _translate = QCoreApplication.translate
 
 """
-工具栏扩展模块
+工具栏扩展
 """
 
 

@@ -5,6 +5,10 @@ from PyQt5.QtCore import QCoreApplication, Qt
 
 _translate = QCoreApplication.translate
 
+"""
+皮肤调色模块
+"""
+
 
 class SkinColorDialogView(object):
     def __init__(self, main_window):
@@ -31,18 +35,6 @@ class SkinColorDialogView(object):
         # noinspection PyCallByClass
         init_color = QColor(107, 173, 246)
         self.col = self.color_dialog.getColor(init_color, None)
-
-        # print(dir(self.color_dialog))
-        # print(dir(self.col))
-
-        # color = QColor(0, 0, 0)
-        # self.button = QPushButton(self.widget_window)
-        # self.button.setFocusPolicy(Qt.NoFocus)
-        # self.button.move(20, 20)
-        # self.button.clicked.connect(self.show_dialog)
-        # self.widget1 = QWidget(self.widget_window)
-        # self.widget1.setStyleSheet('QWidget{background-color:%s}' % color.name())
-        # self.widget1.setGeometry(130, 22, 100, 100)
 
     # noinspection PyArgumentList
     def retranslate_ui(self):

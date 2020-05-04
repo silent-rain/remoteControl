@@ -6,6 +6,9 @@ from lib import settings
 
 _translate = QCoreApplication.translate
 
+"""
+工具导航 ToolbarView
+"""
 
 # noinspection PyArgumentList
 class ToolbarUI(object):

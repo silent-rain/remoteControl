@@ -9,6 +9,16 @@ from lib import settings
 
 _translate = QCoreApplication.translate
 
+"""
+状态栏模块
+
+ShowTime        显示时间
+NetSpeed        监控网速
+MonitorPort     监听端口
+OnlineHost      上线主机
+Placeholder     占位
+"""
+
 
 class StatusbarUI(object):
     def __new__(cls, *args, **kwargs) -> object:
@@ -124,7 +134,7 @@ class Placeholder(object):
 class OnlineHost(object):
     def __init__(self, statusbar: QStatusBar, stretch: int = -1):
         """
-        上线主机数
+        上线主机
         :param statusbar:
         :param stretch:
         """
@@ -253,6 +263,11 @@ class NetSpeed(object):
 
 class MonitorPort(object):
     def __init__(self, statusbar: QStatusBar, stretch: int):
+        """
+        监听端口
+        :param statusbar:
+        :param stretch:
+        """
         self.statusbar = statusbar
         self.stretch = stretch
 

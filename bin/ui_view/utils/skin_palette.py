@@ -6,6 +6,10 @@ from PyQt5.QtCore import QCoreApplication
 
 _translate = QCoreApplication.translate
 
+"""
+皮肤调色模块
+"""
+
 
 class HSB(object):
     def __init__(self, grid_layout_widget: QWidget, grid_layout: QGridLayout):

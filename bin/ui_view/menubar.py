@@ -7,6 +7,20 @@ from lib import settings
 
 _translate = QCoreApplication.translate
 
+"""
+选项 OptionMenu
+    程序设置
+    生成服务端
+    分隔符
+    退出
+查看 ViewMenu
+    工具箱扩展
+    工具栏
+    状态栏
+帮助 HelpMenu
+    关于
+"""
+
 
 class MenubarUI(object):
     def __new__(cls, *args, **kwargs) -> object:
