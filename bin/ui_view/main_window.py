@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtGui import QIcon, QPalette, QPixmap, QBrush, QCloseEvent, QResizeEvent
+from PyQt5.QtGui import QIcon, QPalette, QPixmap, QBrush, QCloseEvent, QResizeEvent, QColor
 from PyQt5.QtWidgets import QWidget, QMainWindow, QDesktopWidget, QMessageBox
 from PyQt5.QtCore import QCoreApplication, QMetaObject, Qt
 
@@ -25,6 +25,15 @@ class MainWindowUI(object):
             # 中心窗口
             self.centralwidget = QWidget(self.main_window, Qt.WindowFlags())
 
+            # 创建调色板
+            self.palette = QPalette()
+            # 颜色初始化
+            # self.color_init = QColor(107, 173, 246)
+            self.color_init = QColor(QColor(*settings.SKIN_COLOR))
+
+            # 消息对话框
+            self.message_box = QMessageBox(self.main_window)
+
     def setup_ui(self) -> None:
         self.main_window.setObjectName("main_window")
         self.main_window.resize(850, 500)
@@ -44,7 +53,8 @@ class MainWindowView(MainWindowUI):
         super().setup_ui()
 
         self.set_window_icon()
-        # self.set_window_background()
+        self.set_window_background()
+        self.set_window_background4()
         self.center()
         # self.main_window.resizeEvent = self.resize_event
         self.main_window.closeEvent = self.close_event
@@ -75,7 +85,8 @@ class MainWindowView(MainWindowUI):
         # 整体背景
         # 如果设置背景色,透明失效
         # self.main_window.setStyleSheet("background-color: rgb(100, 200, 255);")
-        self.main_window.setStyleSheet("background-color: rgb(107, 173, 246);")
+        # self.main_window.setStyleSheet("background-color: rgb(107, 173, 246);")
+        self.main_window.setStyleSheet("background-color: rgb{};".format(self.color_init.getRgb()[:3]))
 
         # 不显示标题栏，亦无边框
         # 无法移动
@@ -115,6 +126,14 @@ class MainWindowView(MainWindowUI):
         palette.setBrush(QPalette.Background, QBrush(pix))
         self.main_window.setPalette(palette)
 
+    def set_window_background4(self) -> None:
+        """
+        使用调色板
+        :return:
+        """
+        self.palette.setColor(QPalette.Background, self.color_init)  # 给调色板设置颜色
+        self.main_window.setPalette(self.palette)  # 给控件设置颜色
+
     def center(self) -> None:
         """
         控制窗口显示在屏幕中心
@@ -145,7 +164,7 @@ class MainWindowView(MainWindowUI):
         :param event:
         :return:
         """
-        msg = QMessageBox(self.main_window)
+        # self.message_box = QMessageBox(self.main_window)
         # 标题图标
         # msg.setWindowIcon(QIcon(settings.mainUi["confirm"]))
 
@@ -153,8 +172,8 @@ class MainWindowView(MainWindowUI):
         # 背景图片： "background-image: url(:/image/mainUi/background.png);"
         # msg.setStyleSheet("background-image: url({0});".format(settings.mainUi["background"]))
 
-        reply = msg.information(
-            msg,
+        reply = self.message_box.information(
+            self.main_window,
             _translate("MainWindowUI", "温馨提示"),
             _translate("MainWindowUI", "您确认要退出???"),
             QMessageBox.Yes | QMessageBox.No,

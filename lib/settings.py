@@ -23,6 +23,7 @@ MENUBAR_UI = {
     "options": ':/ui/images/menubar/options.png',
     "make_server": ':/ui/images/menubar/make_server.png',
     "setting": ':/ui/images/menubar/setting.png',
+    "skin": ':/ui/images/menubar/skin.png',
 }
 
 # 工具导航栏
@@ -102,6 +103,8 @@ DEBUG = True
 # 进程数
 PROCESSES = eval(CONFIG["system"].get("processes", "4"))
 
+# 皮肤初始化
+SKIN_COLOR = eval(CONFIG["system"].get("skin_color", "(107, 173, 246)"))
 
 # =========================== 模块显示 ===========================
 # 工具箱扩展是否显示
@@ -115,7 +118,6 @@ TOOLBAR_SHOW = eval(CONFIG["view"].get("toolbar_show", "1"))
 # 状态栏是否显示
 # ;0： 隐藏  1： 显示
 STATUSBAR_SHOW = eval(CONFIG["view"].get("statusbar_show", "1"))
-
 
 # =========================== 监听配置 ===========================
 # 监听地址

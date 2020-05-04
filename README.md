@@ -31,3 +31,7 @@ sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
 - 添加扩展模块框架: 日志模块,批量操作模块
 - 添加菜单栏框架
 - 添加状态栏框架
+
+## 2020.05.045
+- 皮肤模块完善
+- 颜色bug修复

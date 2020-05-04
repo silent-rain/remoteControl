@@ -4,6 +4,7 @@ from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import QCoreApplication
 
 from lib import settings
+from bin.ui_view.utils.skincolordialog import SkinColorDialogView
 
 _translate = QCoreApplication.translate
 
@@ -11,6 +12,7 @@ _translate = QCoreApplication.translate
 选项 OptionMenu
     程序设置
     生成服务端
+    皮肤
     分隔符
     退出
 查看 ViewMenu
@@ -84,11 +86,17 @@ class OptionMenu(object):
         # 生成服务端
         self.make_server = QAction(QIcon(settings.MENUBAR_UI["make_server"]), '&Make Server', self.menubar)
 
+        # 皮肤
+        self.skin = QAction(QIcon(settings.MENUBAR_UI["skin"]), '&Skin Settings', self.menubar)
+
         # 分隔符
         self.option.addSeparator()
 
         # 退出
         self.exit = QAction(QIcon(settings.MENUBAR_UI["exit"]), '&Exit', self.menubar)
+
+        # 皮肤对象
+        self.skin_view = None
 
     def setup_ui(self) -> None:
         self.setting.setShortcut('Ctrl+Alt+S')
@@ -102,6 +110,12 @@ class OptionMenu(object):
         self.make_server.setObjectName("make_server")
         self.option.addAction(self.make_server)
         self.make_server.triggered.connect(self.make_server_receive)
+
+        self.skin.setShortcut('Ctrl+N')
+        self.skin.setStatusTip('Skin Settings')
+        self.skin.setObjectName("skin")
+        self.option.addAction(self.skin)
+        self.skin.triggered.connect(self.skin_receive)
 
         self.exit.setShortcut('Ctrl+Q')
         self.exit.setStatusTip('Exit')
@@ -117,6 +131,7 @@ class OptionMenu(object):
         self.option.setTitle(_translate("MenubarUI", "选项"))
         self.setting.setText(_translate("MenubarUI", "程序设置"))
         self.make_server.setText(_translate("MenubarUI", "生成服务端"))
+        self.skin.setText(_translate("MenubarUI", "皮肤"))
         self.exit.setText(_translate("MenubarUI", "退出"))
 
     def setting_receive(self):
@@ -132,6 +147,16 @@ class OptionMenu(object):
         :return:
         """
         print("make_server_receive")
+        print(self.skin)
+
+    def skin_receive(self):
+        """
+        调色
+        :return:
+        """
+        self.skin_view = SkinColorDialogView(self.main_window)
+        self.skin_view.setup_ui()
+        self.skin_view.retranslate_ui()
 
     def exit_receive(self):
         """

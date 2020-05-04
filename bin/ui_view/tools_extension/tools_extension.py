@@ -1,11 +1,10 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QWidget, QDockWidget, QHBoxLayout, QTabWidget, QMainWindow
-from PyQt5.QtCore import Qt, QCoreApplication, QRect, QSize
+from PyQt5.QtCore import Qt, QCoreApplication, QSize
 
 from bin.ui_view.tools_extension.loginfo import LOGInfo
 from bin.ui_view.tools_extension.batch_operation import BatchOperation
 from lib import settings
-from lib.communicate import communicate
 
 _translate = QCoreApplication.translate
 
@@ -24,7 +23,7 @@ class BaseDockOne(object):
 
         # QDockWidget
         self.dock_widget = QDockWidget(self.main_window)
-        self.dock_widget_contents = QWidget(self.main_window, Qt.WindowFlags())
+        self.dock_widget_contents = QWidget(self.dock_widget, Qt.WindowFlags())
 
         # QHBoxLayout
         self.layout_widget = QWidget(self.dock_widget_contents, Qt.WindowFlags())
@@ -125,9 +124,3 @@ class ToolsExtensionView(BaseDockOne):
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
         super().retranslate_ui()
-
-    def communicate_connect(self):
-        communicate.tools_extension_show.connect(self.tools_extension_show_receive)
-
-    def tools_extension_show_receive(self, flag):
-        print(flag)
