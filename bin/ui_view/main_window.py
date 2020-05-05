@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtGui import QIcon, QPalette, QPixmap, QBrush, QCloseEvent, QResizeEvent, QColor
-from PyQt5.QtWidgets import QWidget, QMainWindow, QDesktopWidget, QMessageBox
+from PyQt5.QtWidgets import QWidget, QMainWindow, QDesktopWidget, QMessageBox, QSplashScreen
 from PyQt5.QtCore import QCoreApplication, QMetaObject, Qt
 
+from bin.ui_view.utils import load_animation
 from lib import settings
 
 _translate = QCoreApplication.translate
@@ -51,10 +52,10 @@ class MainWindowUI(object):
 class MainWindowView(MainWindowUI):
     def setup_ui(self) -> None:
         super().setup_ui()
-
         self.set_window_icon()
         self.set_window_background()
         self.set_window_background4()
+        self.set_window_transparent()
         self.center()
         # self.main_window.resizeEvent = self.resize_event
         self.main_window.closeEvent = self.close_event
@@ -96,6 +97,9 @@ class MainWindowView(MainWindowUI):
         # 如果设置背景色,透明失效
         # 效果为一般为漆黑
         # self.main_window.setAttribute(Qt.WA_TranslucentBackground, True)
+
+        #  设置透明用
+        # self.main_window.setWindowOpacity(0.5)
 
     def set_window_background2(self) -> None:
         """
@@ -186,3 +190,8 @@ class MainWindowView(MainWindowUI):
             event.accept()
         else:
             event.ignore()
+
+    def set_window_transparent(self) -> None:
+        if settings.LOAD_EFFECT_ON:
+            load_animation.load_animation(self.main_window)
+            load_animation.load_animation(self.message_box)

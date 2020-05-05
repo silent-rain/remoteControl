@@ -8,7 +8,6 @@ sys.path.append(BASE_PATH)
 from lib import basePath
 from bin.main_app import MainApp
 
-
 if __name__ == '__main__':
     app = MainApp()
-    app.main()
+    app.setup_ui()

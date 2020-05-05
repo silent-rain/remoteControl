@@ -1,10 +1,12 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QMenuBar, QMainWindow, QMenu, QAction
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import QCoreApplication, QPropertyAnimation, QEasingCurve
 
+from bin.ui_view.utils import load_animation
 from lib import settings
 from bin.ui_view.utils.skincolordialog import SkinColorDialogView
+from lib.communicate import communicate
 
 _translate = QCoreApplication.translate
 
@@ -60,6 +62,8 @@ class MenubarView(MenubarUI):
 
     def setup_ui(self) -> None:
         super().setup_ui()
+        self.set_window_transparent()
+
         self.ui_view_list.append(OptionMenu(self.menubar, self.main_window))
         self.ui_view_list.append(ViewMenu(self.menubar))
         self.ui_view_list.append(HelpMenu(self.menubar))
@@ -71,6 +75,9 @@ class MenubarView(MenubarUI):
     def retranslate_ui(self) -> None:
         super().retranslate_ui()
 
+    def set_window_transparent(self) -> None:
+        if settings.LOAD_EFFECT_ON:
+            load_animation.load_animation(self.menubar)
 
 class OptionMenu(object):
     def __init__(self, menubar: QMenuBar, main_window: QMainWindow):
@@ -96,7 +103,7 @@ class OptionMenu(object):
         self.exit = QAction(QIcon(settings.MENUBAR_UI["exit"]), '&Exit', self.menubar)
 
         # 皮肤对象
-        self.skin_view = None
+        self.skin_color_dialog = None
 
     def setup_ui(self) -> None:
         self.setting.setShortcut('Ctrl+Alt+S')
@@ -126,6 +133,8 @@ class OptionMenu(object):
 
         self.menubar.addAction(self.option.menuAction())
 
+        self.communicate_connect()
+
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
         self.option.setTitle(_translate("MenubarUI", "选项"))
@@ -147,16 +156,18 @@ class OptionMenu(object):
         :return:
         """
         print("make_server_receive")
-        print(self.skin)
 
     def skin_receive(self):
         """
         调色
         :return:
         """
-        self.skin_view = SkinColorDialogView(self.main_window)
-        self.skin_view.setup_ui()
-        self.skin_view.retranslate_ui()
+        self.skin_color_dialog = SkinColorDialogView(self.main_window)
+        self.skin_color_dialog.start()
+
+    def skin_color_dialog_close(self, flag):
+        if flag:
+            del self.skin_color_dialog
 
     def exit_receive(self):
         """
@@ -164,6 +175,9 @@ class OptionMenu(object):
         :return:
         """
         self.main_window.close()
+
+    def communicate_connect(self):
+        communicate.skin_color_dialog_close.connect(self.skin_color_dialog_close)
 
 
 class ViewMenu(object):

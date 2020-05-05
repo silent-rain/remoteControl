@@ -2,6 +2,7 @@
     <qresource prefix="ui">
         <file>images/mainUi/background.png</file>
         <file>images/mainUi/app.png</file>
+        <file>images/mainUi/loading.png</file>
 
         <file>images/menubar/about.png</file>
         <file>images/menubar/exit.png</file>

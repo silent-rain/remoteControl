@@ -1,9 +1,11 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtGui import QColor, QPalette
 from PyQt5.QtWidgets import QColorDialog, QMainWindow
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import QCoreApplication, QThread
 
+from bin.ui_view.utils import load_animation
 from lib import settings
+from lib.communicate import communicate
 
 _translate = QCoreApplication.translate
 
@@ -12,8 +14,9 @@ _translate = QCoreApplication.translate
 """
 
 
-class SkinColorDialogView(object):
+class SkinColorDialogView(QThread):
     def __init__(self, main_window: QMainWindow):
+        super().__init__()
         self.main_window = main_window
 
         # 初始化颜色
@@ -44,7 +47,7 @@ class SkinColorDialogView(object):
             self.main_window.setStyleSheet('QWidget {background-color:%s}' % event.name())
             self.main_window.setPalette(self.palette)
 
-    def setup_ui(self) -> None:
+    def run(self) -> None:
         # 颜色选取信号
         # 会向槽函数传递一个值---QColor
         # self.color_dialog.colorSelected.connect(self.update_color)  # 选中最终颜色时发出信号-点击对话框的确定按钮时
@@ -55,12 +58,22 @@ class SkinColorDialogView(object):
         # QColorDialog.ShowAlphaChannel   对话框中增加alpha设置项
         self.color_dialog.setOptions(QColorDialog.NoButtons | QColorDialog.ShowAlphaChannel)  # 选项控制--多个选项
 
-        # 打开对话框,获取颜色
+        # 打开对话框,会等待完成
         # noinspection PyCallByClass
-        # self.color = self.color_dialog.getColor(self.color, None)
+        # self.color_dialog.getColor(self.color, None)
 
-        # 打开对话框
+        self.color_dialog.finished.connect(self.finished_color)
+
+        self.set_window_transparent()
+
+        # 打开对话框,等待打开
         self.color_dialog.show()
+        # self.color_dialog.open()
 
-    def retranslate_ui(self) -> None:
-        pass
+    @staticmethod
+    def finished_color(event: int):
+        communicate.skin_color_dialog_close.emit(True)
+
+    def set_window_transparent(self) -> None:
+        if settings.LOAD_EFFECT_ON:
+            load_animation.load_animation(self.color_dialog)

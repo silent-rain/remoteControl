@@ -11,5 +11,8 @@ class Communicate(QObject):
     toolbar_show = pyqtSignal(bool)  # 工具栏是否显示
     statusbar_show = pyqtSignal(bool)  # 状态栏是否显示
 
+    # 信号关闭
+    skin_color_dialog_close = pyqtSignal(bool)  # 皮肤窗口关闭
+
 
 communicate = Communicate()

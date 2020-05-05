@@ -13,6 +13,7 @@ MAIN_UI = {
     "app": ':/ui/images/mainUi/app.png',
     "background": ':/ui/images/mainUi/background.png',
     # "confirm": ':/ui/images/mainUi/confirm.png',
+    "loading": ':/ui/images/mainUi/loading.png',
 }
 
 # 菜单图标
@@ -92,8 +93,8 @@ SOUND_SETTING = abspath(join(BASE_PATH, "src", "sound", "setting.wav"))  # 自�
 SOUND_ON = eval(CONFIG["audio"].get("sound_on", "1"))  # 声音是否开启;0：关闭; 1：开启
 
 # 日志配置
-LOG_DIR = abspath(join(BASE_PATH, "logs"))  # 日志文件夹
-mkdir(LOG_DIR) if not exists(LOG_DIR) else None  # 初始化日志文件夹
+LOGGING_DIR = abspath(join(BASE_PATH, "logs"))  # 日志文件夹
+mkdir(LOGGING_DIR) if not exists(LOGGING_DIR) else None  # 初始化日志文件夹
 LOGGING_LEVEL = CONFIG["default"].get("logging_level", "INFO")  # 日志打印级别; DEBUG/INFO/WARNING/ERROR/CRITICAL
 
 # =========================== 系统控制 ===========================
@@ -103,8 +104,23 @@ DEBUG = True
 # 进程数
 PROCESSES = eval(CONFIG["system"].get("processes", "4"))
 
+# =========================== 特效控制 ===========================
+# 开启加载特效是否打开
+# ;0：关闭 1：开启
+LOAD_EFFECT_ON = eval(CONFIG["effect"].get("load_effect_on", "1"))
+
+# 界面组件加载延迟
+if DEBUG:
+    LOAD_DELAY = 0
+else:
+    LOAD_DELAY = 0.5
+
+# 透明度
+# ;0.0-1.0
+TRANSPARENT = eval(CONFIG["effect"].get("transparent", "0.8"))
+
 # 皮肤初始化
-SKIN_COLOR = eval(CONFIG["system"].get("skin_color", "(107, 173, 246)"))
+SKIN_COLOR = eval(CONFIG["effect"].get("skin_color", "(107, 173, 246)"))
 
 # =========================== 模块显示 ===========================
 # 工具箱扩展是否显示
