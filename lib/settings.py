@@ -113,13 +113,14 @@ LOAD_EFFECT_ON = eval(CONFIG["effect"].get("load_effect_on", "1"))
 if DEBUG:
     LOAD_DELAY = 0
 else:
-    LOAD_DELAY = 0.5
+    LOAD_DELAY = 0.3
 
 # 透明度
 # ;0.0-1.0
 TRANSPARENT = eval(CONFIG["effect"].get("transparent", "0.8"))
 
 # 皮肤初始化
+# SKIN_COLOR = ()
 SKIN_COLOR = eval(CONFIG["effect"].get("skin_color", "(107, 173, 246)"))
 
 # =========================== 模块显示 ===========================

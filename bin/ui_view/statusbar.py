@@ -30,7 +30,7 @@ class ShowTime(object):
         """
         self.statusbar = statusbar
 
-        self.time_abel = QLabel()
+        self.time_abel = QLabel(self.statusbar)
         self.timer = QTimer()
         self.time_text = ""
         self.stretch = stretch
@@ -61,8 +61,8 @@ class Placeholder(object):
         :param stretch:
         """
         self.statusbar = statusbar
-        self.label = QLabel()
 
+        self.label = QLabel(self.statusbar)
         self.stretch = stretch
 
     def setup_ui(self) -> None:
@@ -83,8 +83,8 @@ class OnlineHost(object):
         self.statusbar = statusbar
         self.stretch = stretch
 
-        self.online = QLabel()
-        self.online_icon = QLabel()
+        self.online = QLabel(self.statusbar)
+        self.online_icon = QLabel(self.statusbar)
 
         self.online_host = 0
 
@@ -96,7 +96,7 @@ class OnlineHost(object):
         # 图片背景: background-image: url(:/images/background.png);
         self.online_icon.setStyleSheet("background-image: url({0});".format(settings.TOOLBAR_UI["host"]))
         # 自动填充背景
-        self.online_icon.setAutoFillBackground(True)
+        # self.online_icon.setAutoFillBackground(True)
 
     def set_background2(self) -> None:
         pix = QPixmap(settings.TOOLBAR_UI["host"])
@@ -188,7 +188,7 @@ class NetSpeed(object):
         self.statusbar = statusbar
         self.stretch = stretch
 
-        self.send_recv_text = QLabel()
+        self.send_recv_text = QLabel(self.statusbar)
         self.net_speed = NetSpeedThread()
 
     def setup_ui(self):
@@ -213,7 +213,7 @@ class MonitorPort(object):
         self.statusbar = statusbar
         self.stretch = stretch
 
-        self.port_label = QLabel()
+        self.port_label = QLabel(self.statusbar)
         self.port = 0
 
     def setup_ui(self):

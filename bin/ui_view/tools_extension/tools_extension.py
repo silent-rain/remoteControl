@@ -4,7 +4,7 @@ from PyQt5.QtWidgets import QTabWidget, QMainWindow
 from PyQt5.QtCore import Qt, QCoreApplication
 
 from bin.ui_view.tools_extension.loginfo import LogInfoUI
-from bin.ui_view.tools_extension.batch_operation import BatchOperation
+from bin.ui_view.tools_extension.batch_operation import BatchOperationUI
 from bin.ui_view.base.dock_widget_base import DockWidgetBase
 from lib import settings
 from lib.communicate import communicate
@@ -50,7 +50,7 @@ class ToolsExtensionUI(DockWidgetBase):
         :return:
         """
         self.add_ui(LogInfoUI(self.tab_widget))  # 日志信息
-        self.add_ui(BatchOperation(self.tab_widget))  # 批量操作
+        self.add_ui(BatchOperationUI(self.tab_widget))  # 批量操作
 
     def show_ui(self) -> None:
         """

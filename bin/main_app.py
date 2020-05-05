@@ -66,47 +66,6 @@ class LoadingUI(object):
             qApp.processEvents()  # 允许主进程处理事件
 
 
-class MainConnect(object):
-    def __init__(self, main_window: QMainWindow):
-        """
-        主信号连接
-        代理模式
-        """
-        self.main_window = main_window
-
-        self.connect_list = []
-
-    def add_connect(self, connect: object) -> None:
-        """
-        添加模块
-        :param connect: 对象
-        :return:
-        """
-        if connect not in self.connect_list:
-            self.connect_list.append(connect)
-
-    def load_connect(self) -> None:
-        """
-        加载模块
-        :return:
-        """
-
-    def show_connect(self) -> None:
-        """
-        显示数据
-        :return:
-        """
-        for view in self.connect_list:
-            view.setup_ui()
-
-    def setup_ui(self) -> None:
-        self.load_connect()
-        # self.show_connect()
-
-    def retranslate_ui(self) -> None:
-        pass
-
-
 class MainUI(LoadingUI):
     def __init__(self, main_window: QMainWindow):
         """
@@ -187,7 +146,7 @@ class MainUI(LoadingUI):
         self.load_tools_extension()
         self.show_ui()
         self.splash.finish(self.main_window)  # 隐藏启动界面
-        logger.info("系统信息 - 加载完成...")
+        logger.info("系统信息 - 程序加载完成...")
 
 
 class MainApp(object):

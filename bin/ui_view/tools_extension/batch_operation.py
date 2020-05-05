@@ -9,7 +9,7 @@ _translate = QCoreApplication.translate
 """
 
 
-class BatchOperation(object):
+class BatchOperationUI(object):
     def __init__(self, tab_widget: QTabWidget):
         self.tab_widget = tab_widget
 

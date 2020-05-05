@@ -84,6 +84,8 @@ class LogInfoConnect(object):
         :return:
         """
         info_list = [item for item in message.split(" - ")]
+        info_list.insert(0, "")
+        print(info_list)
         self.log_tab.add_data(info_list)
 
     def retranslate_ui(self) -> None:
