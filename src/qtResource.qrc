@@ -12,21 +12,19 @@
         <file>images/menubar/setting.png</file>
         <file>images/menubar/skin.png</file>
 
-        <file>images/toolbar/file.png</file>
+        <file>images/toolbar/ddos.png</file>
         <file>images/toolbar/desktop.png</file>
-        <file>images/toolbar/videoMonitor.png</file>
-        <file>images/toolbar/voiceMonitor.png</file>
-        <file>images/toolbar/keyboard.png</file>
-        <file>images/toolbar/terminal.png</file>
-        <file>images/toolbar/DDos.png</file>
-        <file>images/toolbar/client.png</file>
-        <file>images/toolbar/filtrate.png</file>
-        <file>images/toolbar/exit.png</file>
-        <file>images/toolbar/registry.png</file>
-        <file>images/toolbar/serviceManage.png</file>
+        <file>images/toolbar/file.png</file>
+        <file>images/toolbar/filter.png</file>
         <file>images/toolbar/host.png</file>
-        <file>images/toolbar/startServer.png</file>
-        <file>images/toolbar/stopServer.png</file>
+        <file>images/toolbar/keyboard.png</file>
+        <file>images/toolbar/registry.png</file>
+        <file>images/toolbar/server.png</file>
+        <file>images/toolbar/start.png</file>
+        <file>images/toolbar/stop.png</file>
+        <file>images/toolbar/terminal.png</file>
+        <file>images/toolbar/video.png</file>
+        <file>images/toolbar/voice.png</file>
     </qresource>
 
     <!--  <qresource prefix="sound">-->
