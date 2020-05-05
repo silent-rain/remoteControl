@@ -133,11 +133,10 @@ class MainUI(LoadingUI):
             sleep(settings.LOAD_DELAY)  # 加载延迟
             meg = "正在加载组件{0}... {1}%".format("", self.progress_count(index, length))
             self.splash.showMessage(meg, Qt.AlignHCenter | Qt.AlignBottom, Qt.black)
-            logger.debug(meg)
             # qApp.processEvents()  # 允许主进程处理事件
 
         self.splash.showMessage("组件加载完成...", Qt.AlignHCenter | Qt.AlignBottom, Qt.black)
-        logger.debug("组件加载完成...")
+        logger.debug("系统信息 - 组件加载完成...")
 
     @staticmethod
     def progress_count(index: int, total: int) -> int:

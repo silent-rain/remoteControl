@@ -26,8 +26,8 @@ class LogTableWidgetUI(TableWidgetBase):
         self.header_width = [60, 150, 80]
 
     def setup_ui(self):
+        super().setup_ui()
         # self.setMinimumHeight(100)
-        self.options()
         self.set_headers()
 
     def retranslate_ui(self):
@@ -86,6 +86,7 @@ class LogInfoConnect(object):
         info_list = [item for item in message.split(" - ")]
         info_list.insert(0, "")
         self.log_tab.add_data(info_list)
+        self.log_tab.scrollToBottom()  # 最后一行
 
     def retranslate_ui(self) -> None:
         pass

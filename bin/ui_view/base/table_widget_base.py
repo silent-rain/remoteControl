@@ -63,9 +63,13 @@ class TableWidgetBase(QTableWidget):
         # self.setEditTriggers(QAbstractItemView.NoEditTriggers)  # 不允许编辑
         self.verticalHeader().setDefaultSectionSize(18)  # 设置tableview所有列的默认行高
 
-        self.setSortingEnabled(self.isSortingEnabled())  # 排序
+        # self.setSortingEnabled(self.isSortingEnabled())  # 排序
 
         self.setRowCount(0)  # 设置表格行数
+
+        # 显示最后一行
+        self.scrollToBottom()
+
 
         # 设置字体
         font = QFont()
