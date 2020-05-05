@@ -10,6 +10,7 @@ _translate = QCoreApplication.translate
 工具导航 ToolbarView
 """
 
+
 # noinspection PyArgumentList
 class ToolbarUI(object):
     def __new__(cls, *args, **kwargs) -> object:

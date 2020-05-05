@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QMenuBar, QMainWindow, QMenu, QAction
 from PyQt5.QtGui import QFont, QIcon
-from PyQt5.QtCore import QCoreApplication, QPropertyAnimation, QEasingCurve
+from PyQt5.QtCore import QCoreApplication
 
 from bin.ui_view.utils import load_animation
 from lib import settings
@@ -78,6 +78,7 @@ class MenubarView(MenubarUI):
     def set_window_transparent(self) -> None:
         if settings.LOAD_EFFECT_ON:
             load_animation.load_animation(self.menubar)
+
 
 class OptionMenu(object):
     def __init__(self, menubar: QMenuBar, main_window: QMainWindow):
