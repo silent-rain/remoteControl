@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen
 from PyQt5.QtWidgets import qApp
 from bin.ui_view.main_window import MainWindowView
 from bin.ui_view.toolbar import ToolbarView
-from bin.ui_view.statusbar import StatusbarView
+from bin.ui_view.statusbar import StatusbarView, StatusbarConnect
 from bin.ui_view.menubar import MenubarView
 from bin.ui_view.tools_extension.tools_extension import ToolsExtensionView
 from lib import settings
@@ -64,6 +64,52 @@ class LoadingView(object):
             qApp.processEvents()  # 允许主进程处理事件
 
 
+class MainConnect(object):
+    def __init__(self):
+        """
+        主信号连接
+        代理模式
+        """
+        self.connect_list = []
+
+    def add_connect(self, obj: object) -> None:
+        """
+        添加模块
+        :param obj:
+        :return:
+        """
+        if obj not in self.connect_list:
+            self.connect_list.append(obj)
+
+    def load_connect(self, obj: object) -> None:
+        """
+        加载模块
+        :param obj:
+        :return:
+        """
+        # self.add_ui(MainWindowView(self.main_window))  # 主窗口信号
+        # self.add_ui(MenubarView(self.main_window))  # 菜单栏信号
+        # self.add_ui(ToolbarView(self.main_window))  # 工具导航信号
+        # self.add_ui(ToolsExtensionView(self.main_window))  # 工具扩展信号
+        if "Statusbar" in obj.__class__.__name__:
+            self.add_connect(StatusbarConnect(obj))  # 状态栏信号
+        elif "ToolsExtension" in obj.__class__.__name__:
+            # self.add_connect(StatusbarConnect(obj))  # 状态栏信号
+            pass
+
+    def show_connect(self) -> None:
+        """
+        显示数据
+        :return:
+        """
+        for view in self.connect_list:
+            view.setup_ui()
+
+    def setup_ui(self) -> None:
+        # self.load_connect()
+        self.show_connect()
+
+
 class MainView(LoadingView):
     def __init__(self, main_window: QMainWindow):
         """
@@ -73,6 +119,8 @@ class MainView(LoadingView):
         super().__init__(main_window)
         self.main_window = main_window
         self.ui_view_list = []
+
+        self.main_connect = MainConnect()
 
     def add_ui(self, view: object) -> None:
         """
@@ -88,11 +136,11 @@ class MainView(LoadingView):
         加载模块
         :return:
         """
-        self.add_ui(MainWindowView(self.main_window))  # 主窗口
-        self.add_ui(MenubarView(self.main_window))  # 菜单栏
-        self.add_ui(ToolbarView(self.main_window))  # 工具导航
-        self.add_ui(ToolsExtensionView(self.main_window))  # 工具扩展
-        self.add_ui(StatusbarView(self.main_window))  # 状态栏
+        self.load_ui_and_connect(MainWindowView(self.main_window))  # 主窗口
+        self.load_ui_and_connect(MenubarView(self.main_window))  # 菜单栏
+        self.load_ui_and_connect(ToolbarView(self.main_window))  # 工具导航
+        self.load_ui_and_connect(ToolsExtensionView(self.main_window))  # 工具扩展
+        self.load_ui_and_connect(StatusbarView(self.main_window))  # 状态栏
 
     def show_ui(self) -> None:
         """
@@ -112,6 +160,17 @@ class MainView(LoadingView):
 
         self.splash.showMessage("加载完成...", Qt.AlignHCenter | Qt.AlignBottom, Qt.black)
 
+    def load_ui_and_connect(self, view: object) -> None:
+        """
+        UI 信号 综合代理
+        :return:
+        """
+        # 添加UI
+        self.add_ui(view)
+
+        # 添加信号代理
+        self.main_connect.load_connect(view)
+
     @staticmethod
     def progress_count(index: int, total: int) -> int:
         percentage = int((index / total) * 100)
@@ -121,6 +180,7 @@ class MainView(LoadingView):
         super().setup_ui()
         self.load_ui()
         self.show_ui()
+        self.main_connect.setup_ui()
         self.splash.finish(self.main_window)  # 隐藏启动界面
 
 

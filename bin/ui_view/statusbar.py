@@ -2,8 +2,8 @@
 import time
 import psutil
 from PyQt5.QtWidgets import QStatusBar, QMainWindow, QLabel
-from PyQt5.QtGui import QFont, QPixmap
-from PyQt5.QtCore import QCoreApplication, QTimer, QDateTime, QThread
+from PyQt5.QtGui import QFont, QPixmap, QHideEvent
+from PyQt5.QtCore import QCoreApplication, QTimer, QDateTime, QThread, QObject
 
 from lib import settings
 from lib.communicate import communicate
@@ -45,9 +45,16 @@ class StatusbarUI(object):
         # self.main_window.setStatusBar()
         # self.statusbar.setContextMenuPolicy(Qt.DefaultContextMenu)
 
+        # self.statusbar.hideEvent = self.hide_event  # QHideEvent
+
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
         self.statusbar.setWindowTitle(_translate("StatusbarUI", "状态栏"))
+
+    def hide_event(self, event: QHideEvent) -> None:
+        print(dir(event))
+        print(event)
+        pass
 
 
 class StatusbarView(StatusbarUI):
@@ -98,14 +105,26 @@ class StatusbarView(StatusbarUI):
         super().retranslate_ui()
 
 
-class StatusbarConnect(StatusbarUI):
-    def __init__(self, main_window: QMainWindow):
-        super().__init__(main_window)
+class StatusbarConnect(object):
+    def __init__(self, main_window: object):
+        self.main_window = main_window
+        # self.statusbar = StatusbarView(main_window)
+        self.statusbar = self.main_window.statusbar
 
-    def communicate_connect(self):
-        # 皮肤窗口关闭事件
-        # communicate.skin_color_dialog_close.connect(self.skin_color_dialog_close)
-        pass
+    def setup_ui(self) -> None:
+        self.communicate_connect()
+
+    def communicate_connect(self) -> None:
+        # 状态栏是否显示
+        communicate.statusbar_show.connect(self.statusbar_show)
+
+    def statusbar_show(self, flag: bool) -> None:
+        if flag:
+            # 显示
+            self.statusbar.setHidden(False)
+        else:
+            # 隐藏
+            self.statusbar.setHidden(True)
 
 
 class ShowTime(object):

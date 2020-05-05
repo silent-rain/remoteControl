@@ -126,25 +126,21 @@ class OptionMenu(object):
 
     def setup_ui(self) -> None:
         self.setting.setShortcut('Ctrl+Alt+S')
-        self.setting.setStatusTip('Setting')
         self.setting.setObjectName("setting")
         self.option.addAction(self.setting)
         self.setting.triggered.connect(self.setting_receive)
 
         self.make_server.setShortcut('Ctrl+N')
-        self.make_server.setStatusTip('make server')
         self.make_server.setObjectName("make_server")
         self.option.addAction(self.make_server)
         self.make_server.triggered.connect(self.make_server_receive)
 
         self.skin.setShortcut('Ctrl+N')
-        self.skin.setStatusTip('Skin Settings')
         self.skin.setObjectName("skin")
         self.option.addAction(self.skin)
         self.skin.triggered.connect(self.skin_receive)
 
         self.exit.setShortcut('Ctrl+Q')
-        self.exit.setStatusTip('Exit')
         self.exit.setObjectName("exit")
         self.option.addAction(self.exit)
         # self.exit.triggered.connect(QCoreApplication.quit)  # 直接退出程序
@@ -217,21 +213,19 @@ class ViewMenu(object):
         self.statusbar = QAction(QIcon(""), '&Statusbar', self.menubar)
 
     def setup_ui(self) -> None:
-        self.tools_extension.setStatusTip('Tools Extension')
         self.tools_extension.setObjectName("tools_extension")
         self.view.addAction(self.tools_extension)
         self.tools_extension.triggered.connect(self.tools_extension_receive)
         # self.tools_extension.changed.connect(self.tools_extension_receive)
 
-        self.toolbar.setStatusTip('Toolbar')
         self.toolbar.setObjectName("toolbar")
         self.view.addAction(self.toolbar)
         self.toolbar.triggered.connect(self.toolbar_receive)
 
-        self.statusbar.setStatusTip('Statusbar')
         self.statusbar.setObjectName("statusbar")
         self.view.addAction(self.statusbar)
-        self.statusbar.triggered.connect(self.statusbar_receive)
+        # self.statusbar.triggered.connect(self.statusbar_receive)  # 变化的信号
+        self.statusbar.changed.connect(self.statusbar_receive)  # 变化的信号
 
         self.menubar.addAction(self.view.menuAction())
 
@@ -283,10 +277,9 @@ class ViewMenu(object):
         :return:
         """
         if self.statusbar.isChecked():
-            print("显示")
+            communicate.statusbar_show.emit(True)
         else:
-            print("隐藏")
-        print("statusbar_receive")
+            communicate.statusbar_show.emit(False)
 
 
 class HelpMenu(object):
@@ -300,7 +293,6 @@ class HelpMenu(object):
         self.about = QAction(QIcon(settings.MENUBAR_UI["about"]), '&Tools Extension', self.menubar)
 
     def setup_ui(self) -> None:
-        self.about.setStatusTip('Tools Extension')
         self.about.setObjectName("tools_extension")
         self.help.addAction(self.about)
         self.about.triggered.connect(self.about_receive)
