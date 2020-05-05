@@ -29,21 +29,19 @@ MENUBAR_UI = {
 
 # 工具导航栏
 TOOLBAR_UI = {
-    "host": ':/ui/images/toolbar/host.png',
-    "startServer": ':/ui/images/toolbar/startServer.png',
-    "file": ':/ui/images/toolbar/file.png',
+    "ddos": ':/ui/images/toolbar/ddos.png',
     "desktop": ':/ui/images/toolbar/desktop.png',
-    "video_monitor": ':/ui/images/toolbar/videoMonitor.png',
-    "voice_monitor": ':/ui/images/toolbar/voiceMonitor.png',
+    "file": ':/ui/images/toolbar/file.png',
+    "filter": ':/ui/images/toolbar/filter.png',
+    "host": ':/ui/images/toolbar/host.png',
     "keyboard": ':/ui/images/toolbar/keyboard.png',
-    "terminal": ':/ui/images/toolbar/terminal.png',
-    "DDos": ':/ui/images/toolbar/DDos.png',
-    "client": ':/ui/images/toolbar/client.png',
-    "filtrate": ':/ui/images/toolbar/filtrate.png',
-    "service_manage": ':/ui/images/toolbar/serviceManage.png',
     "registry": ':/ui/images/toolbar/registry.png',
-    "exit": ':/ui/images/toolbar/exit.png',
-    "stopServer": ':/ui/images/toolbar/stopServer.png',
+    "server": ':/ui/images/toolbar/server.png',
+    "start": ':/ui/images/toolbar/start.png',
+    "stop": ':/ui/images/toolbar/stop.png',
+    "terminal": ':/ui/images/toolbar/terminal.png',
+    "video": ':/ui/images/toolbar/video.png',
+    "voice": ':/ui/images/toolbar/voice.png',
 }
 
 # 设置

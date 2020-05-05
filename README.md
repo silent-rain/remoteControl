@@ -21,7 +21,10 @@ sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
 
 
 # 更新日志
-## 2020.05.045
+## 2020.05.06
+- 添加工具栏组件框架
+
+## 2020.05.05
 - 皮肤模块完善
 - 颜色bug修复
 - 日志模块
