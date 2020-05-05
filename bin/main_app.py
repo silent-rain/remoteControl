@@ -43,8 +43,9 @@ class LoadingUI(object):
         self.splash.setPixmap(QPixmap(settings.MAIN_UI["loading"]))
 
         # 显示信息
-        self.splash.showMessage("正在启动中...", Qt.AlignHCenter | Qt.AlignBottom, Qt.white)
+        self.splash.showMessage("系统正在启动中...", Qt.AlignHCenter | Qt.AlignBottom, Qt.white)
         # self.splash.showMessage("加载... 0%", Qt.AlignHCenter | Qt.AlignBottom, Qt.white)
+        logger.debug("系统正在启动中...")
 
         self.splash.show()  # 显示启动界面
         # qApp.processEvents()  # 允许主进程处理事件
@@ -62,7 +63,9 @@ class LoadingUI(object):
         """
         for i in range(1, 5):  # 模拟主程序加载过程
             # time.sleep(1)  # 加载数据
-            self.splash.showMessage("加载... {0}%".format(i * 10), Qt.AlignHCenter | Qt.AlignBottom, Qt.red)
+            msg = "加载... {0}%".format(i * 10)
+            self.splash.showMessage(msg, Qt.AlignHCenter | Qt.AlignBottom, Qt.red)
+            logger.debug(msg)
             qApp.processEvents()  # 允许主进程处理事件
 
 
@@ -128,11 +131,13 @@ class MainUI(LoadingUI):
             view.retranslate_ui()
 
             sleep(settings.LOAD_DELAY)  # 加载延迟
-            meg = "正在加载{0}... {1}%".format("", self.progress_count(index, length))
+            meg = "正在加载组件{0}... {1}%".format("", self.progress_count(index, length))
             self.splash.showMessage(meg, Qt.AlignHCenter | Qt.AlignBottom, Qt.black)
+            logger.debug(meg)
             # qApp.processEvents()  # 允许主进程处理事件
 
-        self.splash.showMessage("加载完成...", Qt.AlignHCenter | Qt.AlignBottom, Qt.black)
+        self.splash.showMessage("组件加载完成...", Qt.AlignHCenter | Qt.AlignBottom, Qt.black)
+        logger.debug("组件加载完成...")
 
     @staticmethod
     def progress_count(index: int, total: int) -> int:
@@ -146,7 +151,9 @@ class MainUI(LoadingUI):
         self.load_tools_extension()
         self.show_ui()
         self.splash.finish(self.main_window)  # 隐藏启动界面
-        logger.info("系统信息 - 程序加载完成...")
+        logger.info("系统信息 - 系统启动成功...")
+        logger.info("申明 - 本软件使用于学习网络安全,请不要触犯法律,否则后果自负,一切与原作者无关.")
+        logger.info("系统信息 - 本地IP:  [{}]    监听端口:  [{}]".format(settings.IP, settings.PORT))
 
 
 class MainApp(object):

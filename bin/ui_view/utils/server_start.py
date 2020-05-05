@@ -4,6 +4,7 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWidgets import QToolBar, QAction
 
 from lib import settings
+from lib.logger import logger
 
 _translate = QCoreApplication.translate
 
@@ -37,11 +38,13 @@ class ServerStartUI(object):
             self.start_stop.setIcon(QIcon(settings.TOOLBAR_UI["start"]))
             self.start_stop.setText(_translate("ToolbarUI", "启动"))
             self.start_stop.setToolTip("启动服务")
+            logger.info("系统信息 - 启动服务...")
         else:
             self.start_flag = True
             self.start_stop.setIcon(QIcon(settings.TOOLBAR_UI["stop"]))
             self.start_stop.setText(_translate("ToolbarUI", "停止"))
             self.start_stop.setToolTip("停止服务")
+            logger.info("系统信息 - 停止服务...")
         print("启动/停止服务----信号未处理")
 
     def retranslate_ui(self):

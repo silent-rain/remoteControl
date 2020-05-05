@@ -136,6 +136,6 @@ STATUSBAR_SHOW = eval(CONFIG["view"].get("statusbar_show", "1"))
 
 # =========================== 监听配置 ===========================
 # 监听地址
-IP = CONFIG["address"].get("statusbar_show", "")
+IP = CONFIG["address"].get("ip", "")
 # 监听端口
 PORT = eval(CONFIG["address"].get("statusbar_show", "2020"))
