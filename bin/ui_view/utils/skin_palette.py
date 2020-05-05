@@ -217,9 +217,33 @@ class SkinPaletteView(object):
 
         self.ui_view_list = []
 
-    def add_ui_view(self, view: object) -> None:
+    def add_ui(self, view: object) -> None:
+        """
+        添加模块
+        :param view:
+        :return:
+        """
         if view not in self.ui_view_list:
             self.ui_view_list.append(view)
+
+    def load_ui(self) -> None:
+        """
+        加载模块
+        :return:
+        """
+        self.add_ui(HSB(self.gridLayoutWidget, self.gridLayout))
+        self.add_ui(Aero(self.gridLayoutWidget, self.gridLayout))
+        self.add_ui(Shadow(self.gridLayoutWidget, self.gridLayout))
+        self.add_ui(Other(self.gridLayoutWidget, self.gridLayout))
+
+    def show_ui(self) -> None:
+        """
+        显示数据
+        :return:
+        """
+        for view in self.ui_view_list:
+            view.setup_ui()
+            view.retranslate_ui()
 
     def setup_ui(self) -> None:
         self.widget_window.setObjectName("Form")
@@ -237,17 +261,11 @@ class SkinPaletteView(object):
         font.setPointSize(10)
         self.gridLayoutWidget.setFont(font)
 
-        self.add_ui_view(HSB(self.gridLayoutWidget, self.gridLayout))
-        self.add_ui_view(Aero(self.gridLayoutWidget, self.gridLayout))
-        self.add_ui_view(Shadow(self.gridLayoutWidget, self.gridLayout))
-        self.add_ui_view(Other(self.gridLayoutWidget, self.gridLayout))
-
-        for view in self.ui_view_list:
-            view.setup_ui()
-            view.retranslate_ui()
-
         # 背景色
         self.set_window_background()
+
+        self.load_ui()
+        self.show_ui()
 
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:

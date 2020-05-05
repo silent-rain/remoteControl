@@ -75,6 +75,11 @@ class MainView(LoadingView):
         self.ui_view_list = []
 
     def add_ui(self, view: object) -> None:
+        """
+        添加模块
+        :param view:
+        :return:
+        """
         if view not in self.ui_view_list:
             self.ui_view_list.append(view)
 
@@ -89,14 +94,9 @@ class MainView(LoadingView):
         self.add_ui(ToolsExtensionView(self.main_window))  # 工具扩展
         self.add_ui(StatusbarView(self.main_window))  # 状态栏
 
-    @staticmethod
-    def progress_count(index: int, total: int) -> int:
-        percentage = int((index / total) * 100)
-        return percentage
-
     def show_ui(self) -> None:
         """
-        加载数据
+        显示数据
         :return:
         """
         length = len(self.ui_view_list)
@@ -111,6 +111,11 @@ class MainView(LoadingView):
             # qApp.processEvents()  # 允许主进程处理事件
 
         self.splash.showMessage("加载完成...", Qt.AlignHCenter | Qt.AlignBottom, Qt.black)
+
+    @staticmethod
+    def progress_count(index: int, total: int) -> int:
+        percentage = int((index / total) * 100)
+        return percentage
 
     def setup_ui(self) -> None:
         super().setup_ui()

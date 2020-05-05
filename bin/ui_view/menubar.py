@@ -14,12 +14,12 @@ _translate = QCoreApplication.translate
 选项 OptionMenu
     程序设置
     生成服务端
-    皮肤
-    分隔符
-    退出
+    *皮肤
+    *分隔符
+    *退出
 查看 ViewMenu
-    工具箱扩展
-    工具栏
+    工具扩展
+    工具导航
     状态栏
 帮助 HelpMenu
     关于
@@ -56,21 +56,39 @@ class MenubarUI(object):
 class MenubarView(MenubarUI):
     ui_view_list = []
 
-    def add_ui_view(self, view: object) -> None:
+    def add_ui(self, view: object) -> None:
+        """
+        添加模块
+        :param view:
+        :return:
+        """
         if view not in self.ui_view_list:
             self.ui_view_list.append(view)
+
+    def load_ui(self) -> None:
+        """
+        加载模块
+        :return:
+        """
+        self.add_ui(OptionMenu(self.menubar, self.main_window))
+        self.add_ui(ViewMenu(self.menubar))
+        self.add_ui(HelpMenu(self.menubar))
+
+    def show_ui(self) -> None:
+        """
+        显示数据
+        :return:
+        """
+        for view in self.ui_view_list:
+            view.setup_ui()
+            view.retranslate_ui()
 
     def setup_ui(self) -> None:
         super().setup_ui()
         self.set_window_transparent()
 
-        self.ui_view_list.append(OptionMenu(self.menubar, self.main_window))
-        self.ui_view_list.append(ViewMenu(self.menubar))
-        self.ui_view_list.append(HelpMenu(self.menubar))
-
-        for view in self.ui_view_list:
-            view.setup_ui()
-            view.retranslate_ui()
+        self.load_ui()
+        self.show_ui()
 
     def retranslate_ui(self) -> None:
         super().retranslate_ui()
@@ -144,21 +162,21 @@ class OptionMenu(object):
         self.skin.setText(_translate("MenubarUI", "皮肤"))
         self.exit.setText(_translate("MenubarUI", "退出"))
 
-    def setting_receive(self):
+    def setting_receive(self) -> None:
         """
         程序设置
         :return:
         """
         print("setting_receive")
 
-    def make_server_receive(self):
+    def make_server_receive(self) -> None:
         """
         生成服务端
         :return:
         """
         print("make_server_receive")
 
-    def skin_receive(self):
+    def skin_receive(self) -> None:
         """
         调色
         :return:
@@ -166,18 +184,19 @@ class OptionMenu(object):
         self.skin_color_dialog = SkinColorDialogView(self.main_window)
         self.skin_color_dialog.start()
 
-    def skin_color_dialog_close(self, flag):
+    def skin_color_dialog_close(self, flag: bool) -> None:
         if flag:
             del self.skin_color_dialog
 
-    def exit_receive(self):
+    def exit_receive(self) -> None:
         """
         退出程序
         :return:
         """
         self.main_window.close()
 
-    def communicate_connect(self):
+    def communicate_connect(self) -> None:
+        # 皮肤窗口关闭事件
         communicate.skin_color_dialog_close.connect(self.skin_color_dialog_close)
 
 
@@ -236,7 +255,7 @@ class ViewMenu(object):
         self.toolbar.setText(_translate("MenubarUI", "工具栏"))
         self.statusbar.setText(_translate("MenubarUI", "状态栏"))
 
-    def tools_extension_receive(self):
+    def tools_extension_receive(self) -> None:
         """
         工具箱
         :return:
@@ -247,7 +266,7 @@ class ViewMenu(object):
             print("隐藏")
         print("tools_extension_receive")
 
-    def toolbar_receive(self):
+    def toolbar_receive(self) -> None:
         """
         工具栏
         :return:
@@ -258,7 +277,7 @@ class ViewMenu(object):
             print("隐藏")
         print("toolbar_receive")
 
-    def statusbar_receive(self):
+    def statusbar_receive(self) -> None:
         """
         状态栏
         :return:
@@ -293,5 +312,5 @@ class HelpMenu(object):
         self.help.setTitle(_translate("MenubarUI", "帮助"))
         self.about.setText(_translate("MenubarUI", "关于"))
 
-    def about_receive(self):
+    def about_receive(self) -> None:
         print("about_receive")

@@ -6,6 +6,7 @@ from PyQt5.QtGui import QFont, QPixmap
 from PyQt5.QtCore import QCoreApplication, QTimer, QDateTime, QThread
 
 from lib import settings
+from lib.communicate import communicate
 
 _translate = QCoreApplication.translate
 
@@ -55,28 +56,56 @@ class StatusbarView(StatusbarUI):
 
         self.ui_view_list = []
 
-    def add_ui_view(self, view: object) -> None:
+    def add_ui(self, view: object) -> None:
+        """
+        添加模块
+        :param view:
+        :return:
+        """
         if view not in self.ui_view_list:
             self.ui_view_list.append(view)
 
-    def setup_ui(self) -> None:
-        super().setup_ui()
+    def load_ui(self) -> None:
+        """
+        加载模块
+        :return:
+        """
+        self.add_ui(ShowTime(self.statusbar, 1))
+        self.add_ui(Placeholder(self.statusbar, 2))
+        self.add_ui(NetSpeed(self.statusbar, -4))
+        self.add_ui(MonitorPort(self.statusbar, -3))
+        self.add_ui(OnlineHost(self.statusbar, -1))
 
-        if not settings.STATUSBAR_SHOW:
-            self.statusbar.setHidden(False)
-
-        self.add_ui_view(ShowTime(self.statusbar, 1))
-        self.add_ui_view(Placeholder(self.statusbar, 2))
-        self.add_ui_view(NetSpeed(self.statusbar, -4))
-        self.add_ui_view(MonitorPort(self.statusbar, -3))
-        self.add_ui_view(OnlineHost(self.statusbar, -1))
-
+    def show_ui(self) -> None:
+        """
+        显示数据
+        :return:
+        """
         for view in self.ui_view_list:
             view.setup_ui()
             view.retranslate_ui()
 
+    def setup_ui(self) -> None:
+        super().setup_ui()
+
+        self.load_ui()
+        self.show_ui()
+
+        if not settings.STATUSBAR_SHOW:
+            self.statusbar.setHidden(False)
+
     def retranslate_ui(self) -> None:
         super().retranslate_ui()
+
+
+class StatusbarConnect(StatusbarUI):
+    def __init__(self, main_window: QMainWindow):
+        super().__init__(main_window)
+
+    def communicate_connect(self):
+        # 皮肤窗口关闭事件
+        # communicate.skin_color_dialog_close.connect(self.skin_color_dialog_close)
+        pass
 
 
 class ShowTime(object):

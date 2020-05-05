@@ -75,7 +75,7 @@ class ToolsExtensionView(BaseDockOne):
 
         self.ui_view_list = []
 
-    def add_ui_view(self, view: object) -> None:
+    def add_ui(self, view: object) -> None:
         if view not in self.ui_view_list:
             self.ui_view_list.append(view)
 
@@ -84,8 +84,8 @@ class ToolsExtensionView(BaseDockOne):
         加载模块
         :return:
         """
-        self.add_ui_view(LOGInfo(self.tab_widget))  # 日志信息
-        self.add_ui_view(BatchOperation(self.tab_widget))  # 批量操作
+        self.add_ui(LOGInfo(self.tab_widget))  # 日志信息
+        self.add_ui(BatchOperation(self.tab_widget))  # 批量操作
 
     def show_ui(self) -> None:
         """
