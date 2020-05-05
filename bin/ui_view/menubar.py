@@ -37,7 +37,7 @@ class OptionMenu(object):
         # 程序设置
         self.setting = QAction(QIcon(settings.MENUBAR_UI["setting"]), '&Setting', self.menubar)
 
-        # 生成服务端
+        # 创建客户端
         self.make_server = QAction(QIcon(settings.MENUBAR_UI["make_server"]), '&Make Server', self.menubar)
 
         # 皮肤
@@ -82,9 +82,9 @@ class OptionMenu(object):
     def retranslate_ui(self) -> None:
         self.option.setTitle(_translate("MenubarUI", "选项"))
         self.setting.setText(_translate("MenubarUI", "程序设置"))
-        self.make_server.setText(_translate("MenubarUI", "生成服务端"))
-        self.skin.setText(_translate("MenubarUI", "皮肤"))
-        self.exit.setText(_translate("MenubarUI", "退出"))
+        self.make_server.setText(_translate("MenubarUI", "创建客户端"))
+        self.skin.setText(_translate("MenubarUI", "皮肤调节"))
+        self.exit.setText(_translate("MenubarUI", "退出程序"))
 
     def setting_receive(self) -> None:
         """

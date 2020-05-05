@@ -104,7 +104,7 @@ class ToolbarUI(object):
         self.add_ui(ServerStartUI(self.toolbar))  # 服务器开关
         self.add_ui(FileManagerUI(self.toolbar))  # 文件管理
         self.add_ui(TerminalUI(self.toolbar))  # 远程终端
-        self.add_ui(RemoteControlUI(self.toolbar))  # 远程监控
+        self.add_ui(RemoteControlUI(self.toolbar))  # 远程控制
         self.add_ui(VideoMonitorUI(self.toolbar))  # 视频监控
         self.add_ui(VoiceMonitorUI(self.toolbar))  # 语音监控
         self.add_ui(KeyboardUI(self.toolbar))  # 键盘记录

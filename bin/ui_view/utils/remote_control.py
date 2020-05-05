@@ -8,7 +8,7 @@ from lib import settings
 _translate = QCoreApplication.translate
 
 """
-远程监控
+远程控制
 """
 
 
