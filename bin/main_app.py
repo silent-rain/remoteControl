@@ -79,6 +79,10 @@ class MainView(LoadingView):
             self.ui_view_list.append(view)
 
     def load_ui(self) -> None:
+        """
+        加载模块
+        :return:
+        """
         self.add_ui(MainWindowView(self.main_window))  # 主窗口
         self.add_ui(MenubarView(self.main_window))  # 菜单栏
         self.add_ui(ToolbarView(self.main_window))  # 工具导航

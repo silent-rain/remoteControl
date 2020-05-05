@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtGui import QIcon, QPalette, QPixmap, QBrush, QCloseEvent, QResizeEvent, QColor
-from PyQt5.QtWidgets import QWidget, QMainWindow, QDesktopWidget, QMessageBox, QSplashScreen
+from PyQt5.QtWidgets import QWidget, QMainWindow, QDesktopWidget, QMessageBox
 from PyQt5.QtCore import QCoreApplication, QMetaObject, Qt
 
 from bin.ui_view.utils import load_animation
@@ -26,15 +26,6 @@ class MainWindowUI(object):
             # 中心窗口
             self.centralwidget = QWidget(self.main_window, Qt.WindowFlags())
 
-            # 创建调色板
-            self.palette = QPalette()
-            # 颜色初始化
-            # self.color_init = QColor(107, 173, 246)
-            self.color_init = QColor(QColor(*settings.SKIN_COLOR))
-
-            # 消息对话框
-            self.message_box = QMessageBox(self.main_window)
-
     def setup_ui(self) -> None:
         self.main_window.setObjectName("main_window")
         self.main_window.resize(850, 500)
@@ -50,6 +41,17 @@ class MainWindowUI(object):
 
 
 class MainWindowView(MainWindowUI):
+    def __init__(self, main_window: QMainWindow):
+        super().__init__(main_window)
+        # 创建调色板
+        self.palette = QPalette()
+        # 颜色初始化
+        # self.color_init = QColor(107, 173, 246)
+        self.color_init = QColor(*settings.SKIN_COLOR)
+
+        # 消息对话框
+        self.message_box = QMessageBox(self.main_window)
+
     def setup_ui(self) -> None:
         super().setup_ui()
         self.set_window_icon()
@@ -194,4 +196,3 @@ class MainWindowView(MainWindowUI):
     def set_window_transparent(self) -> None:
         if settings.LOAD_EFFECT_ON:
             load_animation.load_animation(self.main_window)
-            load_animation.load_animation(self.message_box)

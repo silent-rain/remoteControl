@@ -4,6 +4,7 @@ from PyQt5.QtCore import Qt, QCoreApplication, QSize
 
 from bin.ui_view.tools_extension.loginfo import LOGInfo
 from bin.ui_view.tools_extension.batch_operation import BatchOperation
+from bin.ui_view.utils import load_animation
 from lib import settings
 
 _translate = QCoreApplication.translate
@@ -54,9 +55,16 @@ class BaseDockOne(object):
         # MainWindow.addDockWidget(Qt.DockWidgetArea(8), self.dock_widget)
         self.main_window.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
 
+        # QDockWidget 位置发生变动
+        self.dock_widget.dockLocationChanged.connect(self.set_window_transparent)
+
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
         self.dock_widget.setWindowTitle(_translate("ToolsExtensionView", "工具扩展"))
+
+    def set_window_transparent(self, event: Qt.DockWidgetArea) -> None:
+        if settings.LOAD_EFFECT_ON:
+            load_animation.load_animation(self.dock_widget)
 
 
 class ToolsExtensionView(BaseDockOne):
@@ -64,16 +72,29 @@ class ToolsExtensionView(BaseDockOne):
         super().__init__(main_window)
 
         self.tab_widget = QTabWidget(self.layout_widget)
-        self.tab_widget.setCurrentIndex(1)
-
-        # noinspection PyArgumentList
-        self.layout.addWidget(self.tab_widget)
 
         self.ui_view_list = []
 
     def add_ui_view(self, view: object) -> None:
         if view not in self.ui_view_list:
             self.ui_view_list.append(view)
+
+    def load_ui(self) -> None:
+        """
+        加载模块
+        :return:
+        """
+        self.add_ui_view(LOGInfo(self.tab_widget))  # 日志信息
+        self.add_ui_view(BatchOperation(self.tab_widget))  # 批量操作
+
+    def show_ui(self) -> None:
+        """
+        显示数据
+        :return:
+        """
+        for view in self.ui_view_list:
+            view.setup_ui()
+            view.retranslate_ui()
 
     def options(self) -> None:
         """
@@ -102,24 +123,26 @@ class ToolsExtensionView(BaseDockOne):
         # 隐藏tab
         self.tab_widget.setTabBarAutoHide(True)
 
-        # self.dock_widget.setGeometry(QRect(0, 0, 850, 200))
         # self.tab_widget.resize(850, 200)
         # self.tab_widget.setGeometry(QRect(0, 0, 850, 200))
-        self.dock_widget.size = QSize(850, 200)
 
         if not settings.TOOLS_EXTENSION_SHOW:
             self.dock_widget.hide()
 
     def setup_ui(self) -> None:
         super().setup_ui()
+
+        self.tab_widget.setCurrentIndex(1)
+        # noinspection PyArgumentList
+        self.layout.addWidget(self.tab_widget)
+
         self.options()
 
-        self.add_ui_view(LOGInfo(self.tab_widget))  # 日志信息
-        self.add_ui_view(BatchOperation(self.tab_widget))  # 批量操作
+        # 窗口移动事件重写
+        # self.dock_widget.moveEvent = self.move_event
 
-        for view in self.ui_view_list:
-            view.setup_ui()
-            view.retranslate_ui()
+        self.load_ui()
+        self.show_ui()
 
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
