@@ -3,7 +3,7 @@ import time
 import psutil
 from PyQt5.QtWidgets import QStatusBar, QMainWindow, QLabel
 from PyQt5.QtGui import QFont, QPixmap, QHideEvent
-from PyQt5.QtCore import QCoreApplication, QTimer, QDateTime, QThread, QObject
+from PyQt5.QtCore import QCoreApplication, QTimer, QDateTime, QThread
 
 from lib import settings
 from lib.communicate import communicate
@@ -45,16 +45,9 @@ class StatusbarUI(object):
         # self.main_window.setStatusBar()
         # self.statusbar.setContextMenuPolicy(Qt.DefaultContextMenu)
 
-        # self.statusbar.hideEvent = self.hide_event  # QHideEvent
-
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
         self.statusbar.setWindowTitle(_translate("StatusbarUI", "状态栏"))
-
-    def hide_event(self, event: QHideEvent) -> None:
-        print(dir(event))
-        print(event)
-        pass
 
 
 class StatusbarView(StatusbarUI):
@@ -108,11 +101,14 @@ class StatusbarView(StatusbarUI):
 class StatusbarConnect(object):
     def __init__(self, main_window: object):
         self.main_window = main_window
-        # self.statusbar = StatusbarView(main_window)
+        # self.statusbar = StatusbarView().statusbar
         self.statusbar = self.main_window.statusbar
 
     def setup_ui(self) -> None:
         self.communicate_connect()
+
+        self.statusbar.hideEvent = self.hide_event
+        self.statusbar.showEvent = self.hide_event
 
     def communicate_connect(self) -> None:
         # 状态栏是否显示
@@ -125,6 +121,17 @@ class StatusbarConnect(object):
         else:
             # 隐藏
             self.statusbar.setHidden(True)
+
+    def hide_event(self, event: QHideEvent):
+        """
+        菜单栏中的  工具导航
+        :param event:
+        :return:
+        """
+        if self.statusbar.isHidden():
+            communicate.statusbar_checked.emit(False)
+        else:
+            communicate.statusbar_checked.emit(True)
 
 
 class ShowTime(object):

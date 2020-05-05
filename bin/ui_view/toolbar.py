@@ -1,8 +1,10 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtCore import QSize, Qt, QCoreApplication
+from PyQt5.QtGui import QHideEvent
 from PyQt5.QtWidgets import QToolBar, QMainWindow
 
 from lib import settings
+from lib.communicate import communicate
 
 _translate = QCoreApplication.translate
 
@@ -22,25 +24,25 @@ class ToolbarUI(object):
         if not hasattr(self, "_init_flag"):  # 反射
             self._init_flag = True  # 只初始化一次
             self.main_window = main_window
-            self.toolBar = QToolBar(self.main_window)
+            self.toolbar = QToolBar(self.main_window)
 
     def setup_ui(self) -> None:
-        self.toolBar.setObjectName("toolBar")
+        self.toolbar.setObjectName("toolBar")
 
         # 设置 QToolBar 图标大小
-        self.toolBar.setIconSize(QSize(50, 50))
+        self.toolbar.setIconSize(QSize(50, 50))
 
         # 字体在右边
         # self.tools_main.setToolButtonStyle(Qt.ToolButtonTextBesideIcon)
 
         # 字体在下面
-        self.toolBar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
+        self.toolbar.setToolButtonStyle(Qt.ToolButtonTextUnderIcon)
 
         # 窗口添加工具栏
-        self.main_window.addToolBar(Qt.TopToolBarArea, self.toolBar)
+        self.main_window.addToolBar(Qt.TopToolBarArea, self.toolbar)
 
     def retranslate_ui(self) -> None:
-        self.toolBar.setWindowTitle(_translate("ToolbarUI", "工具导航"))
+        self.toolbar.setWindowTitle(_translate("ToolbarUI", "工具导航"))
 
 
 class ToolbarView(ToolbarUI):
@@ -48,7 +50,42 @@ class ToolbarView(ToolbarUI):
         super().setup_ui()
 
         if not settings.TOOLBAR_SHOW:
-            self.toolBar.hide()
+            self.toolbar.hide()
 
     def retranslate_ui(self) -> None:
         super().retranslate_ui()
+
+
+class ToolbarConnect(object):
+    def __init__(self, main_window: object):
+        self.main_window = main_window
+        # self.toolbar = ToolbarView().toolbar
+        self.toolbar = self.main_window.toolbar
+
+    def setup_ui(self) -> None:
+        self.communicate_connect()
+        self.toolbar.hideEvent = self.hide_event
+        self.toolbar.showEvent = self.hide_event
+
+    def communicate_connect(self) -> None:
+        # 工具栏是否显示
+        communicate.toolbar_show.connect(self.toolbar_show)
+
+    def toolbar_show(self, flag: bool) -> None:
+        if flag:
+            # 显示
+            self.toolbar.setHidden(False)
+        else:
+            # 隐藏
+            self.toolbar.setHidden(True)
+
+    def hide_event(self, event: QHideEvent):
+        """
+        菜单栏中的  工具导航
+        :param event:
+        :return:
+        """
+        if self.toolbar.isHidden():
+            communicate.toolbar_checked.emit(False)
+        else:
+            communicate.toolbar_checked.emit(True)

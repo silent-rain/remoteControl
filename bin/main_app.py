@@ -6,17 +6,17 @@ from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen
 from PyQt5.QtWidgets import qApp
 from bin.ui_view.main_window import MainWindowView
-from bin.ui_view.toolbar import ToolbarView
+from bin.ui_view.toolbar import ToolbarView, ToolbarConnect
 from bin.ui_view.statusbar import StatusbarView, StatusbarConnect
-from bin.ui_view.menubar import MenubarView
-from bin.ui_view.tools_extension.tools_extension import ToolsExtensionView
+from bin.ui_view.menubar import MenubarView, MenubarConnect
+from bin.ui_view.tools_extension.tools_extension import ToolsExtensionView, ToolsExtensionConnect
 from lib import settings
 
 
 class LoadingView(object):
     def __init__(self, main_window: QMainWindow):
         """
-        启动界面
+        启动动画
         """
         self.main_window = main_window
 
@@ -88,14 +88,14 @@ class MainConnect(object):
         :return:
         """
         # self.add_ui(MainWindowView(self.main_window))  # 主窗口信号
-        # self.add_ui(MenubarView(self.main_window))  # 菜单栏信号
-        # self.add_ui(ToolbarView(self.main_window))  # 工具导航信号
-        # self.add_ui(ToolsExtensionView(self.main_window))  # 工具扩展信号
         if "Statusbar" in obj.__class__.__name__:
             self.add_connect(StatusbarConnect(obj))  # 状态栏信号
+        elif "Toolbar" in obj.__class__.__name__:
+            self.add_connect(ToolbarConnect(obj))  # 工具导航信号
+        elif "Menubar" in obj.__class__.__name__:
+            self.add_connect(MenubarConnect(obj))  # 菜单栏信号
         elif "ToolsExtension" in obj.__class__.__name__:
-            # self.add_connect(StatusbarConnect(obj))  # 状态栏信号
-            pass
+            self.add_connect(ToolsExtensionConnect(obj))  # 工具扩展信号
 
     def show_connect(self) -> None:
         """

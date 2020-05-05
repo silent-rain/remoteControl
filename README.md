@@ -42,3 +42,4 @@ sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
 - 添加扩展模块框架: 日志模块,批量操作模块
 - 添加菜单栏框架
 - 添加状态栏框架
+- 完善菜单栏中的显示模块信号机制

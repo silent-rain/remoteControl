@@ -1,4 +1,5 @@
 # -*- coding: utf-8 -*-
+from PyQt5.QtGui import QHideEvent
 from PyQt5.QtWidgets import QWidget, QDockWidget, QHBoxLayout, QTabWidget, QMainWindow
 from PyQt5.QtCore import Qt, QCoreApplication, QSize
 
@@ -6,6 +7,7 @@ from bin.ui_view.tools_extension.loginfo import LOGInfo
 from bin.ui_view.tools_extension.batch_operation import BatchOperation
 from bin.ui_view.utils import load_animation
 from lib import settings
+from lib.communicate import communicate
 
 _translate = QCoreApplication.translate
 
@@ -127,7 +129,8 @@ class ToolsExtensionView(BaseDockOne):
         # self.tab_widget.setGeometry(QRect(0, 0, 850, 200))
 
         if not settings.TOOLS_EXTENSION_SHOW:
-            self.dock_widget.hide()
+            # self.dock_widget.hide()
+            self.dock_widget.setHidden(True)
 
     def setup_ui(self) -> None:
         super().setup_ui()
@@ -147,3 +150,38 @@ class ToolsExtensionView(BaseDockOne):
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
         super().retranslate_ui()
+
+
+class ToolsExtensionConnect(object):
+    def __init__(self, main_window: object):
+        self.main_window = main_window
+        # self.dock_widget = ToolsExtensionView().dock_widget
+        self.dock_widget = self.main_window.dock_widget
+
+    def setup_ui(self) -> None:
+        self.communicate_connect()
+        self.dock_widget.hideEvent = self.hide_event
+        self.dock_widget.showEvent = self.hide_event
+
+    def communicate_connect(self) -> None:
+        # 状态栏是否显示
+        communicate.tools_extension_show.connect(self.tools_extension_show)
+
+    def tools_extension_show(self, flag: bool) -> None:
+        if flag:
+            # 显示
+            self.dock_widget.setHidden(False)
+        else:
+            # 隐藏
+            self.dock_widget.setHidden(True)
+
+    def hide_event(self, event: QHideEvent):
+        """
+        菜单栏中的  工具扩展
+        :param event:
+        :return:
+        """
+        if self.dock_widget.isHidden():
+            communicate.tools_extension_checked.emit(False)
+        else:
+            communicate.tools_extension_checked.emit(True)

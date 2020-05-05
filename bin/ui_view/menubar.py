@@ -14,9 +14,9 @@ _translate = QCoreApplication.translate
 选项 OptionMenu
     程序设置
     生成服务端
-    *皮肤
-    *分隔符
-    *退出
+    皮肤
+    分隔符
+    退出
 查看 ViewMenu
     工具扩展
     工具导航
@@ -197,20 +197,24 @@ class OptionMenu(object):
 
 
 class ViewMenu(object):
+    def __new__(cls, *args, **kwargs) -> object:
+        if not hasattr(cls, "_instance"):  # 反射
+            cls._instance = object.__new__(cls)
+        return cls._instance
+
     def __init__(self, menubar: QMenuBar):
-        self.menubar = menubar
+        if not hasattr(self, "_init_flag"):  # 反射
+            self.menubar = menubar
 
-        # 向菜单栏中添加新的QMenu对象，父菜单
-        self.view = QMenu(self.menubar)
+            # 向菜单栏中添加新的QMenu对象，父菜单
+            self.view = QMenu(self.menubar)
 
-        # 工具箱扩展
-        self.tools_extension = QAction(QIcon(""), '&Tools Extension', self.menubar)
-
-        # 工具栏
-        self.toolbar = QAction(QIcon(""), '&Toolbar', self.menubar)
-
-        # 状态栏
-        self.statusbar = QAction(QIcon(""), '&Statusbar', self.menubar)
+            # 工具箱扩展
+            self.tools_extension = QAction(QIcon(""), '&Tools Extension', self.menubar)
+            # 工具栏
+            self.toolbar = QAction(QIcon(""), '&Toolbar', self.menubar)
+            # 状态栏
+            self.statusbar = QAction(QIcon(""), '&Statusbar', self.menubar)
 
     def setup_ui(self) -> None:
         self.tools_extension.setObjectName("tools_extension")
@@ -224,8 +228,8 @@ class ViewMenu(object):
 
         self.statusbar.setObjectName("statusbar")
         self.view.addAction(self.statusbar)
-        # self.statusbar.triggered.connect(self.statusbar_receive)  # 变化的信号
-        self.statusbar.changed.connect(self.statusbar_receive)  # 变化的信号
+        self.statusbar.triggered.connect(self.statusbar_receive)  # 变化的信号
+        # self.statusbar.changed.connect(self.statusbar_receive)  # 变化的信号
 
         self.menubar.addAction(self.view.menuAction())
 
@@ -245,8 +249,8 @@ class ViewMenu(object):
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
         self.view.setTitle(_translate("MenubarUI", "查看"))
-        self.tools_extension.setText(_translate("MenubarUI", "工具箱"))
-        self.toolbar.setText(_translate("MenubarUI", "工具栏"))
+        self.tools_extension.setText(_translate("MenubarUI", "工具扩展"))
+        self.toolbar.setText(_translate("MenubarUI", "工具导航"))
         self.statusbar.setText(_translate("MenubarUI", "状态栏"))
 
     def tools_extension_receive(self) -> None:
@@ -255,21 +259,19 @@ class ViewMenu(object):
         :return:
         """
         if self.tools_extension.isChecked():
-            print("显示")
+            communicate.tools_extension_show.emit(True)
         else:
-            print("隐藏")
-        print("tools_extension_receive")
+            communicate.tools_extension_show.emit(False)
 
     def toolbar_receive(self) -> None:
         """
-        工具栏
+        工具栏是否显示
         :return:
         """
         if self.toolbar.isChecked():
-            print("显示")
+            communicate.toolbar_show.emit(True)
         else:
-            print("隐藏")
-        print("toolbar_receive")
+            communicate.toolbar_show.emit(False)
 
     def statusbar_receive(self) -> None:
         """
@@ -306,3 +308,46 @@ class HelpMenu(object):
 
     def about_receive(self) -> None:
         print("about_receive")
+
+
+class MenubarConnect(object):
+    def __init__(self, main_window: object):
+        self.main_window = main_window
+        # self.menubar = MenubarView().menubar
+        self.menubar = self.main_window.menubar
+        self.toolbar = ViewMenu(self.menubar)
+
+    def setup_ui(self) -> None:
+        self.communicate_connect()
+
+    def communicate_connect(self) -> None:
+        # 菜单中工具导航
+        communicate.toolbar_checked.connect(self.toolbar_checked)
+        # 菜单中工具扩展
+        communicate.tools_extension_checked.connect(self.tools_extension_checked)
+        # 菜单中状态栏
+        communicate.statusbar_checked.connect(self.statusbar_checked)
+
+    def toolbar_checked(self, flag: bool) -> None:
+        if flag:
+            # 菜单栏选中
+            self.toolbar.toolbar.setChecked(True)
+        else:
+            # 菜单栏取消
+            self.toolbar.toolbar.setChecked(False)
+
+    def tools_extension_checked(self, flag: bool) -> None:
+        if flag:
+            # 菜单栏选中
+            self.toolbar.tools_extension.setChecked(True)
+        else:
+            # 菜单栏取消
+            self.toolbar.tools_extension.setChecked(False)
+
+    def statusbar_checked(self, flag: bool) -> None:
+        if flag:
+            # 菜单栏选中
+            self.toolbar.statusbar.setChecked(True)
+        else:
+            # 菜单栏取消
+            self.toolbar.statusbar.setChecked(False)
