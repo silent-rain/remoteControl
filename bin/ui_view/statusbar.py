@@ -21,119 +21,6 @@ Placeholder     占位
 """
 
 
-class StatusbarUI(object):
-    def __new__(cls, *args, **kwargs) -> object:
-        if not hasattr(cls, "_instance"):  # 反射
-            cls._instance = object.__new__(cls)
-        return cls._instance
-
-    def __init__(self, main_window: QMainWindow):
-        if not hasattr(self, "_init_flag"):  # 反射
-            self._init_flag = True  # 只初始化一次
-            self.main_window = main_window
-            self.statusbar = QStatusBar(self.main_window)
-
-    def setup_ui(self) -> None:
-        self.statusbar.setObjectName("statusbar")
-        font = QFont()
-        font.setPointSize(10)
-        self.statusbar.setFont(font)
-
-        # self.statusbar.setGeometry(QtCore.QRect(0, 0, 900, 50))
-        self.statusbar.setFixedHeight(30)
-        self.main_window.setStatusBar(self.statusbar)
-        # self.main_window.setStatusBar()
-        # self.statusbar.setContextMenuPolicy(Qt.DefaultContextMenu)
-
-    # noinspection PyArgumentList
-    def retranslate_ui(self) -> None:
-        self.statusbar.setWindowTitle(_translate("StatusbarUI", "状态栏"))
-
-
-class StatusbarView(StatusbarUI):
-    def __init__(self, main_window):
-        super().__init__(main_window)
-
-        self.ui_view_list = []
-
-    def add_ui(self, view: object) -> None:
-        """
-        添加模块
-        :param view:
-        :return:
-        """
-        if view not in self.ui_view_list:
-            self.ui_view_list.append(view)
-
-    def load_ui(self) -> None:
-        """
-        加载模块
-        :return:
-        """
-        self.add_ui(ShowTime(self.statusbar, 1))
-        self.add_ui(Placeholder(self.statusbar, 2))
-        self.add_ui(NetSpeed(self.statusbar, -4))
-        self.add_ui(MonitorPort(self.statusbar, -3))
-        self.add_ui(OnlineHost(self.statusbar, -1))
-
-    def show_ui(self) -> None:
-        """
-        显示数据
-        :return:
-        """
-        for view in self.ui_view_list:
-            view.setup_ui()
-            view.retranslate_ui()
-
-    def setup_ui(self) -> None:
-        super().setup_ui()
-
-        self.load_ui()
-        self.show_ui()
-
-        if not settings.STATUSBAR_SHOW:
-            self.statusbar.setHidden(False)
-
-    def retranslate_ui(self) -> None:
-        super().retranslate_ui()
-
-
-class StatusbarConnect(object):
-    def __init__(self, main_window: object):
-        self.main_window = main_window
-        # self.statusbar = StatusbarView().statusbar
-        self.statusbar = self.main_window.statusbar
-
-    def setup_ui(self) -> None:
-        self.communicate_connect()
-
-        self.statusbar.hideEvent = self.hide_event
-        self.statusbar.showEvent = self.hide_event
-
-    def communicate_connect(self) -> None:
-        # 状态栏是否显示
-        communicate.statusbar_show.connect(self.statusbar_show)
-
-    def statusbar_show(self, flag: bool) -> None:
-        if flag:
-            # 显示
-            self.statusbar.setHidden(False)
-        else:
-            # 隐藏
-            self.statusbar.setHidden(True)
-
-    def hide_event(self, event: QHideEvent):
-        """
-        菜单栏中的  工具导航
-        :param event:
-        :return:
-        """
-        if self.statusbar.isHidden():
-            communicate.statusbar_checked.emit(False)
-        else:
-            communicate.statusbar_checked.emit(True)
-
-
 class ShowTime(object):
     def __init__(self, statusbar: QStatusBar, stretch: int):
         """
@@ -336,3 +223,115 @@ class MonitorPort(object):
     # noinspection PyArgumentList
     def retranslate_ui(self):
         self.port_label.setText(_translate("StatusbarUI", "监控端口: %s" % settings.PORT))
+
+
+class StatusbarUI(object):
+    def __new__(cls, *args, **kwargs) -> object:
+        if not hasattr(cls, "_instance"):  # 反射
+            cls._instance = object.__new__(cls)
+        return cls._instance
+
+    def __init__(self, main_window: QMainWindow):
+        if not hasattr(self, "_init_flag"):  # 反射
+            self._init_flag = True  # 只初始化一次
+
+            self.main_window = main_window
+            self.statusbar = QStatusBar(self.main_window)
+
+            self.ui_view_list = []
+
+    def options(self) -> None:
+        font = QFont()
+        font.setPointSize(10)
+        self.statusbar.setFont(font)
+
+        # self.statusbar.setGeometry(QtCore.QRect(0, 0, 900, 50))
+        self.statusbar.setFixedHeight(30)
+        self.main_window.setStatusBar(self.statusbar)
+        # self.main_window.setStatusBar()
+        # self.statusbar.setContextMenuPolicy(Qt.DefaultContextMenu)
+
+    def setup_ui(self) -> None:
+        self.statusbar.setObjectName("statusbar")
+        self.options()
+
+        self.load_ui()
+        self.show_ui()
+
+        if not settings.STATUSBAR_SHOW:
+            self.statusbar.setHidden(False)
+
+    # noinspection PyArgumentList
+    def retranslate_ui(self) -> None:
+        self.statusbar.setWindowTitle(_translate("StatusbarUI", "状态栏"))
+
+    def add_ui(self, ui: object) -> None:
+        """
+        添加模块
+        :param ui:
+        :return:
+        """
+        if ui not in self.ui_view_list:
+            self.ui_view_list.append(ui)
+
+    def load_ui(self) -> None:
+        """
+        加载模块
+        :return:
+        """
+        self.add_ui(ShowTime(self.statusbar, 1))
+        self.add_ui(Placeholder(self.statusbar, 2))
+        self.add_ui(NetSpeed(self.statusbar, -4))
+        self.add_ui(MonitorPort(self.statusbar, -3))
+        self.add_ui(OnlineHost(self.statusbar, -1))
+
+    def show_ui(self) -> None:
+        """
+        显示数据
+        :return:
+        """
+        for view in self.ui_view_list:
+            view.setup_ui()
+            view.retranslate_ui()
+
+
+class StatusbarConnect(object):
+    def __init__(self, main_window: QMainWindow):
+        self.main_window = main_window
+
+        self.statusbar_ui = StatusbarUI(self.main_window)
+        self.statusbar = self.statusbar_ui.statusbar
+
+    def setup_ui(self) -> None:
+        self.communicate_connect()
+
+        self.statusbar.hideEvent = self.hide_event
+        self.statusbar.showEvent = self.hide_event
+
+    def communicate_connect(self) -> None:
+        # 状态栏是否显示
+        communicate.statusbar_show.connect(self.statusbar_show)
+
+    def statusbar_show(self, flag: bool) -> None:
+        if flag:
+            # 显示
+            self.statusbar.setHidden(False)
+        else:
+            # 隐藏
+            self.statusbar.setHidden(True)
+
+    def hide_event(self, event: QHideEvent):
+        """
+        菜单栏中的  工具导航
+        :param event:
+        :return:
+        """
+        if event:
+            pass
+        if self.statusbar.isHidden():
+            communicate.statusbar_checked.emit(False)
+        else:
+            communicate.statusbar_checked.emit(True)
+
+    def retranslate_ui(self) -> None:
+        pass

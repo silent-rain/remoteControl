@@ -13,7 +13,6 @@ _translate = QCoreApplication.translate
 """
 
 
-# noinspection PyArgumentList
 class ToolbarUI(object):
     def __new__(cls, *args, **kwargs) -> object:
         if not hasattr(cls, "_instance"):  # 反射
@@ -26,9 +25,7 @@ class ToolbarUI(object):
             self.main_window = main_window
             self.toolbar = QToolBar(self.main_window)
 
-    def setup_ui(self) -> None:
-        self.toolbar.setObjectName("toolBar")
-
+    def options(self) -> None:
         # 设置 QToolBar 图标大小
         self.toolbar.setIconSize(QSize(50, 50))
 
@@ -41,26 +38,25 @@ class ToolbarUI(object):
         # 窗口添加工具栏
         self.main_window.addToolBar(Qt.TopToolBarArea, self.toolbar)
 
-    def retranslate_ui(self) -> None:
-        self.toolbar.setWindowTitle(_translate("ToolbarUI", "工具导航"))
-
-
-class ToolbarView(ToolbarUI):
     def setup_ui(self) -> None:
-        super().setup_ui()
+        self.toolbar.setObjectName("toolBar")
+
+        self.options()
 
         if not settings.TOOLBAR_SHOW:
             self.toolbar.hide()
 
+    # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
-        super().retranslate_ui()
+        self.toolbar.setWindowTitle(_translate("ToolbarUI", "工具导航"))
 
 
 class ToolbarConnect(object):
-    def __init__(self, main_window: object):
+    def __init__(self, main_window: QMainWindow):
         self.main_window = main_window
-        # self.toolbar = ToolbarView().toolbar
-        self.toolbar = self.main_window.toolbar
+
+        self.toolbar_ui = ToolbarUI(self.main_window)
+        self.toolbar = self.toolbar_ui.toolbar
 
     def setup_ui(self) -> None:
         self.communicate_connect()
@@ -85,7 +81,12 @@ class ToolbarConnect(object):
         :param event:
         :return:
         """
+        if event:
+            pass
         if self.toolbar.isHidden():
             communicate.toolbar_checked.emit(False)
         else:
             communicate.toolbar_checked.emit(True)
+
+    def retranslate_ui(self) -> None:
+        pass

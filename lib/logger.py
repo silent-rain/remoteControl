@@ -1,9 +1,13 @@
 # -*- coding: utf-8 -*-
 import os
+import sys
 import logging.config
 from logging import StreamHandler
 from lib.settings import LOGGING_LEVEL, LOGGING_DIR, DEBUG
 from lib.communicate import communicate
+
+BASE_PATH = os.path.abspath(os.path.dirname(__file__))
+sys.path.append(BASE_PATH)
 
 
 # 日志打印级别
@@ -86,7 +90,7 @@ logging_config = {
             'format': '%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(levelname)s] - %(message)s'
         },
         'qt_console': {
-            'format': '%(asctime)s - %(levelname)s - %(message)s',
+            'format': '%(asctime)s - %(message)s',
         },
     },
 
@@ -96,6 +100,7 @@ logging_config = {
         'qt_console': {
             # 'level': 'DEBUG',  # 输出信息的最低级别
             'level': LOGGING_LEVEL,  # 输出信息的最低级别
+            # 'class': CustomQtSignalHandler,
             'class': "logger.CustomQtSignalHandler",
             'formatter': 'qt_console',  # 使用standard格式
             # 'filters': ['filter_single_level_debug', ],

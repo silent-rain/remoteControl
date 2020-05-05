@@ -1,11 +1,11 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtGui import QHideEvent
-from PyQt5.QtWidgets import QWidget, QDockWidget, QHBoxLayout, QTabWidget, QMainWindow
-from PyQt5.QtCore import Qt, QCoreApplication, QSize
+from PyQt5.QtWidgets import QTabWidget, QMainWindow
+from PyQt5.QtCore import Qt, QCoreApplication
 
-from bin.ui_view.tools_extension.loginfo import LOGInfo
+from bin.ui_view.tools_extension.loginfo import LogInfoUI
 from bin.ui_view.tools_extension.batch_operation import BatchOperation
-from bin.ui_view.utils import load_animation
+from bin.ui_view.base.dock_widget_base import DockWidgetBase
 from lib import settings
 from lib.communicate import communicate
 
@@ -16,77 +16,40 @@ _translate = QCoreApplication.translate
 """
 
 
-class BaseDockOne(object):
+class ToolsExtensionUI(DockWidgetBase):
+    def __new__(cls, *args, **kwargs) -> object:
+        if not hasattr(cls, "_instance"):  # 反射
+            cls._instance = object.__new__(cls)
+        return cls._instance
+
     def __init__(self, main_window: QMainWindow):
         """
-        单一QDockWidget布局
+        工具扩展
         :param main_window:
         """
-        self.main_window = main_window
+        if not hasattr(self, "_init_flag"):  # 反射
+            super().__init__(main_window)
+            self._init_flag = True  # 只初始化一次
+            self.main_window = main_window
 
-        # QDockWidget
-        self.dock_widget = QDockWidget(self.main_window)
-        self.dock_widget_contents = QWidget(self.dock_widget, Qt.WindowFlags())
+            self.tab_widget = QTabWidget(self.layout_widget)
+            self.ui_view_list = []
 
-        # QHBoxLayout
-        self.layout_widget = QWidget(self.dock_widget_contents, Qt.WindowFlags())
-        self.layout = QHBoxLayout(self.layout_widget)
-
-    @staticmethod
-    def size_hint():
+    def add_ui(self, ui: object) -> None:
         """
-        在这里定义dock的初始大小
+        添加模块
+        :param ui:
         :return:
         """
-        return QSize(850, 180)
-
-    def setup_ui(self) -> None:
-        self.dock_widget.setObjectName("dock_widget")
-        self.dock_widget_contents.setObjectName("dock_widget_contents")
-        self.layout_widget.setObjectName("layout_widget")
-        self.layout.setObjectName("layout")
-
-        self.layout.setContentsMargins(0, 0, 0, 0)
-
-        # 初始化QDockWidget的高度
-        self.dock_widget_contents.sizeHint = self.size_hint
-
-        self.dock_widget_contents.setLayout(self.layout)
-        self.dock_widget.setWidget(self.dock_widget_contents)
-
-        # MainWindow.addDockWidget(Qt.DockWidgetArea(8), self.dock_widget)
-        self.main_window.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
-
-        # QDockWidget 位置发生变动
-        self.dock_widget.dockLocationChanged.connect(self.set_window_transparent)
-
-    # noinspection PyArgumentList
-    def retranslate_ui(self) -> None:
-        self.dock_widget.setWindowTitle(_translate("ToolsExtensionView", "工具扩展"))
-
-    def set_window_transparent(self, event: Qt.DockWidgetArea) -> None:
-        if settings.LOAD_EFFECT_ON:
-            load_animation.load_animation(self.dock_widget)
-
-
-class ToolsExtensionView(BaseDockOne):
-    def __init__(self, main_window):
-        super().__init__(main_window)
-
-        self.tab_widget = QTabWidget(self.layout_widget)
-
-        self.ui_view_list = []
-
-    def add_ui(self, view: object) -> None:
-        if view not in self.ui_view_list:
-            self.ui_view_list.append(view)
+        if ui not in self.ui_view_list:
+            self.ui_view_list.append(ui)
 
     def load_ui(self) -> None:
         """
         加载模块
         :return:
         """
-        self.add_ui(LOGInfo(self.tab_widget))  # 日志信息
+        self.add_ui(LogInfoUI(self.tab_widget))  # 日志信息
         self.add_ui(BatchOperation(self.tab_widget))  # 批量操作
 
     def show_ui(self) -> None:
@@ -103,6 +66,7 @@ class ToolsExtensionView(BaseDockOne):
         参数设置
         :return:
         """
+        super().options()
         self.tab_widget.setObjectName("tab_widget")
 
         # 设置焦点
@@ -128,18 +92,13 @@ class ToolsExtensionView(BaseDockOne):
         # self.tab_widget.resize(850, 200)
         # self.tab_widget.setGeometry(QRect(0, 0, 850, 200))
 
-        if not settings.TOOLS_EXTENSION_SHOW:
-            # self.dock_widget.hide()
-            self.dock_widget.setHidden(True)
-
     def setup_ui(self) -> None:
         super().setup_ui()
+        self.options()
 
         self.tab_widget.setCurrentIndex(1)
         # noinspection PyArgumentList
         self.layout.addWidget(self.tab_widget)
-
-        self.options()
 
         # 窗口移动事件重写
         # self.dock_widget.moveEvent = self.move_event
@@ -147,19 +106,25 @@ class ToolsExtensionView(BaseDockOne):
         self.load_ui()
         self.show_ui()
 
+        if not settings.TOOLS_EXTENSION_SHOW:
+            # self.dock_widget.hide()
+            self.dock_widget.setHidden(True)
+
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
-        super().retranslate_ui()
+        self.dock_widget.setWindowTitle(_translate("ToolsExtensionUI", "工具扩展"))
 
 
 class ToolsExtensionConnect(object):
-    def __init__(self, main_window: object):
+    def __init__(self, main_window: QMainWindow):
         self.main_window = main_window
-        # self.dock_widget = ToolsExtensionView().dock_widget
-        self.dock_widget = self.main_window.dock_widget
+
+        self.dock_widget_ui = ToolsExtensionUI(self.main_window)
+        self.dock_widget = self.dock_widget_ui.dock_widget
 
     def setup_ui(self) -> None:
         self.communicate_connect()
+
         self.dock_widget.hideEvent = self.hide_event
         self.dock_widget.showEvent = self.hide_event
 
@@ -181,7 +146,12 @@ class ToolsExtensionConnect(object):
         :param event:
         :return:
         """
+        if event:
+            pass
         if self.dock_widget.isHidden():
             communicate.tools_extension_checked.emit(False)
         else:
             communicate.tools_extension_checked.emit(True)
+
+    def retranslate_ui(self) -> None:
+        pass

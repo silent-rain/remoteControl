@@ -26,78 +26,6 @@ _translate = QCoreApplication.translate
 """
 
 
-class MenubarUI(object):
-    def __new__(cls, *args, **kwargs) -> object:
-        if not hasattr(cls, "_instance"):  # 反射
-            cls._instance = object.__new__(cls)
-        return cls._instance
-
-    def __init__(self, main_window: QMainWindow):
-        if not hasattr(self, "_init_flag"):  # 反射
-            self._init_flag = True  # 只初始化一次
-            self.main_window = main_window
-            self.menubar = QMenuBar(main_window)
-
-    def setup_ui(self) -> None:
-        font = QFont()
-        font.setPointSize(10)
-        self.menubar.setFont(font)
-
-        # self.menubar.setGeometry(QRect(0, 0, 800, 25))
-        self.menubar.setFixedHeight(30)
-        self.menubar.setObjectName("menubar")
-        self.main_window.setMenuBar(self.menubar)
-
-    # noinspection PyArgumentList
-    def retranslate_ui(self) -> None:
-        self.menubar.setWindowTitle(_translate("MenubarUI", "菜单栏"))
-
-
-class MenubarView(MenubarUI):
-    ui_view_list = []
-
-    def add_ui(self, view: object) -> None:
-        """
-        添加模块
-        :param view:
-        :return:
-        """
-        if view not in self.ui_view_list:
-            self.ui_view_list.append(view)
-
-    def load_ui(self) -> None:
-        """
-        加载模块
-        :return:
-        """
-        self.add_ui(OptionMenu(self.menubar, self.main_window))
-        self.add_ui(ViewMenu(self.menubar))
-        self.add_ui(HelpMenu(self.menubar))
-
-    def show_ui(self) -> None:
-        """
-        显示数据
-        :return:
-        """
-        for view in self.ui_view_list:
-            view.setup_ui()
-            view.retranslate_ui()
-
-    def setup_ui(self) -> None:
-        super().setup_ui()
-        self.set_window_transparent()
-
-        self.load_ui()
-        self.show_ui()
-
-    def retranslate_ui(self) -> None:
-        super().retranslate_ui()
-
-    def set_window_transparent(self) -> None:
-        if settings.LOAD_EFFECT_ON:
-            load_animation.load_animation(self.menubar)
-
-
 class OptionMenu(object):
     def __init__(self, menubar: QMenuBar, main_window: QMainWindow):
         self.menubar = menubar
@@ -310,11 +238,73 @@ class HelpMenu(object):
         print("about_receive")
 
 
+class MenubarUI(object):
+    def __new__(cls, *args, **kwargs) -> object:
+        if not hasattr(cls, "_instance"):  # 反射
+            cls._instance = object.__new__(cls)
+        return cls._instance
+
+    def __init__(self, main_window: QMainWindow):
+        if not hasattr(self, "_init_flag"):  # 反射
+            self._init_flag = True  # 只初始化一次
+            self.main_window = main_window
+            self.menubar = QMenuBar(main_window)
+            self.ui_view_list = []
+
+    def setup_ui(self) -> None:
+        font = QFont()
+        font.setPointSize(10)
+        self.menubar.setFont(font)
+
+        # self.menubar.setGeometry(QRect(0, 0, 800, 25))
+        self.menubar.setFixedHeight(30)
+        self.menubar.setObjectName("menubar")
+        self.main_window.setMenuBar(self.menubar)
+
+        self.load_ui()
+        self.show_ui()
+
+        if settings.LOAD_EFFECT_ON:
+            load_animation.load_animation(self.menubar)
+
+    # noinspection PyArgumentList
+    def retranslate_ui(self) -> None:
+        self.menubar.setWindowTitle(_translate("MenubarUI", "菜单栏"))
+
+    def add_ui(self, ui: object) -> None:
+        """
+        添加模块
+        :param ui:
+        :return:
+        """
+        if ui not in self.ui_view_list:
+            self.ui_view_list.append(ui)
+
+    def load_ui(self) -> None:
+        """
+        加载模块
+        :return:
+        """
+        self.add_ui(OptionMenu(self.menubar, self.main_window))
+        self.add_ui(ViewMenu(self.menubar))
+        self.add_ui(HelpMenu(self.menubar))
+
+    def show_ui(self) -> None:
+        """
+        显示数据
+        :return:
+        """
+        for view in self.ui_view_list:
+            view.setup_ui()
+            view.retranslate_ui()
+
+
 class MenubarConnect(object):
-    def __init__(self, main_window: object):
+    def __init__(self, main_window: QMainWindow):
         self.main_window = main_window
-        # self.menubar = MenubarView().menubar
-        self.menubar = self.main_window.menubar
+
+        self.menubar_ui = MenubarUI(self.main_window)
+        self.menubar = self.menubar_ui.menubar
         self.toolbar = ViewMenu(self.menubar)
 
     def setup_ui(self) -> None:
@@ -351,3 +341,6 @@ class MenubarConnect(object):
         else:
             # 菜单栏取消
             self.toolbar.statusbar.setChecked(False)
+
+    def retranslate_ui(self) -> None:
+        pass

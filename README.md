@@ -30,7 +30,7 @@ sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
 - 加载效果模块(透明度)
 - 皮肤窗口加载效果
 - 程序启动效果
-
+- UI 重定义
 
 ## 2020.05.04
 - 创建三个显示模块:主窗口,菜单栏,工具栏,状态栏
@@ -43,3 +43,5 @@ sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
 - 添加菜单栏框架
 - 添加状态栏框架
 - 完善菜单栏中的显示模块信号机制
+- 添加显示日志模块
+- 日志待解析
