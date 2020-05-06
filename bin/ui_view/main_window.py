@@ -49,9 +49,6 @@ class MainWindowView(MainWindowUI):
         # self.color_init = QColor(107, 173, 246)
         self.color_init = QColor(*settings.SKIN_COLOR)
 
-        # 消息对话框
-        self.message_box = QMessageBox(self.main_window)
-
     def setup_ui(self) -> None:
         super().setup_ui()
         self.set_window_icon()
@@ -177,8 +174,8 @@ class MainWindowView(MainWindowUI):
         # 设置背景图片
         # 背景图片： "background-image: url(:/image/mainUi/background.png);"
         # msg.setStyleSheet("background-image: url({0});".format(settings.mainUi["background"]))
-
-        reply = self.message_box.information(
+        message_box = QMessageBox(self.main_window)
+        reply = message_box.information(
             self.main_window,
             _translate("MainWindowUI", "温馨提示"),
             _translate("MainWindowUI", "您确认要退出???"),
