@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QTabWidget
-from PyQt5.QtCore import QCoreApplication
+from PyQt5.QtCore import QCoreApplication, QSize
 
 from bin.ui_view.base.table_widget_base import TableWidgetBase
 from lib.communicate import communicate
@@ -27,8 +27,8 @@ class LogTableWidgetUI(TableWidgetBase):
 
     def setup_ui(self):
         super().setup_ui()
-        # self.setMinimumHeight(100)
-        self.set_headers()
+        # self.setMinimumHeight(200)
+        self.sizePolicy()
 
     def retranslate_ui(self):
         pass
@@ -54,6 +54,7 @@ class LogInfoUI(object):
     def setup_ui(self) -> None:
         self.log_tab.setObjectName("tab")
         self.tab_widget.addTab(self.log_tab, "")
+
         self.log_tab.setup_ui()
 
     # noinspection PyArgumentList

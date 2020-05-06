@@ -131,6 +131,7 @@ class ToolsExtensionConnect(object):
         self.dock_widget.hideEvent = self.hide_event
         self.dock_widget.showEvent = self.hide_event
 
+        # 工具扩展子类信号
         self.load_connect()
         self.show_connect()
 

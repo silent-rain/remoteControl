@@ -43,7 +43,7 @@ class TableWidgetBase(QTableWidget):
         # 表头设置
         self.horizontalHeader().setVisible(True)  # 显示行表头
         # self.horizontalHeader().setHighlightSections(False)  # 防止表头塌陷
-        self.horizontalHeader().setFixedHeight(22)  # 设置表头高度
+        # self.horizontalHeader().setFixedHeight(22)  # 设置表头高度
         self.horizontalHeader().setFocusPolicy(Qt.NoFocus)  # 设置表头不可选
 
         self.horizontalHeader().setDefaultSectionSize(120)  # 设置tableview所有列的默认列宽
@@ -69,7 +69,6 @@ class TableWidgetBase(QTableWidget):
 
         # 显示最后一行
         self.scrollToBottom()
-
 
         # 设置字体
         font = QFont()
@@ -132,7 +131,7 @@ class TableWidgetBase(QTableWidget):
         data_info_length = len(data_info)
         headers_length = len(self.headers)
         if data_info_length < headers_length:
-            data_info += ["" for _ in range(headers_length- data_info_length)]
+            data_info += ["" for _ in range(headers_length - data_info_length)]
 
         for column, value in enumerate(data_info):
             item = QTableWidgetItem()
