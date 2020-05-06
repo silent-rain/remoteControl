@@ -1,12 +1,13 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem, QHeaderView, QWidget
+from PyQt5.QtGui import QCursor
+from PyQt5.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem, QWidget, QAction, QMenu, QInputDialog
 from PyQt5.QtCore import QCoreApplication, Qt, QRect, QSize
 
 from bin.ui_view.base.dock_widget_base import DockWidgetBase
 from bin.ui_view.base.table_widget_base import TableWidgetBase
 from bin.ui_view.utils import load_animation
 from lib import settings
-from lib.communicate import communicate
+from lib.logger import logger
 
 _translate = QCoreApplication.translate
 
@@ -148,7 +149,7 @@ class GroupTreeWidgetUI(object):
             _translate("DisplayInfoUI", "主机信息"),
             _translate("DisplayInfoUI", "备注"),
         ]
-        self.header_width = [60, 130]
+        self.header_width = [90, 100]
 
     def options(self) -> None:
         """
@@ -180,9 +181,12 @@ class GroupTreeWidgetUI(object):
         # )
 
         # 背景透明，标题头不透明
-        # pll = self.list_group.palette()
+        # pll = self.group_tree.palette()
         # pll.setBrush(QPalette.Base, QBrush(QColor(255, 255, 255, 0)))
-        # self.list_group.setPalette(pll)
+        # self.group_tree.setPalette(pll)
+
+        # 节点全部展开
+        # self.group_tree.expandAll()
 
     def set_headers(self) -> None:
         """
@@ -219,22 +223,22 @@ class GroupTreeWidgetUI(object):
         """
         # noinspection PyArgumentList
         default_master_node = [
-            _translate("DisplayInfoUI", "在线主机(0)"),
-            _translate("DisplayInfoUI", "下线主机(0)"),
+            _translate("DisplayInfoUI", "在线主机"),
+            _translate("DisplayInfoUI", "下线主机"),
         ]
         for index, node in enumerate(default_master_node):
-            QTreeWidgetItem(self.group_tree)
-            # 节点设置在第1列
-            self.group_tree.topLevelItem(index).setText(0, node)
-            # self.group_tree.topLevelItem(1).setText(0, _translate("Form", "分组12"))
+            master = QTreeWidgetItem(self.group_tree)
+            # 节点信息设置
+            # self.group_tree.topLevelItem(index).setText(0, node)
+            master.setText(0, node)
+            master.setText(1, "(0)")
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         self.options()
         self.set_headers()
         self.default_master_node()
 
-        # self.root_online_item()
-        # self.root_offline_item()
+        self.test_date()
 
         # 优化3 给节点添加响应事件
         # self.list_group.clicked.connect(self.on_clicked)
@@ -244,99 +248,211 @@ class GroupTreeWidgetUI(object):
         # 内容改变时发生：itemChanged
         # self.group_tree.itemClicked.connect(self.on_clicked)
 
-        # self.list_group.expandAll()  # 节点全部展开
-
-    def test(self):
-        item_0 = QTreeWidgetItem(self.treeWidget)
-
-        item_1 = QTreeWidgetItem(item_0)
-        item_1.setCheckState(0, Qt.Checked)
-
-        item_1 = QTreeWidgetItem(item_0)
-        item_1.setCheckState(0, Qt.Checked)
-
-    def add_root(self):
-        item_0 = QtWidgets.QTreeWidgetItem(self.treeWidget)
-
-        item_1 = QtWidgets.QTreeWidgetItem(item_0)
-        item_1.setCheckState(0, QtCore.Qt.Checked)
-
-        item_1 = QtWidgets.QTreeWidgetItem(item_0)
-        item_1.setCheckState(0, QtCore.Qt.Checked)
-
-    def root_online_item(self):
-        # 设置根节点
-        self.root_online = QTreeWidgetItem(self.group_tree)
-        self.root_online.setText(0, _translate("list_group", "在线主机"))
-        # root.setIcon(0, QIcon('./images/root.png'))
-        # 加载根节点的所有属性与子控件
-        self.group_tree.addTopLevelItem(self.root_online)
-
-    def root_offline_item(self):
-        # 设置根节点
-        self.root_offline = QTreeWidgetItem(self.group_tree)
-        self.root_offline.setText(0, _translate("list_group", "离线主机"))
-        # root.setIcon(0, QIcon('./images/root.png'))
-        # 加载根节点的所有属性与子控件
-        self.group_tree.addTopLevelItem(self.root_offline)
-
-    def online_host(self, ip, host_name):
+    def get_top_row_count(self) -> int:
         """
-        在线主机
-        :param ip:
-        :param host_name:
+        获取根节个数
         :return:
         """
-        host = QTreeWidgetItem(self.root_online)
-        host.setText(0, ip)
-        host.setText(1, host_name)
-        # child3.setIcon(0, QIcon('./images/music.png'))
-        # 优化1 设置节点的状态
-        host.setCheckState(0, Qt.Unchecked)
+        # 获取根节个数
+        count = self.group_tree.topLevelItemCount()
+        # 根据索引获取根节点
+        # master = self.group_tree.topLevelItem(1)
+        return count
 
-    def offline_host(self, ip, host_name):
+    def get_child_row_count(self, p_int) -> int:
         """
-        离线主机
-        :param ip:
-        :param host_name:
+        获取子节个数
+        :param p_int: 上一级节点索引
         :return:
         """
-        host = QTreeWidgetItem(self.root_offline)
-        host.setText(0, ip)
-        host.setText(1, host_name)
-        # child3.setIcon(0, QIcon('./images/music.png'))
-        host.setCheckState(0, Qt.Unchecked)
-        # print(child3.isSelected())
-        # print(child3.isSelected())
+        # 获取子节个数
+        count = self.group_tree.topLevelItem(p_int).childCount()
+        # 根据上一级节点获取子节点对象
+        # item = self.group_tree.topLevelItem(p_int).child(0)
+        return count
 
-        # child3.addChild(self.root_offline)  # 添加子节点
+    def add_master_item(self, title: str = "新根节点") -> None:
+        """
+        添加根节点
+        :param title:
+        :return:
+        """
+        master = QTreeWidgetItem(self.group_tree)
+        master.setText(0, title)
+        # child.setFlags(Qt.ItemIsEnabled | Qt.ItemIsEditable)
 
-    def on_clicked(self):
-        item = self.group_tree.currentItem()
-        # print('Key=%s,value=%s' % (item.text(0), item.text(1)))
-        if item.text(0) == "在线主机":
-            return None
-        elif item.text(0) == "离线主机":
-            return None
+    def add_child_item(self, item: [int, str, str]) -> None:
+        """
+        添加子节点
+        :param item: [id, 主机信息, 备注]
+        :return:
+        """
+        node = self.group_tree.currentItem()
+        child = QTreeWidgetItem()
+        child.setCheckState(0, Qt.Unchecked)
+        for index, value in enumerate(item):
+            child.setText(index, value)
+        node.addChild(child)
 
-        if item.checkState(0) == Qt.Checked:
-            item.setCheckState(0, Qt.Unchecked)
-        elif item.checkState(0) == Qt.Unchecked:
-            item.setCheckState(0, Qt.Checked)
+    def add_child_item2(self, index, item: [int, str, str]) -> None:
+        """
+        根据索引获取根节点
+        添加子节点
+        :param index:
+        :param item:
+        :return:
+        """
+        node = self.group_tree.topLevelItem(index)
+        child = QTreeWidgetItem()
+        child.setCheckState(0, Qt.Unchecked)
+        for index, value in enumerate(item):
+            child.setText(index, value)
+        node.addChild(child)
 
-    def add_data_recv(self, data):
-        out_ip = data["out_ip"]
-        host_name = data["host_name"]
-        if data["flag"]:
-            self.online_host(out_ip, host_name)
-        else:
-            self.offline_host(out_ip, host_name)
-
-    def communicate_connect(self):
-        communicate.request_data.connect(self.add_data_recv)  # 下线主机
+    def update_count(self) -> None:
+        """
+        更新主节点 计数信息
+        :return:
+        """
+        # QTreeWidgetItem(self.group_tree).text(0)
+        # 获取根节个数
+        count = self.group_tree.topLevelItemCount()
+        # 根据索引获取根节点
+        for index in range(count):
+            master = self.group_tree.topLevelItem(index)
+            title = master.text(0)
+            child_count = master.childCount()
+            # 在线主机 (0)
+            text = "({})".format(child_count)
+            master.setText(1, text)
 
     # noinspection PyArgumentList
-    def re_translate_ui(self):
-        self.group_tree.headerItem().setText(0, _translate("Form", "Id"))
-        self.group_tree.headerItem().setText(1, _translate("Form", "主机信息"))
-        self.group_tree.headerItem().setText(2, _translate("Form", "备注"))
+    def re_translate_ui(self) -> None:
+        self.group_tree.headerItem().setText(0, _translate("GroupInfoUI", "Id"))
+        self.group_tree.headerItem().setText(1, _translate("GroupInfoUI", "主机信息"))
+        self.group_tree.headerItem().setText(2, _translate("GroupInfoUI", "备注"))
+
+    def test_date(self):
+        for i in range(10):
+            self.add_child_item2(0, [str(i), str(i * 100), ""])
+        for i in range(200):
+            self.add_child_item2(1, [str(i), str(i * 100), ""])
+        self.update_count()
+
+
+class GroupRightMenuConnect(object):
+    def __init__(self, main_window: QMainWindow):
+        """
+        分组信息中右键菜单
+        :param main_window:
+        """
+        self.main_window = main_window
+
+        self.group_ui = GroupInfoUI(self.main_window)
+        self.tree_widget = self.group_ui.tree_widget
+        self.group_tree = self.group_ui.tree_widget.group_tree
+
+        self.pop_menu = QMenu(self.group_tree)
+        self.add = QAction()
+        self.change = QAction()
+        self.rename = QAction()
+        self.delete = QAction()
+
+    def setup_ui(self) -> None:
+        # 在包含有QTreeWidget的窗体中添加customContextMenuRequested的信号处理
+        self.group_tree.setContextMenuPolicy(Qt.CustomContextMenu)
+        self.group_tree.customContextMenuRequested.connect(self.right_menu_pos_show)  # 开放右键策略
+
+        # 增加分组
+        self.pop_menu.addAction(self.add)
+        self.add.triggered.connect(self.add_event)
+
+        # 修改分组
+        self.pop_menu.addAction(self.change)
+        self.change.triggered.connect(self.change_event)
+
+        # 删除分组
+        self.pop_menu.addAction(self.delete)
+        self.delete.triggered.connect(self.delete_event)
+
+    def right_menu_pos_show(self):
+        """
+        调整位置
+        右键点击时调用的函数
+        菜单显示前，将它移动到鼠标点击的位置
+        :return:
+        """
+        # 获取右键位置
+        pos = QCursor().pos()
+        self.pop_menu.move(pos)
+        self.pop_menu.show()
+
+    # noinspection PyArgumentList
+    def retranslate_ui(self) -> None:
+        self.add.setText(_translate("GroupInfoUI", "增加分组"))
+        self.change.setText(_translate("GroupInfoUI", "修改分组"))
+        self.rename.setText(_translate("GroupInfoUI", "重命名"))
+        self.delete.setText(_translate("GroupInfoUI", "删除分组"))
+
+    def add_event(self, event: bool, title: str = "新根节点") -> None:
+        """
+        添加根节点
+        :param title:
+        :param event:
+        :return:
+        """
+        if event:
+            pass
+        master = QTreeWidgetItem(self.group_tree)
+        master.setText(0, title)
+
+    def change_event(self, event: bool) -> None:
+        """
+        修改分组
+        :param event:
+        :return:
+        """
+        if event:
+            pass
+        index = self.group_tree.currentIndex().row()
+        if index == 0 or index == 1:
+            logger.info("操作 - 默认节点不允许删除!")
+            return None
+
+        current_item = self.group_tree.currentItem()
+
+        # noinspection PyArgumentList
+        text, ok = QInputDialog(self.main_window).getText(
+            self.main_window,
+            '温馨提示',
+            '修改分组：')
+        if ok and text:
+            current_item.setText(0, text)
+        elif not text:
+            logger.info("操作 - 不能为空!")
+        else:
+            logger.info("操作 - 取消修改分组!")
+
+    def delete_event(self, event: bool) -> None:
+        """
+        删除根节点
+        :param event:
+        :return:
+        """
+        if event:
+            pass
+
+        index = self.group_tree.currentIndex().row()
+        if index == 0 or index == 1:
+            logger.info("操作 - 默认节点不允许删除!")
+            return None
+
+        # 当前节点
+        current_item = self.group_tree.currentItem()
+        # current_item.parent()  # 父节点
+        # 获取子节点个数
+        count = current_item.childCount()
+        if not count:
+            self.group_tree.takeTopLevelItem(index)
+            return None
+        logger.info("操作 - 该节点不是空的!")

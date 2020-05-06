@@ -6,7 +6,7 @@ from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen
 from PyQt5.QtWidgets import qApp
 
-from bin.ui_view.info_display import DisplayInfoUI, GroupInfoUI
+from bin.ui_view.info_display import DisplayInfoUI, GroupInfoUI, GroupRightMenuConnect
 from bin.ui_view.main_window import MainWindowView
 from bin.ui_view.toolbar import ToolbarUI, ToolbarConnect
 from bin.ui_view.statusbar import StatusbarUI, StatusbarConnect
@@ -112,6 +112,7 @@ class MainUI(LoadingUI):
         self.add_ui(MenubarConnect(self.main_window))  # 菜单栏信号
         self.add_ui(ToolbarConnect(self.main_window))  # 工具导航信号
         self.add_ui(ToolsExtensionConnect(self.main_window))  # 工具扩展信号
+        self.add_ui(GroupRightMenuConnect(self.main_window))  # 分组右键信号
         self.add_ui(StatusbarConnect(self.main_window))  # 状态栏信号
 
     def show_ui(self) -> None:

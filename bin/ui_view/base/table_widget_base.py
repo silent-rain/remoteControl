@@ -151,6 +151,34 @@ class TableWidgetBase(QTableWidget):
                 item = self.item(row, column)
                 item.setText(str(value))
 
+    def add_data2(self, data_info: list) -> None:
+        """
+        写入数据到表格
+        无复选框
+        :param data_info:
+        :return:
+        """
+        row = self.get_row_count()
+        self.setRowCount(row + 1)
+
+        data_info_length = len(data_info)
+        headers_length = len(self.headers_title)
+        if data_info_length < headers_length:
+            data_info += ["" for _ in range(headers_length - data_info_length)]
+
+        for column, value in enumerate(data_info):
+            item = QTableWidgetItem()
+            # item.setTextAlignment(Qt.AlignCenter)  # 居中
+            item.setTextAlignment(Qt.AlignVCenter | Qt.AlignLeft)  # 居左
+            self.setSortingEnabled(False)
+            self.setItem(row, column, item)
+            item = self.item(row, column)
+            if column == 0:
+                # 从1开始
+                item.setText(str(row + 1))
+            else:
+                item.setText(str(value))
+
     def check_all_or_null(self, flag=True):
         """
         全选与全不选
