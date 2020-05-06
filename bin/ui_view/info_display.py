@@ -1,5 +1,5 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtGui import QCursor
+from PyQt5.QtGui import QCursor, QHideEvent
 from PyQt5.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem, QWidget, QAction, QMenu, QInputDialog
 from PyQt5.QtCore import QCoreApplication, Qt, QRect, QSize
 
@@ -7,6 +7,7 @@ from bin.ui_view.base.dock_widget_base import DockWidgetBase
 from bin.ui_view.base.table_widget_base import TableWidgetBase
 from bin.ui_view.utils import load_animation
 from lib import settings
+from lib.communicate import communicate
 from lib.logger import logger
 
 _translate = QCoreApplication.translate
@@ -320,7 +321,6 @@ class GroupTreeWidgetUI(object):
         # 根据索引获取根节点
         for index in range(count):
             master = self.group_tree.topLevelItem(index)
-            title = master.text(0)
             child_count = master.childCount()
             # 在线主机 (0)
             text = "({})".format(child_count)
@@ -340,7 +340,7 @@ class GroupTreeWidgetUI(object):
         self.update_count()
 
 
-class GroupRightMenuConnect(object):
+class GroupInfoRightMenuConnect(object):
     def __init__(self, main_window: QMainWindow):
         """
         分组信息中右键菜单
@@ -465,3 +465,56 @@ class GroupRightMenuConnect(object):
             self.group_tree.takeTopLevelItem(index)
             return None
         logger.info("操作 - 该节点不是空的!")
+
+
+class GroupInfoConnect(object):
+    def __init__(self, main_window: QMainWindow):
+        """
+
+        :param main_window:
+        """
+
+        self.main_window = main_window
+
+        self.display_info_ui = GroupInfoUI(self.main_window)
+        self.dock_widget = self.display_info_ui.dock_widget
+
+    def setup_ui(self):
+        self.communicate_connect()
+
+        self.dock_widget.hideEvent = self.hide_event
+        self.dock_widget.showEvent = self.hide_event
+
+    def retranslate_ui(self):
+        pass
+
+    def communicate_connect(self) -> None:
+        # 状态栏是否显示
+        communicate.group_tree_show.connect(self.group_tree_show)
+
+    def group_tree_show(self, flag: bool) -> None:
+        """
+        分组信息 显示/隐藏
+        :param flag:
+        :return:
+        """
+        if flag:
+            # 显示
+            self.dock_widget.setHidden(False)
+        else:
+            # 隐藏
+            self.dock_widget.setHidden(True)
+
+    def hide_event(self, event: QHideEvent):
+        """
+        发色信号 -> 菜单栏
+        菜单栏中的  分组信息
+        :param event:
+        :return:
+        """
+        if event:
+            pass
+        if self.dock_widget.isHidden():
+            communicate.group_tree_checked.emit(False)
+        else:
+            communicate.group_tree_checked.emit(True)

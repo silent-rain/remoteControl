@@ -13,6 +13,8 @@ class Communicate(QObject):
     toolbar_checked = pyqtSignal(bool)  # 菜单栏中的工具栏是否选中
     statusbar_show = pyqtSignal(bool)  # 状态栏是否显示
     statusbar_checked = pyqtSignal(bool)  # 菜单栏中的状态栏是否选中
+    group_tree_show = pyqtSignal(bool)  # 分组信息是否显示
+    group_tree_checked = pyqtSignal(bool)  # 菜单栏中的分组信息是否选中
 
     # 信号关闭
     skin_color_dialog_close = pyqtSignal(bool)  # 皮肤窗口关闭

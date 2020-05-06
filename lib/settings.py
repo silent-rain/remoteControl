@@ -133,6 +133,10 @@ TOOLBAR_SHOW = eval(CONFIG["view"].get("toolbar_show", "1"))
 # ;0： 隐藏  1： 显示
 STATUSBAR_SHOW = eval(CONFIG["view"].get("statusbar_show", "1"))
 
+# 分组信息是否显示
+# ;0： 隐藏  1： 显示
+GROUP_TREE_SHOW = eval(CONFIG["view"].get("group_tree_show", "1"))
+
 # =========================== 监听配置 ===========================
 # 监听地址
 IP = CONFIG["address"].get("ip", "")
@@ -162,6 +166,7 @@ def update_conf() -> dict:
     CONFIG["view"]["tools_extension_show"] = TOOLS_EXTENSION_SHOW
     CONFIG["view"]["toolbar_show"] = TOOLBAR_SHOW
     CONFIG["view"]["statusbar_show"] = STATUSBAR_SHOW
+    CONFIG["view"]["group_tree_show"] = GROUP_TREE_SHOW
     return CONFIG
 
 
