@@ -1,5 +1,4 @@
 # -*- coding: utf-8 -*-
-import time
 import psutil
 from PyQt5.QtWidgets import QStatusBar, QMainWindow, QLabel
 from PyQt5.QtGui import QFont, QPixmap, QHideEvent
@@ -40,12 +39,14 @@ class ShowTime(object):
         self.statusbar.addWidget(self.time_abel, self.stretch)
 
         self.timer.timeout.connect(self.time_refresh_receive)
-        self.timer.start()
+        self.timer.start(1000)  # 设置间隔时间,否则cpu占用会上升
 
     def time_refresh_receive(self) -> None:
+        # 获取系统当前时间
         data_time = QDateTime().currentDateTime()
-        str_format = "yyyy-MM-dd ddd hh:mm:ss"
-        self.time_text = data_time.toString(str_format)
+        # 设置系统时间的显示格式
+        time_display = 'yyyy-MM-dd hh:mm:ss dddd'
+        self.time_text = data_time.toString(time_display)
         self.retranslate_ui()
 
     # noinspection PyArgumentList
@@ -159,7 +160,7 @@ class NetSpeedThread(QThread):
         old_net_recv = psutil.net_io_counters().bytes_recv
         old_net_sent = psutil.net_io_counters().bytes_sent
         while True:
-            time.sleep(1)
+            self.sleep(1)  # 睡眠时间
             new_net_recv = psutil.net_io_counters().bytes_recv
             new_net_sent = psutil.net_io_counters().bytes_sent
 

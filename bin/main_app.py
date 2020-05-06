@@ -9,7 +9,6 @@ from bin.ui_view.main_window import MainWindowView
 from bin.ui_view.toolbar import ToolbarUI, ToolbarConnect
 from bin.ui_view.statusbar import StatusbarUI, StatusbarConnect
 from bin.ui_view.menubar import MenubarUI, MenubarConnect
-from bin.ui_view.tools_extension.loginfo import LogInfoConnect, LogInfoUI
 from bin.ui_view.tools_extension.tools_extension import ToolsExtensionUI, ToolsExtensionConnect
 from lib import settings
 from lib.logger import logger
@@ -111,14 +110,6 @@ class MainUI(LoadingUI):
         self.add_ui(ToolsExtensionConnect(self.main_window))  # 工具扩展信号
         self.add_ui(StatusbarConnect(self.main_window))  # 状态栏信号
 
-    def load_tools_extension(self) -> None:
-        """
-        工具扩展的链接
-        # ToolsExtension Connect
-        :return:
-        """
-        self.add_ui(LogInfoConnect(LogInfoUI(ToolsExtensionUI(self.main_window).tab_widget)))
-
     def show_ui(self) -> None:
         """
         显示数据
@@ -147,7 +138,6 @@ class MainUI(LoadingUI):
         super().setup_ui()
         self.load_ui()
         self.load_connect()
-        self.load_tools_extension()
         self.show_ui()
         self.splash.finish(self.main_window)  # 隐藏启动界面
         logger.info("系统信息 - 系统启动成功...")

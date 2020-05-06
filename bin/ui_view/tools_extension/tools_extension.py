@@ -3,7 +3,7 @@ from PyQt5.QtGui import QHideEvent
 from PyQt5.QtWidgets import QTabWidget, QMainWindow
 from PyQt5.QtCore import Qt, QCoreApplication
 
-from bin.ui_view.tools_extension.loginfo import LogInfoUI
+from bin.ui_view.tools_extension.loginfo import LogInfoUI, LogInfoConnect
 from bin.ui_view.tools_extension.batch_operation import BatchOperationUI
 from bin.ui_view.base.dock_widget_base import DockWidgetBase
 from lib import settings
@@ -122,11 +122,17 @@ class ToolsExtensionConnect(object):
         self.dock_widget_ui = ToolsExtensionUI(self.main_window)
         self.dock_widget = self.dock_widget_ui.dock_widget
 
+        # 工具扩展子类信号
+        self.ui_connect_list = []
+
     def setup_ui(self) -> None:
         self.communicate_connect()
 
         self.dock_widget.hideEvent = self.hide_event
         self.dock_widget.showEvent = self.hide_event
+
+        self.load_connect()
+        self.show_connect()
 
     def communicate_connect(self) -> None:
         # 状态栏是否显示
@@ -155,3 +161,28 @@ class ToolsExtensionConnect(object):
 
     def retranslate_ui(self) -> None:
         pass
+
+    def add_connect(self, ui: object) -> None:
+        """
+        添加模块
+        :param ui:
+        :return:
+        """
+        if ui not in self.ui_connect_list:
+            self.ui_connect_list.append(ui)
+
+    def load_connect(self) -> None:
+        """
+        加载模块
+        :return:
+        """
+        self.add_connect(LogInfoConnect(LogInfoUI(self.dock_widget)))  # 日志信号链接
+
+    def show_connect(self) -> None:
+        """
+        显示数据
+        :return:
+        """
+        for view in self.ui_connect_list:
+            view.setup_ui()
+            view.retranslate_ui()
