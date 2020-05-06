@@ -46,6 +46,7 @@ class SkinColorDialogView(QThread):
         if event.isValid():
             self.main_window.setStyleSheet('QWidget {background-color:%s}' % event.name())
             self.main_window.setPalette(self.palette)
+            settings.SKIN_COLOR = event.getRgb()[:3]
 
     def run(self) -> None:
         # 颜色选取信号
@@ -72,6 +73,14 @@ class SkinColorDialogView(QThread):
 
     @staticmethod
     def finished_color(event: int):
+        """
+        调色完成回调函数
+        销毁窗口
+        :param event:
+        :return:
+        """
+        if event:
+            pass
         communicate.skin_color_dialog_close.emit(True)
 
     def set_window_transparent(self) -> None:

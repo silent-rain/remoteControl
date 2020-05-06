@@ -38,6 +38,7 @@ class ServerStartUI(object):
             self.start_stop.setIcon(QIcon(settings.TOOLBAR_UI["start"]))
             self.start_stop.setText(_translate("ToolbarUI", "启动"))
             self.start_stop.setToolTip("启动服务")
+            logger.info("系统信息 - 本地IP:  [{}]    监听端口:  [{}]".format(settings.IP, settings.PORT))
             logger.info("操作 - 启动服务...")
         else:
             self.start_flag = True
