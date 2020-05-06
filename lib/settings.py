@@ -4,9 +4,8 @@ from os import mkdir
 
 from lib.basePath import BASE_PATH
 from lib import config_file_to_py, config_init, configer
-
 from lib import qtResource  # 资源文件
-from lib import fix_qt_import_error  # Qt
+from lib import fix_qt_import_error  # Qt打包补丁
 
 # 系统图标
 MAIN_UI = {
@@ -78,10 +77,10 @@ DATA_DB = abspath(join(BASE_PATH, "src", "data.db"))  # IP数据库
 
 # 读取外部配置文件
 if not exists(CONFIG_FILE):
-    # 外置配置文件不存在生成配置文件
-    config_file_to_py.config_py_to_file(CONFIG_FILE, config_init.CONFIG_DATA)
-CONFIG = configer.ReadConfig(CONFIG_FILE, config_init.CONFIG_DATA).start()
-
+    # 外置配置文件不存在,生成配置文件
+    config_file_to_py.py_to_file(CONFIG_FILE, config_init.CONFIG_DATA)
+CONFIG_OBJ = configer.ReadConfig(CONFIG_FILE)
+CONFIG = CONFIG_OBJ.read_to_dict()
 # 语音配置
 SOUND_DIR = abspath(join(BASE_PATH, "src", "sound"))  # 音频资源文件夹
 mkdir(SOUND_DIR) if not exists(SOUND_DIR) else None  # 初始化音频资源文件夹
@@ -93,7 +92,7 @@ SOUND_ON = eval(CONFIG["audio"].get("sound_on", "1"))  # 声音是否开启;0：
 # 日志配置
 LOGGING_DIR = abspath(join(BASE_PATH, "logs"))  # 日志文件夹
 mkdir(LOGGING_DIR) if not exists(LOGGING_DIR) else None  # 初始化日志文件夹
-LOGGING_LEVEL = CONFIG["default"].get("logging_level", "INFO")  # 日志打印级别; DEBUG/INFO/WARNING/ERROR/CRITICAL
+LOGGING_LEVEL = CONFIG["logging"].get("logging_level", "INFO")  # 日志打印级别; DEBUG/INFO/WARNING/ERROR/CRITICAL
 
 # =========================== 系统控制 ===========================
 # 调试模式
@@ -139,3 +138,32 @@ STATUSBAR_SHOW = eval(CONFIG["view"].get("statusbar_show", "1"))
 IP = CONFIG["address"].get("ip", "")
 # 监听端口
 PORT = eval(CONFIG["address"].get("statusbar_show", "2020"))
+
+
+def update_conf() -> dict:
+    """
+    更新配置字典
+    :return: dict
+    """
+    # =========================== 日志配置 ===========================
+    CONFIG["logging"]["logging_level"] = LOGGING_LEVEL
+    # =========================== 监听配置 ===========================
+    CONFIG["address"]["ip"] = IP
+    CONFIG["address"]["statusbar_show"] = PORT
+    # =========================== 系统控制 ===========================
+    CONFIG["system"]["processes"] = PROCESSES
+    # =========================== 特效控制 ===========================
+    CONFIG["effect"]["load_effect_on"] = LOAD_EFFECT_ON
+    CONFIG["effect"]["transparent"] = TRANSPARENT
+    CONFIG["effect"]["skin_color"] = SKIN_COLOR
+    # =========================== 声音控制 ===========================
+    CONFIG["audio"]["sound_on"] = SOUND_ON
+    # =========================== 模块显示 ===========================
+    CONFIG["view"]["tools_extension_show"] = TOOLS_EXTENSION_SHOW
+    CONFIG["view"]["toolbar_show"] = TOOLBAR_SHOW
+    CONFIG["view"]["statusbar_show"] = STATUSBAR_SHOW
+    return CONFIG
+
+
+def update_conf_file() -> None:
+    CONFIG_OBJ.save_dict(CONFIG)

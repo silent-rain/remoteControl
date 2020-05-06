@@ -4,8 +4,12 @@
 import os
 import sys
 
+"""
+Qt打包报错补丁
+"""
 
-def fix_qt_import_error_append_run_path():
+
+def fix_qt_import_error_append_run_path() -> None:
     if getattr(sys, 'frozen', False):
         pathlist = []
 

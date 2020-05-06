@@ -21,7 +21,7 @@ class SingleLevelFilter(object):
     def __init__(self, pass_level):
         self.pass_level = pass_level
 
-    def filter(self, record):
+    def filter(self, record) -> bool:
         if self.pass_level == record.levelno:
             return True
         return False

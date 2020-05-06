@@ -4,7 +4,7 @@ from os.path import abspath, dirname, realpath
 from lib import fix_qt_import_error
 
 
-def base_path():
+def base_path() -> str:
     """
     添加环境变量
     :return:
