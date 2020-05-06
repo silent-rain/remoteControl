@@ -23,15 +23,16 @@ class MainWindowUI(object):
         if not hasattr(self, "_init_flag"):  # 反射
             self._init_flag = True  # 只初始化一次
             self.main_window = main_window
+
             # 中心窗口
-            self.centralwidget = QWidget(self.main_window, Qt.WindowFlags())
+            # self.centralwidget = QWidget(self.main_window, Qt.WindowFlags())
 
     def setup_ui(self) -> None:
         self.main_window.setObjectName("main_window")
         self.main_window.resize(850, 500)
 
-        self.centralwidget.setObjectName("centralwidget")
-        self.main_window.setCentralWidget(self.centralwidget)
+        # self.centralwidget.setObjectName("centralwidget")
+        # self.main_window.setCentralWidget(self.centralwidget)
 
         # noinspection PyArgumentList,PyCallByClass
         QMetaObject.connectSlotsByName(self.main_window)
@@ -58,6 +59,9 @@ class MainWindowView(MainWindowUI):
         self.center()
         # self.main_window.resizeEvent = self.resize_event
         self.main_window.closeEvent = self.close_event
+
+        # 隐藏工具栏上的右键菜单
+        # self.main_window.setContextMenuPolicy(Qt.NoContextMenu)
 
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:

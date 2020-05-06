@@ -92,6 +92,9 @@ class ToolsExtensionUI(DockWidgetBase):
         # self.tab_widget.resize(850, 200)
         # self.tab_widget.setGeometry(QRect(0, 0, 850, 200))
 
+        # 显示位置
+        self.main_window.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
+
     def setup_ui(self) -> None:
         super().setup_ui()
         self.options()

@@ -15,7 +15,7 @@ class TableWidgetBase(QTableWidget):
         super().__init__()
         # self.headers_us = ["Id", "Date", "Level", "Message"]
         # noinspection PyArgumentList
-        self.headers = [
+        self.headers_title = [
             _translate("TableWidgetBase", "Id"),
             _translate("TableWidgetBase", "日期"),
             _translate("TableWidgetBase", "告警"),
@@ -82,14 +82,14 @@ class TableWidgetBase(QTableWidget):
         :return:
         """
         # 表头长度
-        self.setColumnCount(len(self.headers))
+        self.setColumnCount(len(self.headers_title))
 
         # 表头宽度
         for i, value in enumerate(self.header_width):
             self.setColumnWidth(i, value)
 
         # 表头设置
-        for column, header in enumerate(self.headers):
+        for column, header in enumerate(self.headers_title):
             item = QTableWidgetItem()
             self.setHorizontalHeaderItem(column, item)
             item = self.horizontalHeaderItem(column)
@@ -129,7 +129,7 @@ class TableWidgetBase(QTableWidget):
         self.setRowCount(row + 1)
 
         data_info_length = len(data_info)
-        headers_length = len(self.headers)
+        headers_length = len(self.headers_title)
         if data_info_length < headers_length:
             data_info += ["" for _ in range(headers_length - data_info_length)]
 
@@ -252,7 +252,7 @@ class TableWidgetBase(QTableWidget):
         data_info = []
         for row in range(row_count):
             column_list = []
-            for column in range(len(self.headers)):
+            for column in range(len(self.headers_title)):
                 text = self.item(row, column).text()
                 column_list.append(text)
             data_info.append(column_list)
@@ -272,7 +272,7 @@ class TableWidgetBase(QTableWidget):
             check = self.item(row, 0)
             if check.checkState() == Qt.Checked:
                 column_list = []
-                for column in range(len(self.headers)):
+                for column in range(len(self.headers_title)):
                     try:
                         text = self.item(row, column).text()
                         column_list.append(text)
@@ -320,8 +320,8 @@ class TableWidgetBase(QTableWidget):
         row_count = self.get_row_count()
         self.setRowCount(row_count + 1)
 
-        if len(data_info) < len(self.headers):
-            data_info += ["" for _ in self.headers[:len(self.headers) - len(data_info)]]
+        if len(data_info) < len(self.headers_title):
+            data_info += ["" for _ in self.headers_title[:len(self.headers_title) - len(data_info)]]
 
         row = row_count
         for column, value in enumerate(data_info):

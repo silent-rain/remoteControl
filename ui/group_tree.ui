@@ -1,0 +1,194 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>Form</class>
+ <widget class="QWidget" name="Form">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>767</width>
+    <height>528</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>Form</string>
+  </property>
+  <widget class="QDockWidget" name="dockWidget">
+   <property name="geometry">
+    <rect>
+     <x>20</x>
+     <y>0</y>
+     <width>271</width>
+     <height>481</height>
+    </rect>
+   </property>
+   <property name="focusPolicy">
+    <enum>Qt::NoFocus</enum>
+   </property>
+   <property name="windowTitle">
+    <string comment="sdf"/>
+   </property>
+   <widget class="QWidget" name="dockWidgetContents">
+    <widget class="QWidget" name="horizontalLayoutWidget">
+     <property name="geometry">
+      <rect>
+       <x>0</x>
+       <y>0</y>
+       <width>261</width>
+       <height>451</height>
+      </rect>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout">
+      <item>
+       <widget class="QTreeWidget" name="treeWidget">
+        <property name="headerHidden">
+         <bool>false</bool>
+        </property>
+        <attribute name="headerVisible">
+         <bool>true</bool>
+        </attribute>
+        <column>
+         <property name="text">
+          <string>id</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>主机信息</string>
+         </property>
+        </column>
+        <column>
+         <property name="text">
+          <string>备注</string>
+         </property>
+        </column>
+        <item>
+         <property name="text">
+          <string>在线主机</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <item>
+          <property name="text">
+           <string>1</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+          <property name="checkState">
+           <enum>Checked</enum>
+          </property>
+          <property name="text">
+           <string>192.168.0.1</string>
+          </property>
+          <property name="textAlignment">
+           <set>AlignLeading|AlignVCenter</set>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>2</string>
+          </property>
+          <property name="checkState">
+           <enum>Checked</enum>
+          </property>
+          <property name="text">
+           <string>192.168.0.2</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>分组12</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <item>
+          <property name="text">
+           <string>1</string>
+          </property>
+          <property name="checkState">
+           <enum>Checked</enum>
+          </property>
+          <property name="text">
+           <string>192.168.11.2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>2</string>
+          </property>
+          <property name="checkState">
+           <enum>Unchecked</enum>
+          </property>
+          <property name="text">
+           <string>192.168.11.3</string>
+          </property>
+         </item>
+        </item>
+        <item>
+         <property name="text">
+          <string>下线主机</string>
+         </property>
+         <property name="text">
+          <string/>
+         </property>
+         <item>
+          <property name="text">
+           <string>1</string>
+          </property>
+          <property name="checkState">
+           <enum>Checked</enum>
+          </property>
+          <property name="text">
+           <string>127.0.0.1</string>
+          </property>
+          <property name="text">
+           <string/>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>2</string>
+          </property>
+          <property name="checkState">
+           <enum>Unchecked</enum>
+          </property>
+          <property name="text">
+           <string>127.0.0.2</string>
+          </property>
+         </item>
+         <item>
+          <property name="text">
+           <string>3</string>
+          </property>
+          <property name="checkState">
+           <enum>Checked</enum>
+          </property>
+          <property name="text">
+           <string>127.0.0.3</string>
+          </property>
+         </item>
+        </item>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </widget>
+  </widget>
+  <widget class="QTableWidget" name="tableWidget">
+   <property name="geometry">
+    <rect>
+     <x>340</x>
+     <y>10</y>
+     <width>401</width>
+     <height>471</height>
+    </rect>
+   </property>
+  </widget>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

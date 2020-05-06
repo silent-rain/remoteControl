@@ -17,7 +17,7 @@ class LogTableWidgetUI(TableWidgetBase):
         super().__init__()
         # self.headers_us = ["Id", "Date", "Type", "Message"]
         # noinspection PyArgumentList
-        self.headers = [
+        self.headers_title = [
             _translate("LogInfoUI", "Id"),
             _translate("LogInfoUI", "日期"),
             _translate("LogInfoUI", "类型"),
@@ -28,7 +28,6 @@ class LogTableWidgetUI(TableWidgetBase):
     def setup_ui(self):
         super().setup_ui()
         # self.setMinimumHeight(200)
-        self.sizePolicy()
 
     def retranslate_ui(self):
         pass

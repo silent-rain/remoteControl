@@ -34,7 +34,7 @@ class DockWidgetBase(object):
         在这里定义dock的初始大小
         :return:
         """
-        return QSize(850, 180)
+        return QSize(850, 100)
 
     def options(self) -> None:
         """
@@ -51,8 +51,9 @@ class DockWidgetBase(object):
         self.dock_widget_contents.setLayout(self.layout)
         self.dock_widget.setWidget(self.dock_widget_contents)
 
+        # 显示位置,子类进行设置
         # MainWindow.addDockWidget(Qt.DockWidgetArea(8), self.dock_widget)
-        self.main_window.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
+        # self.main_window.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
 
     def setup_ui(self) -> None:
         self.options()
