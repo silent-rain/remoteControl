@@ -110,7 +110,7 @@ class ToolbarUI(object):
         self.add_ui(KeyboardUI(self.toolbar))  # 键盘记录
         self.add_ui(MakeClientUI(self.toolbar))  # 创建客户端
         self.add_ui(ServiceManagerUI(self.toolbar))  # 服务管理
-        self.add_ui(ExitUI(self.toolbar))  # 退出程序
+        self.add_ui(ExitUI(self.toolbar, self.main_window))  # 退出程序
 
     def show_ui(self) -> None:
         """
