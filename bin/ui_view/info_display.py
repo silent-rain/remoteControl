@@ -414,12 +414,17 @@ class GroupRightMenuConnect(object):
         """
         if event:
             pass
+
+        # 当前节点
+        current_item = self.group_tree.currentItem()
+        parent = current_item.parent()  # 父节点
+        if parent is not None:
+            logger.info("操作 - 不能修改子节点!")
+            return None
         index = self.group_tree.currentIndex().row()
         if index == 0 or index == 1:
-            logger.info("操作 - 默认节点不允许删除!")
+            logger.info("操作 - 默认根节点不允许修改!")
             return None
-
-        current_item = self.group_tree.currentItem()
 
         # noinspection PyArgumentList
         text, ok = QInputDialog(self.main_window).getText(
@@ -442,14 +447,18 @@ class GroupRightMenuConnect(object):
         if event:
             pass
 
+        # 当前节点
+        current_item = self.group_tree.currentItem()
+        parent = current_item.parent()  # 父节点
+        if parent is not None:
+            logger.info("操作 - 不能删除子节点!")
+            return None
+
         index = self.group_tree.currentIndex().row()
         if index == 0 or index == 1:
             logger.info("操作 - 默认节点不允许删除!")
             return None
 
-        # 当前节点
-        current_item = self.group_tree.currentItem()
-        # current_item.parent()  # 父节点
         # 获取子节点个数
         count = current_item.childCount()
         if not count:
