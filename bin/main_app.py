@@ -176,9 +176,6 @@ class MainUI(LoadingUI):
             # qApp.processEvents()  # 允许主进程处理事件
 
         self.splash.showMessage("组件加载完成...", Qt.AlignHCenter | Qt.AlignBottom, Qt.black)
-        logger.debug("系统信息 - 组件加载完成...")
-        if settings.DEBUG:
-            logger.debug("系统信息 - 当前DEBUG模式...")
 
     @staticmethod
     def progress_count(index: int, total: int) -> int:
@@ -197,11 +194,14 @@ class MainUI(LoadingUI):
         self.load_connect()
         self.load_window()
         self.load_transparent()
+
         self.show_ui()
 
         self.splash.finish(self.main_window)  # 隐藏启动界面
 
         logger.info("系统信息 - 系统启动成功...")
+        if settings.DEBUG:
+            logger.debug("系统信息 - 当前DEBUG模式...")
         logger.info("申明 - 本软件使用于学习软件开发,请不要触犯法律,否则后果自负,一切与原作者无关.")
 
 
