@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
-import psutil
+# import psutil
+from psutil import net_io_counters
 from PyQt5.QtWidgets import QStatusBar, QMainWindow, QLabel
 from PyQt5.QtGui import QFont, QPixmap, QHideEvent
 from PyQt5.QtCore import QCoreApplication, QTimer, QDateTime, QThread
@@ -7,6 +8,7 @@ from PyQt5.QtCore import QCoreApplication, QTimer, QDateTime, QThread
 from lib import settings
 from lib.communicate import communicate
 from lib.logger import logger
+from lib.play_music import PlayMusic
 
 _translate = QCoreApplication.translate
 
@@ -158,12 +160,12 @@ class NetSpeedThread(QThread):
             return str("%.1f" % speed) + "B/s"
 
     def run(self) -> None:
-        old_net_recv = psutil.net_io_counters().bytes_recv
-        old_net_sent = psutil.net_io_counters().bytes_sent
+        old_net_recv = net_io_counters().bytes_recv
+        old_net_sent = net_io_counters().bytes_sent
         while True:
             self.sleep(1)  # 睡眠时间
-            new_net_recv = psutil.net_io_counters().bytes_recv
-            new_net_sent = psutil.net_io_counters().bytes_sent
+            new_net_recv = net_io_counters().bytes_recv
+            new_net_sent = net_io_counters().bytes_sent
 
             self.speed_recv = self.calculate(new_net_recv - old_net_recv)
             self.speed_sent = self.calculate(new_net_sent - old_net_sent)
@@ -299,6 +301,9 @@ class StatusbarConnect(object):
         """
         self.statusbar_ui = statusbar_ui
 
+        # 音频对象
+        self.play_music = PlayMusic()
+
     def setup_ui(self) -> None:
         self.communicate_connect()
 
@@ -323,12 +328,20 @@ class StatusbarConnect(object):
         :param data:
         :return:
         """
-        if flag:
-            logger.info("主机上线 - 有主机上线请注意! 主机信息: {0}".format(data))
-        else:
-            logger.info("主机下线 - 有主机下线请注意! 主机信息: {0}".format(data))
+        try:
+            if flag:
+                logger.info("主机上线 - 有主机上线请注意! 主机信息: {0}".format(data))
+                self.play_music.stop()
+                self.play_music.open(settings.SOUND_ONLINE)
+                self.play_music.start()
 
-        print("声音未处理")
+            else:
+                logger.info("主机下线 - 有主机下线请注意! 主机信息: {0}".format(data))
+                self.play_music.stop()
+                self.play_music.open(settings.SOUND_OFFLINE)
+                self.play_music.start()
+        except OSError:
+            pass
 
     def monitor_port(self, event: int) -> None:
         """

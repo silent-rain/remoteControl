@@ -31,34 +31,32 @@ class PlayMusic(Thread):
         # 读取数据
         self.data = self.wf.readframes(CHUNK)
 
+        self.ifdo = True
         self.flag = True
 
     def run(self) -> None:
         while len(self.data) > 5:
             if not self.flag:
-                return None
+                return
             # 播放
             self.stream.write(self.data)
             self.data = self.wf.readframes(CHUNK)
+        self.wf = wave.open(self.filename, 'rb')
+        self.data = self.wf.readframes(CHUNK)
 
     def stop(self) -> None:
         """
         停止播放
         :return:
         """
-        self.flag = False
+        self.ifdo = False
 
 
 if __name__ == "__main__":
     tr = PlayMusic(settings.SOUND_ONLINE)
     # tr.setDaemon(True)
     tr.start()
-    time.sleep(1)
-    tr.stop()
-
-    tr = PlayMusic(settings.SOUND_ONLINE)
-    # tr.setDaemon(True)
-    tr.start()
-
+    # tr.stop()
+    # time.sleep(1)
     # tr.stop()
     # tr.join()
