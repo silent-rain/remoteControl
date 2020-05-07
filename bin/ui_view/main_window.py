@@ -5,7 +5,6 @@ from PyQt5.QtCore import QCoreApplication, QMetaObject
 
 from bin.ui_view.utils import load_animation
 from lib import settings
-from lib.communicate import communicate
 
 _translate = QCoreApplication.translate
 
@@ -44,10 +43,6 @@ class MainWindowUI(object):
 
         # 隐藏工具栏上的右键菜单
         # self.main_window.setContextMenuPolicy(Qt.NoContextMenu)
-
-        if settings.LOAD_EFFECT_ON:
-            # 特效
-            load_animation.load_animation(self.main_window)
 
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
@@ -180,36 +175,3 @@ class MainWindowUI(object):
             event.accept()
         else:
             event.ignore()
-
-
-class MainWindowConnect(object):
-    def __init__(self, main_window_ui: MainWindowUI):
-        """
-        主窗口信号
-        :param main_window_ui:
-        """
-        self.main_window_ui = main_window_ui
-
-        # 创建调色板
-        self.palette = QPalette()
-
-    def setup_ui(self) -> None:
-        self.communicate_connect()
-
-    def communicate_connect(self) -> None:
-        # 主窗口皮肤调节
-        communicate.skin_color.connect(self.skin_color_main_window)
-
-    def retranslate_ui(self) -> None:
-        pass
-
-    def skin_color_main_window(self, event: QColor) -> None:
-        """
-        窗口皮肤调节
-        :return:
-        """
-        self.palette.setColor(QPalette.Background, event)  # 给调色板设置颜色
-        # 给控件设置颜色
-        if event.isValid():
-            self.main_window_ui.main_window.setStyleSheet('QWidget {background-color:%s}' % event.name())
-            self.main_window_ui.main_window.setPalette(self.palette)

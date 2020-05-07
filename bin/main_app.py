@@ -7,11 +7,12 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen
 from PyQt5.QtWidgets import qApp
 
 from bin.ui_view.info_display import DisplayInfoUI, GroupInfoUI, GroupInfoRightMenuConnect, GroupInfoConnect
-from bin.ui_view.main_window import MainWindowConnect, MainWindowUI
+from bin.ui_view.main_window import MainWindowUI
 from bin.ui_view.toolbar import ToolbarUI, ToolbarConnect
 from bin.ui_view.statusbar import StatusbarUI, StatusbarConnect
 from bin.ui_view.menubar import MenubarUI, MenubarConnect
 from bin.ui_view.tools_extension.tools_extension import ToolsExtensionUI, ToolsExtensionConnect
+from bin.ui_view.utils.skincolordialog import SkinColorDialogConnect, WindowTransparentConnect
 from lib import settings
 from lib.logger import logger
 
@@ -57,7 +58,7 @@ class LoadingUI(object):
         # self.main_window.show()
         # self.splash.finish(self.main_window)  # 隐藏启动界面
 
-    def load_data(self):
+    def load_data(self) -> None:
         """
         模拟加载数据
         :return:
@@ -91,7 +92,7 @@ class MainUI(LoadingUI):
 
         # 模块信号
         self.connect_list = []
-        self.main_window_connect = MainWindowConnect(self.main_window_ui)  # 主窗口信号
+        # self.main_window_connect = MainWindowConnect(self.main_window_ui)  # 主窗口信号
         self.menubar_connect = MenubarConnect(self.menubar_ui)  # 菜单栏信号
         self.toolbar_connect = ToolbarConnect(self.toolbar_ui)  # 工具导航信号
         self.group_info_connect = GroupInfoConnect(self.group_info_ui)  # 分组信息信号
@@ -99,9 +100,13 @@ class MainUI(LoadingUI):
         self.tools_extension_connect = ToolsExtensionConnect(self.tools_extension_ui)  # 工具扩展信号; 主要加载日志信号
         self.statusbar_connect = StatusbarConnect(self.statusbar_ui)  # 状态栏信号
 
+        # 观察者模式
+        self.skin_color_dialog_connect = SkinColorDialogConnect()  # 皮肤调节信号
+        self.window_transparent_connect = WindowTransparentConnect()  # 透明度装饰
+
     def load_ui(self) -> None:
         """
-        加载模块
+        加载UI模块
         :return:
         """
         self.ui_list.append(self.main_window_ui)
@@ -114,16 +119,35 @@ class MainUI(LoadingUI):
 
     def load_connect(self) -> None:
         """
-        加载功能链接
+        加载 链接信号
         :return:
         """
-        self.connect_list.append(self.main_window_connect)
         self.connect_list.append(self.menubar_connect)
         self.connect_list.append(self.toolbar_connect)
         self.connect_list.append(self.tools_extension_connect)
         self.connect_list.append(self.group_info_connect)
         self.connect_list.append(self.group_info_right_menu_connect)
         self.connect_list.append(self.statusbar_connect)
+
+        self.connect_list.append(self.skin_color_dialog_connect)
+        self.connect_list.append(self.window_transparent_connect)
+
+    def load_window(self) -> None:
+        """
+        皮肤调节
+        加载更新对象
+        :return:
+        """
+        self.skin_color_dialog_connect.load_window(self.main_window)
+        self.skin_color_dialog_connect.load_window(self.menubar_ui.help_menu.about_ui.layout_widget)
+
+    def load_transparent(self) -> None:
+        """
+        窗口透明度加载
+        :return:
+        """
+        self.window_transparent_connect.load_window(self.main_window)
+        self.window_transparent_connect.load_window(self.menubar_ui.help_menu.about_ui.layout_widget)
 
     def show_ui(self) -> None:
         """
@@ -160,6 +184,8 @@ class MainUI(LoadingUI):
         super().setup_ui()
         self.load_ui()
         self.load_connect()
+        self.load_window()
+        self.load_transparent()
         self.show_ui()
 
         self.splash.finish(self.main_window)  # 隐藏启动界面

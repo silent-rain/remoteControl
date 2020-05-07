@@ -46,12 +46,12 @@ class TableWidgetUI(TableWidgetBase):
 
         self.header_width = [60]
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         super().setup_ui()
         # self.setMinimumHeight(200)
 
     # noinspection PyArgumentList
-    def retranslate_ui(self):
+    def retranslate_ui(self) -> None:
         self.setWindowTitle(_translate("DisplayInfoUI", "信息展示"))
 
 
@@ -252,7 +252,7 @@ class GroupTreeWidgetUI(object):
         self.group_tree.headerItem().setText(1, _translate("GroupInfoUI", "主机信息"))
         self.group_tree.headerItem().setText(2, _translate("GroupInfoUI", "备注"))
 
-    def test_date(self):
+    def test_date(self) -> None:
         for i in range(10):
             self.add_child_item2(0, [str(i), str(i * 100), ""])
         for i in range(200):
@@ -270,7 +270,7 @@ class DisplayInfoUI(object):
 
         self.table_widget = TableWidgetUI()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         self.table_widget.setup_ui()
 
         # self.setMinimumHeight(200)
@@ -282,7 +282,7 @@ class DisplayInfoUI(object):
 
         # print(dir(self.table_widget))
 
-    def retranslate_ui(self):
+    def retranslate_ui(self) -> None:
         pass
 
 
@@ -365,7 +365,7 @@ class GroupInfoRightMenuConnect(object):
         self.pop_menu.addAction(self.delete)
         self.delete.triggered.connect(self.delete_event)
 
-    def right_menu_pos_show(self):
+    def right_menu_pos_show(self) -> None:
         """
         调整位置
         右键点击时调用的函数
@@ -465,13 +465,13 @@ class GroupInfoConnect(object):
         """
         self.group_info_ui = group_info_ui
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         self.communicate_connect()
 
         self.group_info_ui.dock_widget.hideEvent = self.hide_event
         self.group_info_ui.dock_widget.showEvent = self.hide_event
 
-    def retranslate_ui(self):
+    def retranslate_ui(self) -> None:
         pass
 
     def communicate_connect(self) -> None:
@@ -491,7 +491,7 @@ class GroupInfoConnect(object):
             # 隐藏
             self.group_info_ui.dock_widget.setHidden(True)
 
-    def hide_event(self, event: QHideEvent):
+    def hide_event(self, event: QHideEvent) -> None:
         """
         发色信号 -> 菜单栏
         菜单栏中的  分组信息

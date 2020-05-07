@@ -13,32 +13,26 @@ About 窗口
 
 
 class AboutUI(object):
-    def __new__(cls, *args, **kwargs) -> object:
-        if not hasattr(cls, "_instance"):  # 反射
-            cls._instance = object.__new__(cls)
-        return cls._instance
-
     def __init__(self):
         """
         关于
         """
-        if not hasattr(self, "_init_flag"):  # 反射
-            self.layout_widget = QWidget(None, Qt.Dialog)
-            self.layout = QGridLayout(self.layout_widget)
+        self.layout_widget = QWidget(None, Qt.Dialog)
+        self.layout = QGridLayout(self.layout_widget)
 
-            # 阻塞除当前窗体之外的所有的窗体
-            # self.layout_widget.setWindowModality(Qt.ApplicationModal)
+        # 阻塞除当前窗体之外的所有的窗体
+        # self.layout_widget.setWindowModality(Qt.ApplicationModal)
 
-            self.label = QLabel(self.layout_widget)
-            self.title = QLabel(self.layout_widget)
-            self.text = QTextEdit(self.layout_widget)
-            self.button = QPushButton(self.layout_widget)
+        self.label = QLabel(self.layout_widget)
+        self.title = QLabel(self.layout_widget)
+        self.text = QTextEdit(self.layout_widget)
+        self.button = QPushButton(self.layout_widget)
 
-            # 创建调色板
-            self.palette = QPalette()
-            # 颜色初始化
-            # self.color_init = QColor(107, 173, 246)
-            self.color_init = QColor(*settings.SKIN_COLOR)
+        # 创建调色板
+        self.palette = QPalette()
+        # 颜色初始化
+        # self.color_init = QColor(107, 173, 246)
+        self.color_init = QColor(*settings.SKIN_COLOR)
 
     def set_window_background(self) -> None:
         """
@@ -124,7 +118,7 @@ class AboutUI(object):
 
         self.button.clicked.connect(self.close_window)
 
-    def close_window(self, event: bool):
+    def close_window(self, event: bool) -> None:
         """
         关闭窗口
         :param event:

@@ -141,7 +141,7 @@ class ToolsExtensionConnect(object):
             # 隐藏
             self.tools_extension_ui.dock_widget.setHidden(True)
 
-    def hide_event(self, event: QHideEvent):
+    def hide_event(self, event: QHideEvent) -> None:
         """
         菜单栏中的  工具扩展
         :param event:

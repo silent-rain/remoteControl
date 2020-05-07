@@ -28,11 +28,11 @@ class LogTableWidgetUI(TableWidgetBase):
         ]
         self.header_width = [60, 150, 80]
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         super().setup_ui()
         # self.setMinimumHeight(200)
 
-    def retranslate_ui(self):
+    def retranslate_ui(self) -> None:
         pass
 
 

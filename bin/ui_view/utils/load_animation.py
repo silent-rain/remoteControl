@@ -12,7 +12,7 @@ from lib.settings import TRANSPARENT
 """
 
 
-def load_animation(window: object, property_name: bytes = b'windowOpacity'):
+def load_animation(window: object, property_name: bytes = b'windowOpacity') -> None:
     animation = QPropertyAnimation()
     animation.setTargetObject(window)  # 设置动画目标对象
 
@@ -45,26 +45,3 @@ def load_animation(window: object, property_name: bytes = b'windowOpacity'):
 
     animation.setEasingCurve(QEasingCurve.InQuad)  # 设置动画的节奏
     animation.start()  # 动画开始---非阻塞
-
-
-def loading():
-    splash = QSplashScreen()
-    # splash.setPixmap(QPixmap(":/images/loading.png"))
-    splash.setPixmap(QPixmap(settings.MAIN_UI["loading"]))
-    splash.show()
-    top_right = Qt.AlignRight | Qt.AlignTop
-    splash.showMessage("正在启动中", top_right, Qt.white)
-
-    # QSplashScreen * splash = new QSplashScreen;
-    # splash->setPixmap(QPixmap(“: / images / start.png”));
-    # splash->show();
-
-    # Qt::Alignment
-    # top_right = Qt::AlignRight | Qt::AlignTop;
-    # splash->showMessage(“正在启动中”, top_right, Qt::white);
-    # mainWindows
-    # window;
-    # window.show();
-    # splash->finish( & window);
-    # delete
-    # splash

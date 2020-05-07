@@ -103,7 +103,7 @@ class OnlineHost(object):
         pix = QPixmap(settings.TOOLBAR_UI["host"])
         self.online_icon.setPixmap(pix)  # 在label上显示图片
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         self.online_icon.setScaledContents(True)  # 让图片自适应label大
         self.online_icon.setFixedWidth(25)  # 图片宽度
         self.set_background2()
@@ -115,7 +115,7 @@ class OnlineHost(object):
         self.statusbar.addWidget(self.online, self.stretch)
 
     # noinspection PyArgumentList
-    def retranslate_ui(self):
+    def retranslate_ui(self) -> None:
         self.online.setText(_translate("StatusbarUI", "上线主机: {0} 台".format(self.online_host)))
 
 
@@ -174,7 +174,7 @@ class NetSpeedThread(QThread):
             old_net_sent = new_net_sent
 
     # noinspection PyArgumentList
-    def retranslate_ui(self):
+    def retranslate_ui(self) -> None:
         self.speed.setText(_translate("StatusbarUI",
                                       "send: %s recv: %s" % (self.speed_sent, self.speed_recv)))
 
@@ -192,7 +192,7 @@ class NetSpeed(object):
         self.send_recv_text = QLabel(self.statusbar)
         self.net_speed = NetSpeedThread()
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         self.send_recv_text.setFixedWidth(180)
         self.statusbar.addWidget(self.send_recv_text, self.stretch)
 
@@ -200,7 +200,7 @@ class NetSpeed(object):
         self.net_speed.start()
 
     # noinspection PyArgumentList
-    def retranslate_ui(self):
+    def retranslate_ui(self) -> None:
         self.send_recv_text.setText(_translate("StatusbarUI", "send: 0.0B/s recv: 0.0B/s"))
 
 
@@ -217,12 +217,12 @@ class MonitorPort(object):
         self.port_label = QLabel(self.statusbar)
         self.port = 0
 
-    def setup_ui(self):
+    def setup_ui(self) -> None:
         self.port_label.setFixedWidth(110)
         self.statusbar.addWidget(self.port_label, self.stretch)
 
     # noinspection PyArgumentList
-    def retranslate_ui(self):
+    def retranslate_ui(self) -> None:
         self.port_label.setText(_translate("StatusbarUI", "监控端口: %s" % settings.PORT))
 
 
@@ -315,7 +315,7 @@ class StatusbarConnect(object):
             # 隐藏
             self.statusbar_ui.statusbar.setHidden(True)
 
-    def hide_event(self, event: QHideEvent):
+    def hide_event(self, event: QHideEvent) -> None:
         """
         菜单栏中的  工具导航
         :param event:

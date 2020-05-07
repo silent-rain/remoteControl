@@ -86,7 +86,7 @@ class ToolbarUI(object):
         # QDockWidget 位置发生变动
         self.toolbar.orientationChanged.connect(self.orientation_changed)
 
-    def orientation_changed(self, event):
+    def orientation_changed(self, event) -> None:
         """
         位置变动事件
         :param event:
@@ -152,7 +152,7 @@ class ToolbarConnect(object):
             # 隐藏
             self.toolbar_ui.toolbar.setHidden(True)
 
-    def hide_event(self, event: QHideEvent):
+    def hide_event(self, event: QHideEvent) -> None:
         """
         菜单栏中的  工具导航
         :param event:

@@ -1,12 +1,12 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QMenuBar, QMainWindow, QMenu, QAction
-from PyQt5.QtGui import QFont, QIcon, QColor, QPalette
+from PyQt5.QtGui import QFont, QIcon
 from PyQt5.QtCore import QCoreApplication
 
 from bin.ui_view.utils import load_animation
 from bin.ui_view.utils.about import AboutUI
 from lib import settings
-from bin.ui_view.utils.skincolordialog import SkinColorDialogView
+from bin.ui_view.utils.skincolordialog import SkinColorDialogUI
 from lib.communicate import communicate
 
 _translate = QCoreApplication.translate
@@ -56,7 +56,7 @@ class OptionMenu(object):
         self.exit = QAction(QIcon(settings.MENUBAR_UI["exit"]), '&Exit', self.menubar)
 
         # 皮肤对象
-        self.skin_color_dialog = SkinColorDialogView(self.main_window)
+        self.skin_color_dialog = SkinColorDialogUI(self.main_window)
 
     def setup_ui(self) -> None:
         self.setting.setShortcut('Ctrl+Alt+S')
@@ -321,9 +321,6 @@ class MenubarConnect(object):
     def __init__(self, menubar_ui: MenubarUI):
         self.menubar_ui = menubar_ui
 
-        # 创建调色板
-        self.palette = QPalette()
-
     def setup_ui(self) -> None:
         self.communicate_connect()
 
@@ -336,9 +333,6 @@ class MenubarConnect(object):
         communicate.statusbar_checked.connect(self.statusbar_checked)
         # 菜单中分组信息
         communicate.group_tree_checked.connect(self.group_tree_checked)
-
-        # about 皮肤调节
-        communicate.skin_color.connect(self.skin_color_about)
 
     def group_tree_checked(self, flag: bool) -> None:
         if flag:
@@ -371,19 +365,6 @@ class MenubarConnect(object):
         else:
             # 菜单栏取消
             self.menubar_ui.view_menu.statusbar.setChecked(False)
-
-    def skin_color_about(self, event: QColor):
-        """
-        about 皮肤调节
-        :param event:
-        :return:
-        """
-        self.palette.setColor(QPalette.Background, event)  # 给调色板设置颜色
-        # 给控件设置颜色
-        if event.isValid():
-            self.menubar_ui.help_menu.about_ui.layout_widget.setStyleSheet(
-                'QWidget {background-color:%s}' % event.name())
-            self.menubar_ui.help_menu.about_ui.layout_widget.setPalette(self.palette)
 
     def retranslate_ui(self) -> None:
         pass
