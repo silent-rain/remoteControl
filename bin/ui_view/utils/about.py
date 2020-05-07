@@ -20,9 +20,6 @@ class AboutUI(object):
         self.layout_widget = QWidget(None, Qt.Dialog)
         self.layout = QGridLayout(self.layout_widget)
 
-        # 阻塞除当前窗体之外的所有的窗体
-        # self.layout_widget.setWindowModality(Qt.ApplicationModal)
-
         self.label = QLabel(self.layout_widget)
         self.title = QLabel(self.layout_widget)
         self.text = QTextEdit(self.layout_widget)
@@ -73,6 +70,9 @@ class AboutUI(object):
     def setup_ui(self) -> None:
         self.center()
         self.set_window_background()
+
+        # 阻塞除当前窗体之外的所有的窗体
+        self.layout_widget.setWindowModality(Qt.ApplicationModal)
 
         self.layout_widget.setObjectName("layout_widget")
         self.layout.setObjectName("gridLayout")

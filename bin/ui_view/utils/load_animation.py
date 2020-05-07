@@ -24,6 +24,24 @@ def load_animation(window: object, property_name: bytes = b'windowOpacity') -> N
     # windowOpacity---窗口的透明度(0.0是透明的    1.0是不透明)---好像只适合顶层窗口
     animation.setPropertyName(property_name)
 
+    animation.setEndValue(TRANSPARENT)  # 设置结束透明度
+
+    animation.setEasingCurve(QEasingCurve.InQuad)  # 设置动画的节奏
+    animation.start()  # 动画开始---非阻塞
+
+
+def load_animation2(window: object, property_name: bytes = b'windowOpacity') -> None:
+    animation = QPropertyAnimation()
+    animation.setTargetObject(window)  # 设置动画目标对象
+
+    # 设置动画属性
+    # 注意：字节类型
+    # pos---位置动画---QPoint
+    # size---大小动画---QSize
+    # geometry----位置+大小动画----QRect
+    # windowOpacity---窗口的透明度(0.0是透明的    1.0是不透明)---好像只适合顶层窗口
+    animation.setPropertyName(property_name)
+
     # animation.setStartValue(QPoint(0, 0))  # 设置开始位置---按钮的左上角位置
     # animation.setEndValue(QPoint(300, 300))  # 设置结束位置
     # animation.setStartValue(QSize(0, 0))  # 设置开始大小

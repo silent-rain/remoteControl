@@ -195,7 +195,7 @@ class WindowTransparentConnect(object):
             window.stop()
 
     def setup_ui(self) -> None:
-        pass
+        self.show_window()
 
     def retranslate_ui(self) -> None:
         pass
