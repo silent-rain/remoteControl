@@ -319,6 +319,10 @@ class MenubarUI(object):
 
 class MenubarConnect(object):
     def __init__(self, menubar_ui: MenubarUI):
+        """
+        菜单栏 信号
+        :param menubar_ui:
+        """
         self.menubar_ui = menubar_ui
 
     def setup_ui(self) -> None:

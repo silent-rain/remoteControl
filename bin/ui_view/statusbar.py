@@ -292,6 +292,10 @@ class StatusbarUI(object):
 
 class StatusbarConnect(object):
     def __init__(self, statusbar_ui: StatusbarUI):
+        """
+        状态栏 信号
+        :param statusbar_ui:
+        """
         self.statusbar_ui = statusbar_ui
 
         # self.statusbar_ui = StatusbarUI(self.main_window)
