@@ -44,9 +44,12 @@ class SkinColorDialogView(QThread):
 
         # 给控件设置颜色
         if event.isValid():
-            self.main_window.setStyleSheet('QWidget {background-color:%s}' % event.name())
-            self.main_window.setPalette(self.palette)
-            settings.SKIN_COLOR = event.getRgb()[:3]
+            # self.main_window.setStyleSheet('QWidget {background-color:%s}' % event.name())
+            # self.main_window.setPalette(self.palette)
+            self.color_dialog.setStyleSheet('QWidget {background-color:%s}' % event.name())
+            self.color_dialog.setPalette(self.palette)
+            # 发色信号
+            communicate.skin_color.emit(event)
 
     def run(self) -> None:
         # 颜色选取信号
@@ -65,24 +68,21 @@ class SkinColorDialogView(QThread):
 
         self.color_dialog.finished.connect(self.finished_color)
 
-        self.set_window_transparent()
+        if settings.LOAD_EFFECT_ON:
+            # 特效模式
+            load_animation.load_animation(self.color_dialog)
 
         # 打开对话框,等待打开
         self.color_dialog.show()
         # self.color_dialog.open()
 
-    @staticmethod
-    def finished_color(event: int):
+    def finished_color(self, event: int):
         """
-        调色完成回调函数
-        销毁窗口
+        设置颜色到全局变量
         :param event:
         :return:
         """
         if event:
             pass
-        communicate.skin_color_dialog_close.emit(True)
-
-    def set_window_transparent(self) -> None:
-        if settings.LOAD_EFFECT_ON:
-            load_animation.load_animation(self.color_dialog)
+        color = self.color_dialog.currentColor().getRgb()[:3]
+        settings.SKIN_COLOR = color

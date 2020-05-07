@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen
 from PyQt5.QtWidgets import qApp
 
 from bin.ui_view.info_display import DisplayInfoUI, GroupInfoUI, GroupInfoRightMenuConnect, GroupInfoConnect
-from bin.ui_view.main_window import MainWindowView
+from bin.ui_view.main_window import MainWinConnect, MainWindowUI
 from bin.ui_view.toolbar import ToolbarUI, ToolbarConnect
 from bin.ui_view.statusbar import StatusbarUI, StatusbarConnect
 from bin.ui_view.menubar import MenubarUI, MenubarConnect
@@ -95,7 +95,7 @@ class MainUI(LoadingUI):
         加载模块
         :return:
         """
-        self.add_ui(MainWindowView(self.main_window))  # 主窗口
+        self.add_ui(MainWindowUI(self.main_window))  # 主窗口
         self.add_ui(MenubarUI(self.main_window))  # 菜单栏
         self.add_ui(ToolbarUI(self.main_window))  # 工具导航
         self.add_ui(DisplayInfoUI(self.main_window))  # 信息展示
@@ -108,7 +108,7 @@ class MainUI(LoadingUI):
         加载功能链接
         :return:
         """
-        # self.add_ui(MainWindowView(self.main_window))  # 主窗口信号
+        self.add_ui(MainWinConnect(self.main_window))  # 主窗口信号
         self.add_ui(MenubarConnect(self.main_window))  # 菜单栏信号
         self.add_ui(ToolbarConnect(self.main_window))  # 工具导航信号
         self.add_ui(ToolsExtensionConnect(self.main_window))  # 工具扩展信号
@@ -147,7 +147,7 @@ class MainUI(LoadingUI):
         self.show_ui()
         self.splash.finish(self.main_window)  # 隐藏启动界面
         logger.info("系统信息 - 系统启动成功...")
-        logger.info("申明 - 本软件使用于学习网络安全,请不要触犯法律,否则后果自负,一切与原作者无关.")
+        logger.info("申明 - 本软件使用于学习软件开发,请不要触犯法律,否则后果自负,一切与原作者无关.")
         logger.info("系统信息 - 本地IP:  [{}]    监听端口:  [{}]".format(settings.IP, settings.PORT))
 
 

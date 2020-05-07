@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtCore import QObject, pyqtSignal
+from PyQt5.QtGui import QColor
 
 
 class Communicate(QObject):
@@ -16,8 +17,7 @@ class Communicate(QObject):
     group_tree_show = pyqtSignal(bool)  # 分组信息是否显示
     group_tree_checked = pyqtSignal(bool)  # 菜单栏中的分组信息是否选中
 
-    # 信号关闭
-    skin_color_dialog_close = pyqtSignal(bool)  # 皮肤窗口关闭
+    skin_color = pyqtSignal(QColor)  # 皮肤调节
 
 
 communicate = Communicate()

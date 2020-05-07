@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtGui import QIcon, QPalette, QPixmap, QBrush, QCloseEvent, QResizeEvent, QColor
-from PyQt5.QtWidgets import QWidget, QMainWindow, QDesktopWidget, QMessageBox
-from PyQt5.QtCore import QCoreApplication, QMetaObject, Qt
+from PyQt5.QtWidgets import QMainWindow, QDesktopWidget, QMessageBox
+from PyQt5.QtCore import QCoreApplication, QMetaObject
 
 from bin.ui_view.utils import load_animation
 from lib import settings
+from lib.communicate import communicate
 
 _translate = QCoreApplication.translate
 
@@ -24,38 +25,22 @@ class MainWindowUI(object):
             self._init_flag = True  # 只初始化一次
             self.main_window = main_window
 
-            # 中心窗口
-            # self.centralwidget = QWidget(self.main_window, Qt.WindowFlags())
+            # 创建调色板
+            self.palette = QPalette()
+            # 颜色初始化
+            # self.color_init = QColor(107, 173, 246)
+            self.color_init = QColor(*settings.SKIN_COLOR)
 
     def setup_ui(self) -> None:
         self.main_window.setObjectName("main_window")
         self.main_window.resize(850, 500)
 
-        # self.centralwidget.setObjectName("centralwidget")
-        # self.main_window.setCentralWidget(self.centralwidget)
-
         # noinspection PyArgumentList,PyCallByClass
         QMetaObject.connectSlotsByName(self.main_window)
 
-    def retranslate_ui(self) -> None:
-        pass
-
-
-class MainWindowView(MainWindowUI):
-    def __init__(self, main_window: QMainWindow):
-        super().__init__(main_window)
-        # 创建调色板
-        self.palette = QPalette()
-        # 颜色初始化
-        # self.color_init = QColor(107, 173, 246)
-        self.color_init = QColor(*settings.SKIN_COLOR)
-
-    def setup_ui(self) -> None:
-        super().setup_ui()
         self.set_window_icon()
         self.set_window_background()
         self.set_window_background4()
-        self.set_window_transparent()
         self.center()
         # self.main_window.resizeEvent = self.resize_event
         self.main_window.closeEvent = self.close_event
@@ -63,10 +48,13 @@ class MainWindowView(MainWindowUI):
         # 隐藏工具栏上的右键菜单
         # self.main_window.setContextMenuPolicy(Qt.NoContextMenu)
 
+        if settings.LOAD_EFFECT_ON:
+            # 特效
+            load_animation.load_animation(self.main_window)
+
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
-        super().retranslate_ui()
-        self.main_window.setWindowTitle(_translate("MainWindowUI", "远程控制"))
+        self.main_window.setWindowTitle(_translate("MainWindowUI", "远程协助"))
 
     def set_window_icon(self) -> None:
         """
@@ -162,7 +150,8 @@ class MainWindowView(MainWindowUI):
         """
         self.set_window_background3(event)
 
-    # noinspection PyArgumentList
+        # noinspection PyArgumentList
+
     def close_event(self, event: QCloseEvent) -> None:
         """
         重置退出事件
@@ -179,6 +168,7 @@ class MainWindowView(MainWindowUI):
         # 背景图片： "background-image: url(:/image/mainUi/background.png);"
         # msg.setStyleSheet("background-image: url({0});".format(settings.mainUi["background"]))
         message_box = QMessageBox(self.main_window)
+        # noinspection PyArgumentList
         reply = message_box.information(
             self.main_window,
             _translate("MainWindowUI", "温馨提示"),
@@ -194,6 +184,36 @@ class MainWindowView(MainWindowUI):
         else:
             event.ignore()
 
-    def set_window_transparent(self) -> None:
-        if settings.LOAD_EFFECT_ON:
-            load_animation.load_animation(self.main_window)
+
+class MainWinConnect(object):
+    def __init__(self, main_window: QMainWindow):
+        """
+        主窗口信号
+        :param main_window:
+        """
+        self.main_window = main_window
+        self.main_window_ui = MainWindowUI(self.main_window)
+
+        # 创建调色板
+        self.palette = QPalette()
+
+    def setup_ui(self) -> None:
+        self.communicate_connect()
+
+    def communicate_connect(self) -> None:
+        # 主窗口皮肤调节
+        communicate.skin_color.connect(self.skin_color_main_window)
+
+    def retranslate_ui(self) -> None:
+        pass
+
+    def skin_color_main_window(self, event: QColor) -> None:
+        """
+        窗口皮肤调节
+        :return:
+        """
+        self.palette.setColor(QPalette.Background, event)  # 给调色板设置颜色
+        # 给控件设置颜色
+        if event.isValid():
+            self.main_window.setStyleSheet('QWidget {background-color:%s}' % event.name())
+            self.main_window.setPalette(self.palette)

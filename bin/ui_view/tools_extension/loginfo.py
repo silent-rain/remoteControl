@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtWidgets import QTabWidget
-from PyQt5.QtCore import QCoreApplication, QSize
+from PyQt5.QtCore import QCoreApplication
 
 from bin.ui_view.base.table_widget_base import TableWidgetBase
 from lib.communicate import communicate

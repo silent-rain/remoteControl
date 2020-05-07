@@ -2,8 +2,9 @@
 import sys
 from PyQt5.QtCore import Qt
 from PyQt5.QtWidgets import QApplication, QMainWindow
+from lib import qtResource
 # from ui.skin_palette import Ui_Form
-from ui.group_tree import Ui_Form
+from ui.about import Ui_Form
 
 if __name__ == '__main__':
     app = QApplication(sys.argv)
