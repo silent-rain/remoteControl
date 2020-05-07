@@ -3,7 +3,7 @@ import os
 import chardet
 # import configparser
 # from configparser import ConfigParser
-from lib.configparser3 import ConfigParser
+from lib.config.configparser3 import ConfigParser
 
 """
 读取本地配置文件

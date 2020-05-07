@@ -3,9 +3,13 @@ from os.path import abspath, join, exists
 from os import mkdir
 
 from lib.basePath import BASE_PATH
-from lib import config_file_to_py, config_init, configer
-from lib import qtResource  # 资源文件
-from lib import fix_qt_import_error  # Qt打包补丁
+from lib.config import config_file_to_py, config_init, configer
+from lib import fix_qt_import_error  # Qt 打包报错补丁
+from lib import qtResource  # 系统资源
+
+if fix_qt_import_error and qtResource:
+    # 防止被软件清理
+    pass
 
 # 系统图标
 MAIN_UI = {
@@ -141,7 +145,37 @@ GROUP_TREE_SHOW = eval(CONFIG["view"].get("group_tree_show", "1"))
 # 监听地址
 IP = CONFIG["address"].get("ip", "")
 # 监听端口
-PORT = eval(CONFIG["address"].get("statusbar_show", "2020"))
+PORT = eval(CONFIG["address"].get("port", "2020"))
+
+# =========================== 数据库配置 ===========================
+# 数据库配置: 存储上线信息
+# 是否启用数据库; 注意本机安装有数据库
+# 默认不启用数据库,使用离线数据
+# ;0：关闭 1：开启
+# mysql_on = 0
+MYSQL_ON = eval(CONFIG["mysql_db"].get("mysql_on", "0"))
+# 数据库信息
+MYSQL_DB = {
+    "host": CONFIG["mysql_db"].get("host", "127.0.0.1"),
+    "port": eval(CONFIG["mysql_db"].get("port", "3306")),
+    "username": CONFIG["mysql_db"].get("username", "root"),
+    "password": CONFIG["mysql_db"].get("password", "pass"),
+    "db_name": CONFIG["mysql_db"].get("db_name", "online_info")
+}
+# sqlite 数据库路径
+SQLITE_DB = "sqlite:///" + abspath(join(BASE_PATH, "conf", "data.db"))
+
+# DEBUG模式使用 sqlite
+if (not DEBUG) and MYSQL_ON:
+    DB_URL = "mysql+pymysql://{username}:{password}@{host}:{port}/{db_name}?charset=utf8".format(
+        username=MYSQL_DB["username"],
+        password=MYSQL_DB["password"],
+        host=MYSQL_DB["host"],
+        port=MYSQL_DB["port"],
+        db_name=MYSQL_DB["db_name"],
+    )
+else:
+    DB_URL = SQLITE_DB
 
 
 def update_conf() -> dict:
@@ -153,7 +187,7 @@ def update_conf() -> dict:
     CONFIG["logging"]["logging_level"] = LOGGING_LEVEL
     # =========================== 监听配置 ===========================
     CONFIG["address"]["ip"] = IP
-    CONFIG["address"]["statusbar_show"] = PORT
+    CONFIG["address"]["port"] = PORT
     # =========================== 系统控制 ===========================
     CONFIG["system"]["processes"] = PROCESSES
     # =========================== 特效控制 ===========================
@@ -167,6 +201,12 @@ def update_conf() -> dict:
     CONFIG["view"]["toolbar_show"] = TOOLBAR_SHOW
     CONFIG["view"]["statusbar_show"] = STATUSBAR_SHOW
     CONFIG["view"]["group_tree_show"] = GROUP_TREE_SHOW
+    # =========================== 数据库配置 ===========================
+    CONFIG["mysql_db"]["mysql_on"] = MYSQL_DB["mysql_on"]
+    CONFIG["mysql_db"]["port"] = MYSQL_DB["port"]
+    CONFIG["mysql_db"]["username"] = MYSQL_DB["username"]
+    CONFIG["mysql_db"]["password"] = MYSQL_DB["password"]
+    CONFIG["mysql_db"]["db_name"] = MYSQL_DB["db_name"]
     return CONFIG
 
 

@@ -458,12 +458,13 @@ class GroupInfoRightMenuConnect(object):
 
 
 class GroupInfoConnect(object):
-    def __init__(self, group_info_ui: GroupInfoUI):
+    def __init__(self, group_info_ui: GroupInfoUI, display_info_ui: DisplayInfoUI):
         """
         分组信息 信号
         :param group_info_ui:
         """
         self.group_info_ui = group_info_ui
+        self.display_info_ui = display_info_ui
 
     def setup_ui(self) -> None:
         self.communicate_connect()

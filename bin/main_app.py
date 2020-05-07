@@ -15,6 +15,7 @@ from bin.ui_view.tools_extension.tools_extension import ToolsExtensionUI, ToolsE
 from bin.ui_view.utils.skincolordialog import SkinColorDialogConnect, WindowTransparentConnect
 from lib import settings
 from lib.logger import logger
+from lib.mysql.admin import ORMConnect
 
 
 class LoadingUI(object):
@@ -95,7 +96,7 @@ class MainUI(LoadingUI):
         # self.main_window_connect = MainWindowConnect(self.main_window_ui)  # 主窗口信号
         self.menubar_connect = MenubarConnect(self.menubar_ui)  # 菜单栏信号
         self.toolbar_connect = ToolbarConnect(self.toolbar_ui)  # 工具导航信号
-        self.group_info_connect = GroupInfoConnect(self.group_info_ui)  # 分组信息信号
+        self.group_info_connect = GroupInfoConnect(self.group_info_ui, self.display_info_ui)  # 分组信息信号
         self.group_info_right_menu_connect = GroupInfoRightMenuConnect(self.group_info_ui)  # 分组信息右键信号
         self.tools_extension_connect = ToolsExtensionConnect(self.tools_extension_ui)  # 工具扩展信号; 主要加载日志信号
         self.statusbar_connect = StatusbarConnect(self.statusbar_ui)  # 状态栏信号
@@ -103,6 +104,9 @@ class MainUI(LoadingUI):
         # 观察者模式
         self.skin_color_dialog_connect = SkinColorDialogConnect()  # 皮肤调节信号
         self.window_transparent_connect = WindowTransparentConnect()  # 透明度装饰
+
+        # 插件
+        self.orm_connect = ORMConnect()  # 数据库注册
 
     def load_ui(self) -> None:
         """
@@ -122,6 +126,7 @@ class MainUI(LoadingUI):
         加载 链接信号
         :return:
         """
+        # 外观模式
         self.connect_list.append(self.menubar_connect)
         self.connect_list.append(self.toolbar_connect)
         self.connect_list.append(self.tools_extension_connect)
@@ -129,8 +134,12 @@ class MainUI(LoadingUI):
         self.connect_list.append(self.group_info_right_menu_connect)
         self.connect_list.append(self.statusbar_connect)
 
+        # 观察者
         self.connect_list.append(self.skin_color_dialog_connect)
         self.connect_list.append(self.window_transparent_connect)
+
+        # 插件
+        self.connect_list.append(self.orm_connect)
 
     def load_window(self) -> None:
         """
@@ -168,6 +177,8 @@ class MainUI(LoadingUI):
 
         self.splash.showMessage("组件加载完成...", Qt.AlignHCenter | Qt.AlignBottom, Qt.black)
         logger.debug("系统信息 - 组件加载完成...")
+        if settings.DEBUG:
+            logger.debug("系统信息 - 当前DEBUG模式...")
 
     @staticmethod
     def progress_count(index: int, total: int) -> int:
@@ -192,7 +203,6 @@ class MainUI(LoadingUI):
 
         logger.info("系统信息 - 系统启动成功...")
         logger.info("申明 - 本软件使用于学习软件开发,请不要触犯法律,否则后果自负,一切与原作者无关.")
-        logger.info("系统信息 - 本地IP:  [{}]    监听端口:  [{}]".format(settings.IP, settings.PORT))
 
 
 class MainApp(object):
