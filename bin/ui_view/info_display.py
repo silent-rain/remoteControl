@@ -20,10 +20,9 @@ _translate = QCoreApplication.translate
 
 
 class TableWidgetUI(TableWidgetBase):
-
     def __init__(self):
         """
-        信息展示 模块
+        信息展示 基类
         """
         super().__init__()
         # self.headers_us = ["Id", "Date", "Type", "Message"]
@@ -56,91 +55,12 @@ class TableWidgetUI(TableWidgetBase):
         self.setWindowTitle(_translate("DisplayInfoUI", "信息展示"))
 
 
-class DisplayInfoUI(object):
-    def __new__(cls, *args, **kwargs) -> object:
-        if not hasattr(cls, "_instance"):  # 反射
-            cls._instance = object.__new__(cls)
-        return cls._instance
-
-    def __init__(self, main_window: QMainWindow):
-        """
-        信息展示
-        :param main_window:
-        """
-        if not hasattr(self, "_init_flag"):  # 反射
-            self.main_window = main_window
-
-            self.table_widget = TableWidgetUI()
-
-    def setup_ui(self):
-        self.table_widget.setup_ui()
-
-        # self.setMinimumHeight(200)
-        self.main_window.setCentralWidget(self.table_widget)
-
-        if settings.LOAD_EFFECT_ON:
-            # 特效
-            load_animation.load_animation(self.table_widget)
-
-        # print(dir(self.table_widget))
-
-    def retranslate_ui(self):
-        pass
-
-
-class GroupInfoUI(DockWidgetBase):
-    def __new__(cls, *args, **kwargs) -> object:
-        if not hasattr(cls, "_instance"):  # 反射
-            cls._instance = object.__new__(cls)
-        return cls._instance
-
-    def __init__(self, main_window: QMainWindow):
-        """
-        工具扩展
-        :param main_window:
-        """
-        if not hasattr(self, "_init_flag"):  # 反射
-            super().__init__(main_window)
-            self._init_flag = True  # 只初始化一次
-            self.main_window = main_window
-
-            self.tree_widget = GroupTreeWidgetUI(self.layout_widget)
-
-    def setup_ui(self) -> None:
-        super().setup_ui()
-        # noinspection PyArgumentList
-        self.layout.addWidget(self.tree_widget.group_tree)
-
-        self.tree_widget.setup_ui()
-
-        if not settings.TOOLS_EXTENSION_SHOW:
-            # self.dock_widget.hide()
-            self.dock_widget.setHidden(True)
-        if settings.LOAD_EFFECT_ON:
-            # 特效
-            load_animation.load_animation(self.tree_widget.group_tree)
-
-        # QDockWidget 显示位置
-        self.main_window.addDockWidget(Qt.LeftDockWidgetArea, self.dock_widget)
-
-        # 初始化QDockWidget的高度
-        self.dock_widget_contents.sizeHint = self.size_hint
-
-    # noinspection PyArgumentList
-    def retranslate_ui(self) -> None:
-        self.dock_widget.setWindowTitle(_translate("DisplayInfoUI", "分组信息"))
-
-    @staticmethod
-    def size_hint() -> QSize:
-        """
-        在这里定义 QDockWidget 的初始大小
-        :return:
-        """
-        return QSize(200, 0)
-
-
 class GroupTreeWidgetUI(object):
     def __init__(self, layout_widget: QWidget):
+        """
+        分组信息基类
+        :param layout_widget:
+        """
         self.layout_widget = layout_widget
 
         self.group_tree = QTreeWidget(self.layout_widget)
@@ -340,6 +260,76 @@ class GroupTreeWidgetUI(object):
         self.update_count()
 
 
+class DisplayInfoUI(object):
+    def __init__(self, main_window: QMainWindow):
+        """
+        信息展示
+        :param main_window:
+        """
+        self.main_window = main_window
+
+        self.table_widget = TableWidgetUI()
+
+    def setup_ui(self):
+        self.table_widget.setup_ui()
+
+        # self.setMinimumHeight(200)
+        self.main_window.setCentralWidget(self.table_widget)
+
+        if settings.LOAD_EFFECT_ON:
+            # 特效
+            load_animation.load_animation(self.table_widget)
+
+        # print(dir(self.table_widget))
+
+    def retranslate_ui(self):
+        pass
+
+
+class GroupInfoUI(DockWidgetBase):
+    def __init__(self, main_window: QMainWindow):
+        """
+        分组信息
+        :param main_window:
+        """
+        super().__init__(main_window)
+        self.main_window = main_window
+
+        self.tree_widget = GroupTreeWidgetUI(self.layout_widget)
+
+    def setup_ui(self) -> None:
+        super().setup_ui()
+        # noinspection PyArgumentList
+        self.layout.addWidget(self.tree_widget.group_tree)
+
+        self.tree_widget.setup_ui()
+
+        if not settings.TOOLS_EXTENSION_SHOW:
+            # self.dock_widget.hide()
+            self.dock_widget.setHidden(True)
+        if settings.LOAD_EFFECT_ON:
+            # 特效
+            load_animation.load_animation(self.tree_widget.group_tree)
+
+        # QDockWidget 显示位置
+        self.main_window.addDockWidget(Qt.LeftDockWidgetArea, self.dock_widget)
+
+        # 初始化QDockWidget的高度
+        self.dock_widget_contents.sizeHint = self.size_hint
+
+    # noinspection PyArgumentList
+    def retranslate_ui(self) -> None:
+        self.dock_widget.setWindowTitle(_translate("DisplayInfoUI", "分组信息"))
+
+    @staticmethod
+    def size_hint() -> QSize:
+        """
+        在这里定义 QDockWidget 的初始大小
+        :return:
+        """
+        return QSize(200, 0)
+
+
 class GroupInfoRightMenuConnect(object):
     def __init__(self, main_window: QMainWindow):
         """
@@ -470,7 +460,7 @@ class GroupInfoRightMenuConnect(object):
 class GroupInfoConnect(object):
     def __init__(self, main_window: QMainWindow):
         """
-
+        分组信息 信号
         :param main_window:
         """
 

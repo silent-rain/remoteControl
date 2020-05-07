@@ -1,0 +1,7 @@
+self.ui_list.append(self.main_window_connect)
+self.ui_list.append(self.menubar_connect)
+self.ui_list.append(self.toolbar_connect)
+self.ui_list.append(self.tools_extension_connect)
+self.ui_list.append(self.group_info_connect)
+self.ui_list.append(self.group_info_right_menu_connect)
+self.ui_list.append(self.statusbar_connect)

@@ -7,7 +7,7 @@ from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen
 from PyQt5.QtWidgets import qApp
 
 from bin.ui_view.info_display import DisplayInfoUI, GroupInfoUI, GroupInfoRightMenuConnect, GroupInfoConnect
-from bin.ui_view.main_window import MainWinConnect, MainWindowUI
+from bin.ui_view.main_window import MainWindowConnect, MainWindowUI
 from bin.ui_view.toolbar import ToolbarUI, ToolbarConnect
 from bin.ui_view.statusbar import StatusbarUI, StatusbarConnect
 from bin.ui_view.menubar import MenubarUI, MenubarConnect
@@ -79,51 +79,61 @@ class MainUI(LoadingUI):
         super().__init__(main_window)
         self.main_window = main_window
 
-        self.ui_view_list = []
+        # UI 加载
+        self.ui_list = []
+        self.main_window_ui = MainWindowUI(self.main_window)  # 主窗口
+        self.menubar_ui = MenubarUI(self.main_window)  # 菜单栏
+        self.toolbar_ui = ToolbarUI(self.main_window)  # 工具导航
+        self.display_info_ui = DisplayInfoUI(self.main_window)  # 信息展示
+        self.group_info_ui = GroupInfoUI(self.main_window)  # 分组信息
+        self.tools_extension_ui = ToolsExtensionUI(self.main_window)  # 工具扩展
+        self.statusbar_ui = StatusbarUI(self.main_window)  # 状态栏
 
-    def add_ui(self, ui: object) -> None:
-        """
-        添加模块
-        :param ui: 模块对象
-        :return:
-        """
-        if ui not in self.ui_view_list:
-            self.ui_view_list.append(ui)
+        # 模块信号
+        self.connect_list = []
+        self.main_window_connect = MainWindowConnect(self.main_window_ui)  # 主窗口信号
+        self.menubar_connect = MenubarConnect(self.menubar_ui)  # 菜单栏信号
+        self.toolbar_connect = ToolbarConnect(self.toolbar_ui)  # 工具导航信号
+        self.group_info_connect = GroupInfoConnect(self.main_window)  # 分组信息信号
+        self.group_info_right_menu_connect = GroupInfoRightMenuConnect(self.main_window)  # 分组信息右键信号
+        self.tools_extension_connect = ToolsExtensionConnect(self.tools_extension_ui)  # 工具扩展信号; 主要加载日志信号
+        self.statusbar_connect = StatusbarConnect(self.main_window)  # 状态栏信号
 
     def load_ui(self) -> None:
         """
         加载模块
         :return:
         """
-        self.add_ui(MainWindowUI(self.main_window))  # 主窗口
-        self.add_ui(MenubarUI(self.main_window))  # 菜单栏
-        self.add_ui(ToolbarUI(self.main_window))  # 工具导航
-        self.add_ui(DisplayInfoUI(self.main_window))  # 信息展示
-        self.add_ui(GroupInfoUI(self.main_window))  # 分组信息
-        self.add_ui(ToolsExtensionUI(self.main_window))  # 工具扩展
-        self.add_ui(StatusbarUI(self.main_window))  # 状态栏
+        self.ui_list.append(self.main_window_ui)
+        self.ui_list.append(self.menubar_ui)
+        self.ui_list.append(self.toolbar_ui)
+        self.ui_list.append(self.display_info_ui)
+        self.ui_list.append(self.group_info_ui)
+        self.ui_list.append(self.tools_extension_ui)
+        self.ui_list.append(self.statusbar_ui)
 
     def load_connect(self) -> None:
         """
         加载功能链接
         :return:
         """
-        self.add_ui(MainWinConnect(self.main_window))  # 主窗口信号
-        self.add_ui(MenubarConnect(self.main_window))  # 菜单栏信号
-        self.add_ui(ToolbarConnect(self.main_window))  # 工具导航信号
-        self.add_ui(ToolsExtensionConnect(self.main_window))  # 工具扩展信号
-        self.add_ui(GroupInfoConnect(self.main_window))  # 分组信息信号
-        self.add_ui(GroupInfoRightMenuConnect(self.main_window))  # 分组信息右键信号
-        self.add_ui(StatusbarConnect(self.main_window))  # 状态栏信号
+        self.connect_list.append(self.main_window_connect)
+        self.connect_list.append(self.menubar_connect)
+        self.connect_list.append(self.toolbar_connect)
+        self.connect_list.append(self.tools_extension_connect)
+        self.connect_list.append(self.group_info_connect)
+        self.connect_list.append(self.group_info_right_menu_connect)
+        self.connect_list.append(self.statusbar_connect)
 
     def show_ui(self) -> None:
         """
         显示数据
         :return:
         """
-        length = len(self.ui_view_list)
+        all_list = self.ui_list + self.connect_list
+        length = len(all_list)
         for index in range(length):
-            view = self.ui_view_list[index]
+            view = all_list[index]
             view.setup_ui()
             view.retranslate_ui()
 
@@ -137,6 +147,12 @@ class MainUI(LoadingUI):
 
     @staticmethod
     def progress_count(index: int, total: int) -> int:
+        """
+        百分比计算
+        :param index:
+        :param total:
+        :return:
+        """
         percentage = int((index / total) * 100)
         return percentage
 
@@ -145,7 +161,9 @@ class MainUI(LoadingUI):
         self.load_ui()
         self.load_connect()
         self.show_ui()
+
         self.splash.finish(self.main_window)  # 隐藏启动界面
+
         logger.info("系统信息 - 系统启动成功...")
         logger.info("申明 - 本软件使用于学习软件开发,请不要触犯法律,否则后果自负,一切与原作者无关.")
         logger.info("系统信息 - 本地IP:  [{}]    监听端口:  [{}]".format(settings.IP, settings.PORT))

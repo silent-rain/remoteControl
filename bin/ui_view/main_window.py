@@ -15,21 +15,18 @@ _translate = QCoreApplication.translate
 
 
 class MainWindowUI(object):
-    def __new__(cls, *args, **kwargs) -> object:
-        if not hasattr(cls, "_instance"):  # 反射
-            cls._instance = object.__new__(cls)
-        return cls._instance
-
     def __init__(self, main_window: QMainWindow):
-        if not hasattr(self, "_init_flag"):  # 反射
-            self._init_flag = True  # 只初始化一次
-            self.main_window = main_window
+        """
+        主窗口
+        :param main_window:
+        """
+        self.main_window = main_window
 
-            # 创建调色板
-            self.palette = QPalette()
-            # 颜色初始化
-            # self.color_init = QColor(107, 173, 246)
-            self.color_init = QColor(*settings.SKIN_COLOR)
+        # 创建调色板
+        self.palette = QPalette()
+        # 颜色初始化
+        # self.color_init = QColor(107, 173, 246)
+        self.color_init = QColor(*settings.SKIN_COLOR)
 
     def setup_ui(self) -> None:
         self.main_window.setObjectName("main_window")
@@ -185,14 +182,13 @@ class MainWindowUI(object):
             event.ignore()
 
 
-class MainWinConnect(object):
-    def __init__(self, main_window: QMainWindow):
+class MainWindowConnect(object):
+    def __init__(self, main_window_ui: MainWindowUI):
         """
         主窗口信号
-        :param main_window:
+        :param main_window_ui:
         """
-        self.main_window = main_window
-        self.main_window_ui = MainWindowUI(self.main_window)
+        self.main_window_ui = main_window_ui
 
         # 创建调色板
         self.palette = QPalette()
@@ -215,5 +211,5 @@ class MainWinConnect(object):
         self.palette.setColor(QPalette.Background, event)  # 给调色板设置颜色
         # 给控件设置颜色
         if event.isValid():
-            self.main_window.setStyleSheet('QWidget {background-color:%s}' % event.name())
-            self.main_window.setPalette(self.palette)
+            self.main_window_ui.main_window.setStyleSheet('QWidget {background-color:%s}' % event.name())
+            self.main_window_ui.main_window.setPalette(self.palette)

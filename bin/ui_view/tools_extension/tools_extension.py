@@ -17,47 +17,35 @@ _translate = QCoreApplication.translate
 
 
 class ToolsExtensionUI(DockWidgetBase):
-    def __new__(cls, *args, **kwargs) -> object:
-        if not hasattr(cls, "_instance"):  # 反射
-            cls._instance = object.__new__(cls)
-        return cls._instance
-
     def __init__(self, main_window: QMainWindow):
         """
         工具扩展
+        外观模式
         :param main_window:
         """
-        if not hasattr(self, "_init_flag"):  # 反射
-            super().__init__(main_window)
-            self._init_flag = True  # 只初始化一次
-            self.main_window = main_window
+        super().__init__(main_window)
+        self.main_window = main_window
 
-            self.tab_widget = QTabWidget(self.layout_widget)
-            self.ui_view_list = []
+        self.tab_widget = QTabWidget(self.layout_widget)
 
-    def add_ui(self, ui: object) -> None:
-        """
-        添加模块
-        :param ui:
-        :return:
-        """
-        if ui not in self.ui_view_list:
-            self.ui_view_list.append(ui)
+        self.ui_list = []
+        self.log_info_ui = LogInfoUI(self.tab_widget)  # 日志信息
+        self.batch_operation_ui = BatchOperationUI(self.tab_widget)  # 批量操作
 
     def load_ui(self) -> None:
         """
         加载模块
         :return:
         """
-        self.add_ui(LogInfoUI(self.tab_widget))  # 日志信息
-        self.add_ui(BatchOperationUI(self.tab_widget))  # 批量操作
+        self.ui_list.append(self.log_info_ui)
+        self.ui_list.append(self.batch_operation_ui)
 
     def show_ui(self) -> None:
         """
         显示数据
         :return:
         """
-        for view in self.ui_view_list:
+        for view in self.ui_list:
             view.setup_ui()
             view.retranslate_ui()
 
@@ -119,20 +107,23 @@ class ToolsExtensionUI(DockWidgetBase):
 
 
 class ToolsExtensionConnect(object):
-    def __init__(self, main_window: QMainWindow):
-        self.main_window = main_window
-
-        self.dock_widget_ui = ToolsExtensionUI(self.main_window)
-        self.dock_widget = self.dock_widget_ui.dock_widget
+    def __init__(self, tools_extension_ui: ToolsExtensionUI):
+        """
+        工具栏扩展
+        外观模式
+        :param tools_extension_ui:
+        """
+        self.tools_extension_ui = tools_extension_ui
 
         # 工具扩展子类信号
-        self.ui_connect_list = []
+        self.connect_list = []
+        self.log_info_connect = LogInfoConnect(self.tools_extension_ui.log_info_ui)  # 日志信号
 
     def setup_ui(self) -> None:
         self.communicate_connect()
 
-        self.dock_widget.hideEvent = self.hide_event
-        self.dock_widget.showEvent = self.hide_event
+        self.tools_extension_ui.dock_widget.hideEvent = self.hide_event
+        self.tools_extension_ui.dock_widget.showEvent = self.hide_event
 
         # 工具扩展子类信号
         self.load_connect()
@@ -145,10 +136,10 @@ class ToolsExtensionConnect(object):
     def tools_extension_show(self, flag: bool) -> None:
         if flag:
             # 显示
-            self.dock_widget.setHidden(False)
+            self.tools_extension_ui.dock_widget.setHidden(False)
         else:
             # 隐藏
-            self.dock_widget.setHidden(True)
+            self.tools_extension_ui.dock_widget.setHidden(True)
 
     def hide_event(self, event: QHideEvent):
         """
@@ -158,7 +149,7 @@ class ToolsExtensionConnect(object):
         """
         if event:
             pass
-        if self.dock_widget.isHidden():
+        if self.tools_extension_ui.dock_widget.isHidden():
             communicate.tools_extension_checked.emit(False)
         else:
             communicate.tools_extension_checked.emit(True)
@@ -166,27 +157,19 @@ class ToolsExtensionConnect(object):
     def retranslate_ui(self) -> None:
         pass
 
-    def add_connect(self, ui: object) -> None:
-        """
-        添加模块
-        :param ui:
-        :return:
-        """
-        if ui not in self.ui_connect_list:
-            self.ui_connect_list.append(ui)
-
     def load_connect(self) -> None:
         """
         加载模块
         :return:
         """
-        self.add_connect(LogInfoConnect(LogInfoUI(self.dock_widget)))  # 日志信号链接
+        self.connect_list.append(self.log_info_connect)
 
     def show_connect(self) -> None:
         """
         显示数据
         :return:
         """
-        for view in self.ui_connect_list:
-            view.setup_ui()
-            view.retranslate_ui()
+        for connect in self.connect_list:
+            print(connect)
+            connect.setup_ui()
+            connect.retranslate_ui()

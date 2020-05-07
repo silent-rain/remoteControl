@@ -29,6 +29,11 @@ _translate = QCoreApplication.translate
 
 class OptionMenu(object):
     def __init__(self, menubar: QMenuBar, main_window: QMainWindow):
+        """
+        选项
+        :param menubar:
+        :param main_window:
+        """
         self.menubar = menubar
         self.main_window = main_window
 
@@ -115,26 +120,24 @@ class OptionMenu(object):
 
 
 class ViewMenu(object):
-    def __new__(cls, *args, **kwargs) -> object:
-        if not hasattr(cls, "_instance"):  # 反射
-            cls._instance = object.__new__(cls)
-        return cls._instance
-
     def __init__(self, menubar: QMenuBar):
-        if not hasattr(self, "_init_flag"):  # 反射
-            self.menubar = menubar
+        """
+        查看
+        :param menubar:
+        """
+        self.menubar = menubar
 
-            # 向菜单栏中添加新的QMenu对象，父菜单
-            self.view = QMenu(self.menubar)
+        # 向菜单栏中添加新的QMenu对象，父菜单
+        self.view = QMenu(self.menubar)
 
-            # 状态栏
-            self.statusbar = QAction(QIcon(""), '&Statusbar', self.menubar)
-            # 工具导航
-            self.toolbar = QAction(QIcon(""), '&Toolbar', self.menubar)
-            # 分组信息
-            self.group_info = QAction(QIcon(""), '&Group Info', self.menubar)
-            # 工具扩展
-            self.tools_extension = QAction(QIcon(""), '&Tools Extension', self.menubar)
+        # 状态栏
+        self.statusbar = QAction(QIcon(""), '&Statusbar', self.menubar)
+        # 工具导航
+        self.toolbar = QAction(QIcon(""), '&Toolbar', self.menubar)
+        # 分组信息
+        self.group_info = QAction(QIcon(""), '&Group Info', self.menubar)
+        # 工具扩展
+        self.tools_extension = QAction(QIcon(""), '&Tools Extension', self.menubar)
 
     def setup_ui(self) -> None:
         self.statusbar.setObjectName("statusbar")
@@ -224,6 +227,11 @@ class ViewMenu(object):
 
 class HelpMenu(object):
     def __init__(self, menubar: QMenuBar, main_window: QMainWindow):
+        """
+        帮助
+        :param menubar:
+        :param main_window:
+        """
         self.menubar = menubar
         self.main_window = main_window
 
@@ -255,17 +263,20 @@ class HelpMenu(object):
 
 
 class MenubarUI(object):
-    def __new__(cls, *args, **kwargs) -> object:
-        if not hasattr(cls, "_instance"):  # 反射
-            cls._instance = object.__new__(cls)
-        return cls._instance
-
     def __init__(self, main_window: QMainWindow):
-        if not hasattr(self, "_init_flag"):  # 反射
-            self._init_flag = True  # 只初始化一次
-            self.main_window = main_window
-            self.menubar = QMenuBar(main_window)
-            self.ui_view_list = []
+        """
+        菜单栏
+        外观模式
+        :param main_window:
+        """
+        self.main_window = main_window
+
+        self.menubar = QMenuBar(main_window)
+
+        self.menu_list = []
+        self.option_menu = OptionMenu(self.menubar, self.main_window)
+        self.view_menu = ViewMenu(self.menubar)
+        self.help_menu = HelpMenu(self.menubar, self.main_window)
 
     def setup_ui(self) -> None:
         font = QFont()
@@ -287,41 +298,28 @@ class MenubarUI(object):
     def retranslate_ui(self) -> None:
         self.menubar.setWindowTitle(_translate("MenubarUI", "菜单栏"))
 
-    def add_ui(self, ui: object) -> None:
-        """
-        添加模块
-        :param ui:
-        :return:
-        """
-        if ui not in self.ui_view_list:
-            self.ui_view_list.append(ui)
-
     def load_ui(self) -> None:
         """
         加载模块
         :return:
         """
-        self.add_ui(OptionMenu(self.menubar, self.main_window))
-        self.add_ui(ViewMenu(self.menubar))
-        self.add_ui(HelpMenu(self.menubar, self.main_window))
+        self.menu_list.append(self.option_menu)
+        self.menu_list.append(self.view_menu)
+        self.menu_list.append(self.help_menu)
 
     def show_ui(self) -> None:
         """
         显示数据
         :return:
         """
-        for view in self.ui_view_list:
+        for view in self.menu_list:
             view.setup_ui()
             view.retranslate_ui()
 
 
 class MenubarConnect(object):
-    def __init__(self, main_window: QMainWindow):
-        self.main_window = main_window
-
-        self.menubar_ui = MenubarUI(self.main_window)
-        self.view_menu = ViewMenu(self.menubar_ui.menubar)
-        self.help_menu = HelpMenu(self.menubar_ui.menubar, self.main_window)
+    def __init__(self, menubar_ui: MenubarUI):
+        self.menubar_ui = menubar_ui
 
         # 创建调色板
         self.palette = QPalette()
@@ -345,34 +343,34 @@ class MenubarConnect(object):
     def group_tree_checked(self, flag: bool) -> None:
         if flag:
             # 菜单栏选中
-            self.view_menu.group_info.setChecked(True)
+            self.menubar_ui.view_menu.group_info.setChecked(True)
         else:
             # 菜单栏取消
-            self.view_menu.group_info.setChecked(False)
+            self.menubar_ui.view_menu.group_info.setChecked(False)
 
     def toolbar_checked(self, flag: bool) -> None:
         if flag:
             # 菜单栏选中
-            self.view_menu.toolbar.setChecked(True)
+            self.menubar_ui.view_menu.toolbar.setChecked(True)
         else:
             # 菜单栏取消
-            self.view_menu.toolbar.setChecked(False)
+            self.menubar_ui.view_menu.toolbar.setChecked(False)
 
     def tools_extension_checked(self, flag: bool) -> None:
         if flag:
             # 菜单栏选中
-            self.view_menu.tools_extension.setChecked(True)
+            self.menubar_ui.view_menu.tools_extension.setChecked(True)
         else:
             # 菜单栏取消
-            self.view_menu.tools_extension.setChecked(False)
+            self.menubar_ui.view_menu.tools_extension.setChecked(False)
 
     def statusbar_checked(self, flag: bool) -> None:
         if flag:
             # 菜单栏选中
-            self.view_menu.statusbar.setChecked(True)
+            self.menubar_ui.view_menu.statusbar.setChecked(True)
         else:
             # 菜单栏取消
-            self.view_menu.statusbar.setChecked(False)
+            self.menubar_ui.view_menu.statusbar.setChecked(False)
 
     def skin_color_about(self, event: QColor):
         """
@@ -383,8 +381,9 @@ class MenubarConnect(object):
         self.palette.setColor(QPalette.Background, event)  # 给调色板设置颜色
         # 给控件设置颜色
         if event.isValid():
-            self.help_menu.about_ui.layout_widget.setStyleSheet('QWidget {background-color:%s}' % event.name())
-            self.help_menu.about_ui.layout_widget.setPalette(self.palette)
+            self.menubar_ui.help_menu.about_ui.layout_widget.setStyleSheet(
+                'QWidget {background-color:%s}' % event.name())
+            self.menubar_ui.help_menu.about_ui.layout_widget.setPalette(self.palette)
 
     def retranslate_ui(self) -> None:
         pass

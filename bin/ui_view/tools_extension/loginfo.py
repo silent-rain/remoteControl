@@ -14,6 +14,9 @@ _translate = QCoreApplication.translate
 
 class LogTableWidgetUI(TableWidgetBase):
     def __init__(self):
+        """
+        日志模块 基类
+        """
         super().__init__()
         # self.headers_us = ["Id", "Date", "Type", "Message"]
         # noinspection PyArgumentList
@@ -34,21 +37,14 @@ class LogTableWidgetUI(TableWidgetBase):
 
 
 class LogInfoUI(object):
-    def __new__(cls, *args, **kwargs) -> object:
-        if not hasattr(cls, "_instance"):  # 反射
-            cls._instance = object.__new__(cls)
-        return cls._instance
-
     def __init__(self, tab_widget: QTabWidget):
         """
         日志UI
         :param tab_widget:
         """
-        if not hasattr(self, "_init_flag"):  # 反射
-            self._init_flag = True  # 只初始化一次
+        self.tab_widget = tab_widget
 
-            self.tab_widget = tab_widget
-            self.log_tab = LogTableWidgetUI()
+        self.log_tab = LogTableWidgetUI()
 
     def setup_ui(self) -> None:
         self.log_tab.setObjectName("tab")
@@ -62,10 +58,8 @@ class LogInfoUI(object):
 
 
 class LogInfoConnect(object):
-    def __init__(self, log_ui: LogInfoUI):
-        self.log_ui = log_ui
-
-        self.log_tab = self.log_ui.log_tab
+    def __init__(self, log_info_ui: LogInfoUI):
+        self.log_info_ui = log_info_ui
 
     def get_object(self):
         pass
@@ -85,8 +79,8 @@ class LogInfoConnect(object):
         """
         info_list = [item for item in message.split(" - ")]
         info_list.insert(0, "")
-        self.log_tab.add_data2(info_list)
-        self.log_tab.scrollToBottom()  # 最后一行
+        self.log_info_ui.log_tab.add_data2(info_list)
+        self.log_info_ui.log_tab.scrollToBottom()  # 最后一行
 
     def retranslate_ui(self) -> None:
         pass

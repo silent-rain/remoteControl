@@ -227,19 +227,22 @@ class MonitorPort(object):
 
 
 class StatusbarUI(object):
-    def __new__(cls, *args, **kwargs) -> object:
-        if not hasattr(cls, "_instance"):  # 反射
-            cls._instance = object.__new__(cls)
-        return cls._instance
-
     def __init__(self, main_window: QMainWindow):
-        if not hasattr(self, "_init_flag"):  # 反射
-            self._init_flag = True  # 只初始化一次
+        """
+        状态栏
+        外观模式
+        :param main_window:
+        """
+        self.main_window = main_window
 
-            self.main_window = main_window
-            self.statusbar = QStatusBar(self.main_window)
+        self.statusbar = QStatusBar(self.main_window)
 
-            self.ui_view_list = []
+        self.ui_list = []
+        self.show_time = ShowTime(self.statusbar, 1)  # 时间模块
+        self.placeholder = Placeholder(self.statusbar, 2)  # 占位符
+        self.net_speed = NetSpeed(self.statusbar, -4)  # 网速
+        self.monitor_port = MonitorPort(self.statusbar, -3)  # 监听端口
+        self.online_host = OnlineHost(self.statusbar, -1)  # 上线主机
 
     def options(self) -> None:
         font = QFont()
@@ -280,18 +283,18 @@ class StatusbarUI(object):
         加载模块
         :return:
         """
-        self.add_ui(ShowTime(self.statusbar, 1))
-        self.add_ui(Placeholder(self.statusbar, 2))
-        self.add_ui(NetSpeed(self.statusbar, -4))
-        self.add_ui(MonitorPort(self.statusbar, -3))
-        self.add_ui(OnlineHost(self.statusbar, -1))
+        self.ui_list.append(self.show_time)
+        self.ui_list.append(self.placeholder)
+        self.ui_list.append(self.net_speed)
+        self.ui_list.append(self.monitor_port)
+        self.ui_list.append(self.online_host)
 
     def show_ui(self) -> None:
         """
         显示数据
         :return:
         """
-        for view in self.ui_view_list:
+        for view in self.ui_list:
             view.setup_ui()
             view.retranslate_ui()
 
