@@ -428,9 +428,11 @@ class GroupTreeWidgetUI(object):
         # 判断根节点是否存在返回根节点
         master: QTreeWidgetItem = self.master_exists(name)
         if not master:
+            logger.error("主机下线失败 - 分组不存在: {}".format(name))
             return None
         child = self.child_exists(out_net)
         if not child:
+            logger.error("主机下线失败 - 主机信息未找到: {}".format(out_net))
             return None
         # 删除子节点
         master.removeChild(child)
