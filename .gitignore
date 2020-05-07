@@ -112,3 +112,4 @@ venv.bak/
 
 # db
 conf/data.db
+conf/.fuse_hidden*

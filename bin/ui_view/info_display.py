@@ -26,6 +26,9 @@ class TableWidgetUI(TableWidgetBase):
         """
         super().__init__()
         # self.headers_us = ["Id", "Date", "Type", "Message"]
+        # self.headers_title_us = ["Id", "out_net", "in_net", "host_name", "system", "cpu", "memory", "disk",
+        #                          "video", "voice", "boot_time", "version", "group", "position", "note"]
+
         # noinspection PyArgumentList
         self.headers_title = [
             _translate("DisplayInfoUI", "Id"),
@@ -40,6 +43,7 @@ class TableWidgetUI(TableWidgetBase):
             _translate("DisplayInfoUI", "语音"),
             _translate("DisplayInfoUI", "开机时间"),
             _translate("DisplayInfoUI", "服务版本"),
+            _translate("DisplayInfoUI", "分组"),
             _translate("DisplayInfoUI", "区域"),
             _translate("DisplayInfoUI", "备注"),
         ]
@@ -192,7 +196,7 @@ class GroupTreeWidgetUI(object):
         # item = self.group_tree.topLevelItem(p_int).child(0)
         return count
 
-    def add_master_item(self, title: str = "新根节点") -> None:
+    def add_master_item(self, title: str = "新根节点") -> QTreeWidgetItem:
         """
         添加根节点
         :param title:
@@ -201,34 +205,105 @@ class GroupTreeWidgetUI(object):
         master = QTreeWidgetItem(self.group_tree)
         master.setText(0, title)
         # child.setFlags(Qt.ItemIsEnabled | Qt.ItemIsEditable)
+        return master
 
-    def add_child_item(self, item: [int, str, str]) -> None:
+    def master_exists(self, _name: str) -> (bool, QTreeWidgetItem):
         """
+        判断根节点名称是否存在
+        :param _name: 名称
+        :return: 返回存在的节点
+        """
+        # 获取根节个数
+        master_count = self.group_tree.topLevelItemCount()
+        for index in range(master_count):
+            # 获取根节点
+            master: QTreeWidgetItem = self.group_tree.topLevelItem(index)
+            name = master.text(1)
+            if name == _name:
+                return master
+        return None
+
+    def master_exists2(self, index: int) -> (bool, QTreeWidgetItem):
+        """
+        判断根节点索引是否存在
+        :param index: 名称
+        :return: 返回存在的节点
+        """
+        # 获取根节个数
+        master_count = self.group_tree.topLevelItemCount()
+        if index <= master_count:
+            master = self.group_tree.topLevelItem(index)
+            return master
+        return None
+
+    def add_child_item(self, name, item: list) -> None:
+        """
+        根据name获取根节点
+        根节点不存在,创建根节点
         添加子节点
-        :param item: [id, 主机信息, 备注]
+        :param name: 根节点 name
+        :param item: [title, note]
         :return:
         """
-        node = self.group_tree.currentItem()
+        # 判断根节点是否存在返回根节点
+        master: QTreeWidgetItem = self.master_exists(name)
+        if not master:
+            # 添加一个根节点
+            master: QTreeWidgetItem = self.add_master_item(name)
+
+        count = master.childCount()  # 获根节点的子节点个数
+        item.insert(0, count)  # 插入ID
         child = QTreeWidgetItem()
         child.setCheckState(0, Qt.Unchecked)
         for index, value in enumerate(item):
             child.setText(index, value)
-        node.addChild(child)
+        master.addChild(child)
 
-    def add_child_item2(self, index, item: [int, str, str]) -> None:
+    def add_child_item2(self, index: int, item: list) -> None:
         """
         根据索引获取根节点
+        索引不存在就创建一个根节点
         添加子节点
-        :param index:
-        :param item:
+
+        bug:
+        存在安全问题,如果检索的索引远远超出界限,将不能正确插入所需要的节点
+        :param index: 根节点索引
+        :param item: [title, note]
         :return:
         """
-        node = self.group_tree.topLevelItem(index)
+        # 获取根节点
+        master = self.master_exists2(index)
+        if not master:
+            # 添加一个根节点
+            master = self.add_master_item()
+
+        count = master.childCount()  # 获根节点的子节点个数
+        item.insert(0, count)  # 插入ID
         child = QTreeWidgetItem()
         child.setCheckState(0, Qt.Unchecked)
         for index, value in enumerate(item):
             child.setText(index, value)
-        node.addChild(child)
+        master.addChild(child)
+
+    def add_child_item3(self, item: list) -> None:
+        """
+        获取当前根节点
+        添加子节点
+        :param item: [主机信息, 备注]
+        :return:
+        """
+        # 获取当前根节点
+        master: QTreeWidgetItem = self.group_tree.currentItem()
+        if master.parent():
+            print("当前不是根节点")
+            return
+        count = master.childCount()
+        item.insert(0, count)  # 插入ID
+        child = QTreeWidgetItem()
+        child.setCheckState(0, Qt.Unchecked)
+        for index, value in enumerate(item):
+            child.setText(index, value)
+        master.addChild(child)
 
     def update_count(self) -> None:
         """
@@ -395,6 +470,7 @@ class GroupInfoRightMenuConnect(object):
             pass
         master = QTreeWidgetItem(self.group_tree)
         master.setText(0, title)
+        # self.tree_widget.add_master_item(title)
 
     def change_event(self, event: bool) -> None:
         """
