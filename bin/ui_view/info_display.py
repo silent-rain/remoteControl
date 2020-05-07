@@ -331,16 +331,16 @@ class GroupInfoUI(DockWidgetBase):
 
 
 class GroupInfoRightMenuConnect(object):
-    def __init__(self, main_window: QMainWindow):
+    def __init__(self, group_info_ui: GroupInfoUI):
         """
         分组信息中右键菜单
-        :param main_window:
+        :param group_info_ui:
         """
-        self.main_window = main_window
+        self.group_info_ui = group_info_ui
 
-        self.group_ui = GroupInfoUI(self.main_window)
-        self.tree_widget = self.group_ui.tree_widget
-        self.group_tree = self.group_ui.tree_widget.group_tree
+        # self.group_ui = GroupInfoUI(self.main_window)
+        self.tree_widget = self.group_info_ui.tree_widget
+        self.group_tree = self.group_info_ui.tree_widget.group_tree
 
         self.pop_menu = QMenu(self.group_tree)
         self.add = QAction()
@@ -417,8 +417,8 @@ class GroupInfoRightMenuConnect(object):
             return None
 
         # noinspection PyArgumentList
-        text, ok = QInputDialog(self.main_window).getText(
-            self.main_window,
+        text, ok = QInputDialog(self.group_info_ui.main_window).getText(
+            self.group_info_ui.main_window,
             '温馨提示',
             '修改分组：')
         if ok and text:
@@ -458,22 +458,18 @@ class GroupInfoRightMenuConnect(object):
 
 
 class GroupInfoConnect(object):
-    def __init__(self, main_window: QMainWindow):
+    def __init__(self, group_info_ui: GroupInfoUI):
         """
         分组信息 信号
-        :param main_window:
+        :param group_info_ui:
         """
-
-        self.main_window = main_window
-
-        self.display_info_ui = GroupInfoUI(self.main_window)
-        self.dock_widget = self.display_info_ui.dock_widget
+        self.group_info_ui = group_info_ui
 
     def setup_ui(self):
         self.communicate_connect()
 
-        self.dock_widget.hideEvent = self.hide_event
-        self.dock_widget.showEvent = self.hide_event
+        self.group_info_ui.dock_widget.hideEvent = self.hide_event
+        self.group_info_ui.dock_widget.showEvent = self.hide_event
 
     def retranslate_ui(self):
         pass
@@ -490,10 +486,10 @@ class GroupInfoConnect(object):
         """
         if flag:
             # 显示
-            self.dock_widget.setHidden(False)
+            self.group_info_ui.dock_widget.setHidden(False)
         else:
             # 隐藏
-            self.dock_widget.setHidden(True)
+            self.group_info_ui.dock_widget.setHidden(True)
 
     def hide_event(self, event: QHideEvent):
         """
@@ -504,7 +500,7 @@ class GroupInfoConnect(object):
         """
         if event:
             pass
-        if self.dock_widget.isHidden():
+        if self.group_info_ui.dock_widget.isHidden():
             communicate.group_tree_checked.emit(False)
         else:
             communicate.group_tree_checked.emit(True)

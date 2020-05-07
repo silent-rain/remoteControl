@@ -170,6 +170,5 @@ class ToolsExtensionConnect(object):
         :return:
         """
         for connect in self.connect_list:
-            print(connect)
             connect.setup_ui()
             connect.retranslate_ui()

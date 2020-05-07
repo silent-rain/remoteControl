@@ -269,15 +269,6 @@ class StatusbarUI(object):
     def retranslate_ui(self) -> None:
         self.statusbar.setWindowTitle(_translate("StatusbarUI", "状态栏"))
 
-    def add_ui(self, ui: object) -> None:
-        """
-        添加模块
-        :param ui:
-        :return:
-        """
-        if ui not in self.ui_view_list:
-            self.ui_view_list.append(ui)
-
     def load_ui(self) -> None:
         """
         加载模块
@@ -300,17 +291,17 @@ class StatusbarUI(object):
 
 
 class StatusbarConnect(object):
-    def __init__(self, main_window: QMainWindow):
-        self.main_window = main_window
+    def __init__(self, statusbar_ui: StatusbarUI):
+        self.statusbar_ui = statusbar_ui
 
-        self.statusbar_ui = StatusbarUI(self.main_window)
-        self.statusbar = self.statusbar_ui.statusbar
+        # self.statusbar_ui = StatusbarUI(self.main_window)
+        # self.statusbar = self.statusbar_ui.statusbar
 
     def setup_ui(self) -> None:
         self.communicate_connect()
 
-        self.statusbar.hideEvent = self.hide_event
-        self.statusbar.showEvent = self.hide_event
+        self.statusbar_ui.statusbar.hideEvent = self.hide_event
+        self.statusbar_ui.statusbar.showEvent = self.hide_event
 
     def communicate_connect(self) -> None:
         # 状态栏是否显示
@@ -319,10 +310,10 @@ class StatusbarConnect(object):
     def statusbar_show(self, flag: bool) -> None:
         if flag:
             # 显示
-            self.statusbar.setHidden(False)
+            self.statusbar_ui.statusbar.setHidden(False)
         else:
             # 隐藏
-            self.statusbar.setHidden(True)
+            self.statusbar_ui.statusbar.setHidden(True)
 
     def hide_event(self, event: QHideEvent):
         """
@@ -332,7 +323,7 @@ class StatusbarConnect(object):
         """
         if event:
             pass
-        if self.statusbar.isHidden():
+        if self.statusbar_ui.statusbar.isHidden():
             communicate.statusbar_checked.emit(False)
         else:
             communicate.statusbar_checked.emit(True)
