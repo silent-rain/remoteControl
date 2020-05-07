@@ -8,12 +8,14 @@ from PyQt5.QtWidgets import qApp
 
 from bin.ui_view.info_display import DisplayInfoUI, GroupInfoUI, GroupInfoRightMenuConnect, GroupInfoConnect
 from bin.ui_view.main_window import MainWindowUI
+from bin.ui_view.test_data import TestDataConnect
 from bin.ui_view.toolbar import ToolbarUI, ToolbarConnect
 from bin.ui_view.statusbar import StatusbarUI, StatusbarConnect
 from bin.ui_view.menubar import MenubarUI, MenubarConnect
 from bin.ui_view.tools_extension.tools_extension import ToolsExtensionUI, ToolsExtensionConnect
 from bin.ui_view.utils.skincolordialog import SkinColorDialogConnect, WindowTransparentConnect
 from lib import settings
+from lib.communicate import communicate
 from lib.logger import logger
 from lib.mysql.admin import ORMConnect
 
@@ -107,6 +109,7 @@ class MainUI(LoadingUI):
 
         # 插件
         self.orm_connect = ORMConnect()  # 数据库注册
+        self.test_data_connect = TestDataConnect()  # 数据库测试数据
 
     def load_ui(self) -> None:
         """
@@ -140,6 +143,7 @@ class MainUI(LoadingUI):
 
         # 插件
         self.connect_list.append(self.orm_connect)
+        self.connect_list.append(self.test_data_connect)
 
     def load_window(self) -> None:
         """
@@ -188,6 +192,17 @@ class MainUI(LoadingUI):
         percentage = int((index / total) * 100)
         return percentage
 
+    def init_start_serer(self) -> None:
+        """
+        系统启动后的初始化服务
+        发射信号
+        :return:
+        """
+        # 启动服务 -> 工具导航
+        communicate.init_start_server.emit()
+        # 分组信息 -> 信息展示
+        self.group_info_ui.tree_widget.init_master_item_data_to_display_info()
+
     def setup_ui(self) -> None:
         super().setup_ui()
         self.load_ui()
@@ -203,6 +218,9 @@ class MainUI(LoadingUI):
         if settings.DEBUG:
             logger.debug("系统信息 - 当前DEBUG模式...")
         logger.info("申明 - 本软件使用于学习软件开发,请不要触犯法律,否则后果自负,一切与原作者无关.")
+
+        # 系统启动后的初始化服务
+        self.init_start_serer()
 
 
 class MainApp(object):

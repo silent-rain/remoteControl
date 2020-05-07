@@ -98,10 +98,16 @@ class TableWidgetBase(QTableWidget):
             # noinspection PyArgumentList
             item.setText(_translate("LogInfoUI", header))
 
-    def communicate_connect(self) -> None:
-        pass
-
-    # *************************************************
+    def empty_all(self) -> None:
+        """
+        清空列表
+        :return:
+        """
+        row_count = self.get_row_count()
+        if not row_count:
+            return None
+        for row in range(row_count - 1, -1, -1):
+            self.removeRow(row)
 
     def get_row_count(self) -> int:
         """
@@ -121,7 +127,9 @@ class TableWidgetBase(QTableWidget):
 
     def add_data(self, data_info: list) -> None:
         """
-        写入数据到表格
+        写入数据到列表
+        但单条数据
+        有复选框
         :param data_info:
         :return:
         """
@@ -137,11 +145,9 @@ class TableWidgetBase(QTableWidget):
             item = QTableWidgetItem()
             # item.setTextAlignment(Qt.AlignCenter)  # 居中
             item.setTextAlignment(Qt.AlignVCenter | Qt.AlignLeft)  # 居左
-            self.setSortingEnabled(False)
             if column == 0:
                 # ID
                 item.setCheckState(Qt.Unchecked)  # 设置复选框
-
                 self.setItem(row, column, item)
                 item = self.item(row, column)
                 # 从1开始
@@ -153,7 +159,8 @@ class TableWidgetBase(QTableWidget):
 
     def add_data2(self, data_info: list) -> None:
         """
-        写入数据到表格
+        写入数据到列表
+        但单条数据
         无复选框
         :param data_info:
         :return:
@@ -170,7 +177,6 @@ class TableWidgetBase(QTableWidget):
             item = QTableWidgetItem()
             # item.setTextAlignment(Qt.AlignCenter)  # 居中
             item.setTextAlignment(Qt.AlignVCenter | Qt.AlignLeft)  # 居左
-            self.setSortingEnabled(False)
             self.setItem(row, column, item)
             item = self.item(row, column)
             if column == 0:
@@ -178,6 +184,37 @@ class TableWidgetBase(QTableWidget):
                 item.setText(str(row + 1))
             else:
                 item.setText(str(value))
+
+    def add_data_list(self, data_info: list) -> None:
+        """
+        写入数据到列表
+        多条数据 [[],[]]
+        有复选框
+        :param data_info:
+        :return:
+        """
+        if not data_info:
+            return None
+        for data in data_info:
+            self.add_data(data)
+
+    def add_data_list2(self, data_info: list) -> None:
+        """
+        写入数据到列表
+        多条数据 [[],[]]
+        无复选框
+        :param data_info:
+        :return:
+        """
+        if not data_info:
+            return None
+        for data in data_info:
+            self.add_data2(data)
+
+    def communicate_connect(self) -> None:
+        pass
+
+    # *************************************************
 
     def check_all_or_null(self, flag=True):
         """
@@ -244,29 +281,6 @@ class TableWidgetBase(QTableWidget):
         logger_emit(logger.info(_translate("Logger", "处理: %s 条数据" % data_count)))
         # 重置编号
         self.reset_number()
-
-    def empty_all(self):
-        """
-        清空列表
-        :return:
-        """
-        row_count = self.get_row_count()
-        if not row_count:
-            return None
-
-        # 方案一：
-        # j = 0
-        # while True:
-        #     if self.rowCount() == 0:
-        #         break
-        #     self.removeRow(row_count - j)
-        #     j += 1
-        del_count = 0
-        for row in range(row_count - 1, -1, -1):
-            self.removeRow(row)
-            del_count += 1
-        self.setRowCount(20)
-        logger_emit(logger.info(_translate("Logger", "处理: %s 条数据" % del_count)))
 
     def get_all_data(self):
         """

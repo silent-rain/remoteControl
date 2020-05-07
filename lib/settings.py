@@ -177,6 +177,10 @@ if (not DEBUG) and MYSQL_ON:
 else:
     DB_URL = SQLITE_DB
 
+# 数据库字段
+DB_ONLINE_TITLE = ["Id", "out_net", "in_net", "host_name", "system", "cpu", "memory", "disk",
+                   "video", "voice", "boot_time", "version", "group", "position", "note"]
+
 
 def update_conf() -> dict:
     """

@@ -4,6 +4,7 @@ from PyQt5.QtCore import QCoreApplication
 from PyQt5.QtWidgets import QToolBar, QAction
 
 from lib import settings
+from lib.communicate import communicate
 from lib.logger import logger
 
 _translate = QCoreApplication.translate
@@ -34,18 +35,21 @@ class ServerStartUI(object):
         :return:
         """
         if self.start_flag:
+            # 停止服务
             self.start_flag = False
             self.start_stop.setIcon(QIcon(settings.TOOLBAR_UI["start"]))
             self.start_stop.setText(_translate("ToolbarUI", "启动"))
             self.start_stop.setToolTip("启动服务")
-            logger.info("操作 - 启动服务...")
-            logger.info("系统信息 - 本地IP:  [{}]    监听端口:  [{}]".format(settings.IP, settings.PORT))
+            logger.info("操作 - 停止服务...")
         else:
+            # 启动服务
             self.start_flag = True
             self.start_stop.setIcon(QIcon(settings.TOOLBAR_UI["stop"]))
             self.start_stop.setText(_translate("ToolbarUI", "停止"))
             self.start_stop.setToolTip("停止服务")
-            logger.info("操作 - 停止服务...")
+            logger.info("操作 - 启动服务...")
+            logger.info("系统信息 - 本地IP:  [{}]    监听端口:  [{}]".format(settings.IP, settings.PORT))
+
         print("启动/停止服务----信号未处理")
 
     def retranslate_ui(self):

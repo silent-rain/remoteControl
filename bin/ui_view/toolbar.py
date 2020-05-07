@@ -143,6 +143,15 @@ class ToolbarConnect(object):
     def communicate_connect(self) -> None:
         # 工具导航栏是否显示
         communicate.toolbar_show.connect(self.toolbar_show)
+        # 服务启动/停止
+        communicate.init_start_server.connect(self.init_start_server)
+
+    def init_start_server(self):
+        """
+        开启服务,初始化
+        :return:
+        """
+        self.toolbar_ui.server_start_ui.start_stop_receive()
 
     def toolbar_show(self, flag: bool) -> None:
         if flag:

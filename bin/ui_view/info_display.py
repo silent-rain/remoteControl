@@ -71,10 +71,29 @@ class GroupTreeWidgetUI(object):
         # noinspection PyArgumentList
         self.headers_title = [
             _translate("DisplayInfoUI", "Id"),
+            # _translate("DisplayInfoUI", "外网"),
             _translate("DisplayInfoUI", "主机信息"),
+            _translate("DisplayInfoUI", "内网"),
+            _translate("DisplayInfoUI", "计算机"),
+            _translate("DisplayInfoUI", "操作系统"),
+            _translate("DisplayInfoUI", "处理器"),
+            _translate("DisplayInfoUI", "内存"),
+            _translate("DisplayInfoUI", "硬盘容量"),
+            _translate("DisplayInfoUI", "视频"),
+            _translate("DisplayInfoUI", "语音"),
+            _translate("DisplayInfoUI", "开机时间"),
+            _translate("DisplayInfoUI", "服务版本"),
+            _translate("DisplayInfoUI", "分组"),
+            _translate("DisplayInfoUI", "区域"),
             _translate("DisplayInfoUI", "备注"),
         ]
+        # self.headers_title = [
+        #     _translate("DisplayInfoUI", "Id"),
+        #     _translate("DisplayInfoUI", "主机信息"),
+        #     _translate("DisplayInfoUI", "备注"),
+        # ]
         self.header_width = [90, 100]
+        self.hide_column = [self.headers_title.index(item) for item in self.headers_title[2:-1]]
 
     def options(self) -> None:
         """
@@ -141,6 +160,11 @@ class GroupTreeWidgetUI(object):
         for index, width in enumerate(self.header_width):
             self.group_tree.setColumnWidth(index, width)
 
+        # 隐藏第一列
+        # self.group_tree.hideColumn(0)
+        for column in self.hide_column:
+            self.group_tree.hideColumn(column)
+
     def default_master_node(self) -> None:
         """
         设置默认主节点
@@ -163,8 +187,6 @@ class GroupTreeWidgetUI(object):
         self.set_headers()
         self.default_master_node()
 
-        self.test_date()
-
         # 优化3 给节点添加响应事件
         # self.list_group.clicked.connect(self.on_clicked)
         # 项目进入触发 itemExpanded
@@ -172,6 +194,61 @@ class GroupTreeWidgetUI(object):
         # 当用户在窗口小部件内单击时会发出此信号。 itemClicked
         # 内容改变时发生：itemChanged
         # self.group_tree.itemClicked.connect(self.on_clicked)
+
+        # 鼠标点击事件
+        self.group_tree.itemClicked.connect(self.master_item_clicked)
+
+    def master_item_clicked(self, event1: QTreeWidgetItem, event2: int) -> None:
+        """
+        鼠标单击事件
+        获取根节点所有信息
+        发送信号 -> 信息展示
+        :param event1:
+        :param event2:
+        :return:
+        """
+        if event2:
+            pass
+        if event1.parent() is not None:
+            # 不是根节点
+            return None
+        data = self.get_current_master_item_data()
+        communicate.display_info.emit(data)
+
+    def init_master_item_data_to_display_info(self):
+        """
+        获取第一个节点
+        系统初始化发送数据 -> 信息展示
+        :return:
+        """
+        master: QTreeWidgetItem = self.group_tree.topLevelItem(0)
+        node_count = master.childCount()
+
+        data_info = []
+        for i in range(node_count):
+            child = master.child(i)
+            child_data_info = []
+            for index in range(len(self.headers_title)):
+                child_data_info.append(child.text(index))
+            data_info.append(child_data_info)
+        communicate.display_info.emit(data_info)
+
+    def get_current_master_item_data(self) -> list:
+        """
+        获取当前根节点下的所有信息
+        :return:
+        """
+        master: QTreeWidgetItem = self.group_tree.currentItem()
+        node_count = master.childCount()
+
+        data_info = []
+        for i in range(node_count):
+            child = master.child(i)
+            child_data_info = []
+            for index in range(len(self.headers_title)):
+                child_data_info.append(child.text(index))
+            data_info.append(child_data_info)
+        return data_info
 
     def get_top_row_count(self) -> int:
         """
@@ -184,7 +261,7 @@ class GroupTreeWidgetUI(object):
         # master = self.group_tree.topLevelItem(1)
         return count
 
-    def get_child_row_count(self, p_int) -> int:
+    def get_child_row_count(self, p_int: int) -> int:
         """
         获取子节个数
         :param p_int: 上一级节点索引
@@ -218,7 +295,7 @@ class GroupTreeWidgetUI(object):
         for index in range(master_count):
             # 获取根节点
             master: QTreeWidgetItem = self.group_tree.topLevelItem(index)
-            name = master.text(1)
+            name = master.text(0)
             if name == _name:
                 return master
         return None
@@ -236,13 +313,13 @@ class GroupTreeWidgetUI(object):
             return master
         return None
 
-    def add_child_item(self, name, item: list) -> None:
+    def add_child_item(self, name: str, item: list) -> None:
         """
         根据name获取根节点
         根节点不存在,创建根节点
         添加子节点
         :param name: 根节点 name
-        :param item: [title, note]
+        :param item: 数据序列
         :return:
         """
         # 判断根节点是否存在返回根节点
@@ -252,12 +329,16 @@ class GroupTreeWidgetUI(object):
             master: QTreeWidgetItem = self.add_master_item(name)
 
         count = master.childCount()  # 获根节点的子节点个数
-        item.insert(0, count)  # 插入ID
+        item.pop(0)
+        item.insert(0, count + 1)  # 插入ID
         child = QTreeWidgetItem()
         child.setCheckState(0, Qt.Unchecked)
         for index, value in enumerate(item):
-            child.setText(index, value)
+            child.setText(index, str(value))
         master.addChild(child)
+
+        # 更新分组计数
+        self.update_count()
 
     def add_child_item2(self, index: int, item: list) -> None:
         """
@@ -268,7 +349,7 @@ class GroupTreeWidgetUI(object):
         bug:
         存在安全问题,如果检索的索引远远超出界限,将不能正确插入所需要的节点
         :param index: 根节点索引
-        :param item: [title, note]
+        :param item: 数据序列
         :return:
         """
         # 获取根节点
@@ -277,19 +358,20 @@ class GroupTreeWidgetUI(object):
             # 添加一个根节点
             master = self.add_master_item()
 
-        count = master.childCount()  # 获根节点的子节点个数
-        item.insert(0, count)  # 插入ID
+        count = master.childCount()
+        item.pop(0)
+        item.insert(0, count + 1)  # 插入ID
         child = QTreeWidgetItem()
         child.setCheckState(0, Qt.Unchecked)
         for index, value in enumerate(item):
-            child.setText(index, value)
+            child.setText(index, str(value))
         master.addChild(child)
 
     def add_child_item3(self, item: list) -> None:
         """
         获取当前根节点
         添加子节点
-        :param item: [主机信息, 备注]
+        :param item: 数据序列
         :return:
         """
         # 获取当前根节点
@@ -298,7 +380,8 @@ class GroupTreeWidgetUI(object):
             print("当前不是根节点")
             return
         count = master.childCount()
-        item.insert(0, count)  # 插入ID
+        item.pop(0)
+        item.insert(0, count + 1)  # 插入ID
         child = QTreeWidgetItem()
         child.setCheckState(0, Qt.Unchecked)
         for index, value in enumerate(item):
@@ -545,6 +628,7 @@ class GroupInfoConnect(object):
     def setup_ui(self) -> None:
         self.communicate_connect()
 
+        # 重写事件
         self.group_info_ui.dock_widget.hideEvent = self.hide_event
         self.group_info_ui.dock_widget.showEvent = self.hide_event
 
@@ -554,6 +638,22 @@ class GroupInfoConnect(object):
     def communicate_connect(self) -> None:
         # 状态栏是否显示
         communicate.group_tree_show.connect(self.group_tree_show)
+
+        # 数据交互
+        communicate.online_data.connect(self.online_data)  # 单条上线数据
+        communicate.online_data_list.connect(self.online_data_list)  # 多条上线数据
+        communicate.offline_data.connect(self.offline_data)  # 单条下线数据
+        communicate.offline_data_list.connect(self.offline_data_list)  # 多条下线数据
+        communicate.display_info.connect(self.display_info)  # 展示信息
+
+    def display_info(self, event: list) -> None:
+        """
+        数据发送至展示信息
+        :param event:
+        :return:
+        """
+        self.display_info_ui.table_widget.empty_all()
+        self.display_info_ui.table_widget.add_data_list(event)
 
     def group_tree_show(self, flag: bool) -> None:
         """
@@ -581,3 +681,25 @@ class GroupInfoConnect(object):
             communicate.group_tree_checked.emit(False)
         else:
             communicate.group_tree_checked.emit(True)
+
+    def online_data(self, event: list):
+        """
+        添加单条数据
+        上线数据添加至 分组以及信息展示
+        headers_title_us = ["Id", "out_net", "in_net", "host_name", "system", "cpu", "memory", "disk",
+                    "video", "voice", "boot_time", "version", "group", "position", "note"]
+        :param event:
+        :return:
+        """
+        group = event[-3]
+        self.group_info_ui.tree_widget.add_child_item(group, event)
+        communicate.online_count.emit(1)
+
+    def online_data_list(self, event: list):
+        pass
+
+    def offline_data(self, event: list):
+        pass
+
+    def offline_data_list(self, event: list):
+        pass

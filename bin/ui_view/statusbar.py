@@ -6,6 +6,7 @@ from PyQt5.QtCore import QCoreApplication, QTimer, QDateTime, QThread
 
 from lib import settings
 from lib.communicate import communicate
+from lib.logger import logger
 
 _translate = QCoreApplication.translate
 
@@ -87,7 +88,7 @@ class OnlineHost(object):
         self.online = QLabel(self.statusbar)
         self.online_icon = QLabel(self.statusbar)
 
-        self.online_host = 0
+        self.online_count = 0
 
     def set_background(self) -> None:
         """
@@ -116,7 +117,7 @@ class OnlineHost(object):
 
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
-        self.online.setText(_translate("StatusbarUI", "上线主机: {0} 台".format(self.online_host)))
+        self.online.setText(_translate("StatusbarUI", "上线主机: {0} 台".format(self.online_count)))
 
 
 class NetSpeedThread(QThread):
@@ -298,9 +299,6 @@ class StatusbarConnect(object):
         """
         self.statusbar_ui = statusbar_ui
 
-        # self.statusbar_ui = StatusbarUI(self.main_window)
-        # self.statusbar = self.statusbar_ui.statusbar
-
     def setup_ui(self) -> None:
         self.communicate_connect()
 
@@ -310,6 +308,46 @@ class StatusbarConnect(object):
     def communicate_connect(self) -> None:
         # 状态栏是否显示
         communicate.statusbar_show.connect(self.statusbar_show)
+        # 监听端口
+        # communicate.monitor_port.connect(self.monitor_port)
+        # 上线主机计数
+        communicate.online_count.connect(self.online_count)
+        if settings.SOUND_ON and settings.SOUND_OFFLINE and settings.SOUND_OFFLINE:
+            # 上线/下线提示音
+            communicate.online_sound.connect(self.online_sound)
+
+    def online_sound(self, flag: bool, data: str) -> None:
+        """
+        上线提示音
+        :param flag:
+        :param data:
+        :return:
+        """
+        if flag:
+            logger.info("主机上线 - 有主机上线请注意! 主机信息: {0}".format(data))
+        else:
+            logger.info("主机下线 - 有主机下线请注意! 主机信息: {0}".format(data))
+
+        print("声音未处理")
+
+    def monitor_port(self, event: int) -> None:
+        """
+        监听端口 信号
+        :param event:
+        :return:
+        """
+        # settings.PORT = event
+        # noinspection PyArgumentList
+        self.statusbar_ui.monitor_port.port_label.setText(_translate("StatusbarUI", "监控端口: %s" % event))
+
+    def online_count(self, event: int) -> None:
+        """
+        上线主机计数
+        :param event:
+        :return:
+        """
+        self.statusbar_ui.online_host.online_count += event
+        self.statusbar_ui.online_host.retranslate_ui()
 
     def statusbar_show(self, flag: bool) -> None:
         if flag:
