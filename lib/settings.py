@@ -105,6 +105,11 @@ DEBUG = True
 # 进程数
 PROCESSES = eval(CONFIG["system"].get("processes", "4"))
 
+# 实时刷新上线数据;当上线频率大时,对性能要求比较高
+# ;关闭;只有点击分组信息时才会刷新
+# ;0：关闭 1：开启
+REAL_TIME_REFRESH = eval(CONFIG["system"].get("real_time_refresh", "1"))
+
 # =========================== 特效控制 ===========================
 # 开启加载特效是否打开
 # ;0：关闭 1：开启
@@ -194,6 +199,7 @@ def update_conf() -> dict:
     CONFIG["address"]["port"] = PORT
     # =========================== 系统控制 ===========================
     CONFIG["system"]["processes"] = PROCESSES
+    CONFIG["system"]["real_time_refresh"] = REAL_TIME_REFRESH
     # =========================== 特效控制 ===========================
     CONFIG["effect"]["load_effect_on"] = LOAD_EFFECT_ON
     CONFIG["effect"]["transparent"] = TRANSPARENT

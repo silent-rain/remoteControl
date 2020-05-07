@@ -21,9 +21,7 @@ class Communicate(QObject):
 
     # 数据交互
     online_data = pyqtSignal(list)  # 单条上线数据
-    online_data_list = pyqtSignal(list)  # 多条上线数据  # 未使用
     offline_data = pyqtSignal(list)  # 单条下线数据  # 未使用
-    offline_data_list = pyqtSignal(list)  # 多条下线数据  # 未使用
     mysql_db = pyqtSignal(list)  # 单条上线数据  # 未使用
 
     display_info = pyqtSignal(list)  # 展示信息
@@ -31,7 +29,7 @@ class Communicate(QObject):
     # 状态栏
     monitor_port = pyqtSignal(int)  # 监听端口  # 未使用
     online_count = pyqtSignal(int)  # 上线主机计数
-    online_sound = pyqtSignal((bool, str))  # 上线/下线提示音  # 未使用
+    online_sound = pyqtSignal((bool, str))  # 上线/下线提示音  # 上线
 
     # 工具导航
     init_start_server = pyqtSignal()  # 服务启动 初始化信号

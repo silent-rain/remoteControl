@@ -215,13 +215,18 @@ class GroupTreeWidgetUI(object):
         data = self.get_current_master_item_data()
         communicate.display_info.emit(data)
 
-    def init_master_item_data_to_display_info(self):
+    def master_item_real_time_refresh(self):
         """
-        获取第一个节点
+        数据实时刷新
         系统初始化发送数据 -> 信息展示
         :return:
         """
-        master: QTreeWidgetItem = self.group_tree.topLevelItem(0)
+        master = self.group_tree.currentItem()
+        if master is None:
+            master: QTreeWidgetItem = self.group_tree.topLevelItem(0)
+        if master.parent():
+            master = master.parent()
+
         node_count = master.childCount()
 
         data_info = []
@@ -340,6 +345,10 @@ class GroupTreeWidgetUI(object):
         # 更新分组计数
         self.update_count()
 
+        if settings.REAL_TIME_REFRESH:
+            # 实时刷新上线数据
+            self.master_item_real_time_refresh()
+
     def add_child_item2(self, index: int, item: list) -> None:
         """
         根据索引获取根节点
@@ -387,6 +396,51 @@ class GroupTreeWidgetUI(object):
         for index, value in enumerate(item):
             child.setText(index, value)
         master.addChild(child)
+
+    def child_exists(self, _name: str) -> (bool, QTreeWidgetItem):
+        """
+        判断子节点名称是否存在
+        :param _name: 名称
+        :return: 返回存在的节点
+        """
+        # 获取根节个数
+        master_count = self.group_tree.topLevelItemCount()
+        for index in range(master_count):
+            # 获取根节点
+            master: QTreeWidgetItem = self.group_tree.topLevelItem(index)
+            child_count = master.childCount()
+            for index_node in range(child_count):
+                child = master.child(index_node)
+                name = child.text(1)
+                if name == _name:
+                    return child
+        return None
+
+    def del_child_item(self, name: str, out_net: str) -> None:
+        """
+        根据name获取根节点
+        根节点不存在,创建根节点
+        添加子节点
+        :param name: 根节点 分组
+        :param out_net: 子节点 主机信息
+        :return:
+        """
+        # 判断根节点是否存在返回根节点
+        master: QTreeWidgetItem = self.master_exists(name)
+        if not master:
+            return None
+        child = self.child_exists(out_net)
+        if not child:
+            return None
+        # 删除子节点
+        master.removeChild(child)
+
+        # 更新分组计数
+        self.update_count()
+
+        if settings.REAL_TIME_REFRESH:
+            # 实时刷新上线数据
+            self.master_item_real_time_refresh()
 
     def update_count(self) -> None:
         """
@@ -641,9 +695,7 @@ class GroupInfoConnect(object):
 
         # 数据交互
         communicate.online_data.connect(self.online_data)  # 单条上线数据
-        communicate.online_data_list.connect(self.online_data_list)  # 多条上线数据
         communicate.offline_data.connect(self.offline_data)  # 单条下线数据
-        communicate.offline_data_list.connect(self.offline_data_list)  # 多条下线数据
         communicate.display_info.connect(self.display_info)  # 展示信息
 
     def display_info(self, event: list) -> None:
@@ -685,7 +737,7 @@ class GroupInfoConnect(object):
     def online_data(self, event: list):
         """
         添加单条数据
-        上线数据添加至 分组以及信息展示
+        上线数据添加至 分组
         headers_title_us = ["Id", "out_net", "in_net", "host_name", "system", "cpu", "memory", "disk",
                     "video", "voice", "boot_time", "version", "group", "position", "note"]
         :param event:
@@ -695,11 +747,17 @@ class GroupInfoConnect(object):
         self.group_info_ui.tree_widget.add_child_item(group, event)
         communicate.online_count.emit(1)
 
-    def online_data_list(self, event: list):
-        pass
-
     def offline_data(self, event: list):
-        pass
-
-    def offline_data_list(self, event: list):
-        pass
+        """
+        删除单条数据
+        下线数据添加至 下线主机分组
+        在线主机分组删除
+        headers_title_us = ["Id", "out_net", "in_net", "host_name", "system", "cpu", "memory", "disk",
+                    "video", "voice", "boot_time", "version", "group", "position", "note"]
+        :param event:
+        :return:
+        """
+        group = event[-3]
+        out_net = event[1]
+        self.group_info_ui.tree_widget.del_child_item(group, out_net)
+        communicate.online_count.emit(-1)

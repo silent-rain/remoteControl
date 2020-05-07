@@ -192,7 +192,8 @@ class MainUI(LoadingUI):
         percentage = int((index / total) * 100)
         return percentage
 
-    def init_start_serer(self) -> None:
+    @staticmethod
+    def init_start_serer() -> None:
         """
         系统启动后的初始化服务
         发射信号
@@ -200,8 +201,6 @@ class MainUI(LoadingUI):
         """
         # 启动服务 -> 工具导航
         communicate.init_start_server.emit()
-        # 分组信息 -> 信息展示
-        self.group_info_ui.tree_widget.init_master_item_data_to_display_info()
 
     def setup_ui(self) -> None:
         super().setup_ui()

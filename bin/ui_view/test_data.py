@@ -13,6 +13,7 @@ class TestDataConnect(object):
     def setup_ui(self) -> None:
         # self.online_data_db_create()
         self.online_data_emit()
+        self.offline_data_emit()
 
     @staticmethod
     def online_data_db_create() -> None:
@@ -80,11 +81,11 @@ class TestDataConnect(object):
             hosts_list.append(host_item)
 
         # 测试下线
-        for item in hosts_list:
+        for item in hosts_list[:15]:
             import time
-            time.sleep(5)
+            time.sleep(0.2)
             # 单条发送
-            communicate.online_data.emit(item)
+            communicate.offline_data.emit(item)
             out_net = item[1]
             communicate.online_sound.emit(False, out_net)
 
