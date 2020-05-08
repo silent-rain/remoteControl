@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtGui import QColor, QPalette
-from PyQt5.QtWidgets import QColorDialog, QMainWindow
+from PyQt5.QtWidgets import QColorDialog, QMainWindow, QWidget
 from PyQt5.QtCore import QCoreApplication, QThread, QPropertyAnimation
 
 from lib import settings
@@ -13,18 +13,20 @@ _translate = QCoreApplication.translate
 """
 
 
-class SkinColorDialogUI(QThread):
-    def __init__(self, main_window: QMainWindow):
-        super().__init__()
-        self.main_window = main_window
+class SkinColorDialogUI(QWidget):
+    def __init__(self, *args, **kwargs):
+        super().__init__(*args, **kwargs)
 
         # 初始化颜色
         self.color = QColor(*settings.SKIN_COLOR)
         # 创建颜色对话框--但不显示
-        self.color_dialog = QColorDialog(self.color, self.main_window)
+        # self.color_dialog = QColorDialog(self.color, self.main_window)
+        self.color_dialog = QColorDialog(self.color, self)
 
         # 创建调色板
         self.palette = QPalette()
+
+        self.options()
 
     def update_color(self, event: QColor) -> None:
         """
@@ -50,7 +52,10 @@ class SkinColorDialogUI(QThread):
             # 发色信号
             communicate.skin_color.emit(event)
 
-    def run(self) -> None:
+    def options(self) -> None:
+        """
+        参数设置
+        """
         # 颜色选取信号
         # 会向槽函数传递一个值---QColor
         # self.color_dialog.colorSelected.connect(self.update_color)  # 选中最终颜色时发出信号-点击对话框的确定按钮时
@@ -65,11 +70,13 @@ class SkinColorDialogUI(QThread):
         # noinspection PyCallByClass
         # self.color_dialog.getColor(self.color, None)
 
+        # 最终回调函数
         self.color_dialog.finished.connect(self.finished_color)
 
+    def setup_ui(self) -> None:
         # 打开对话框,等待打开
-        self.color_dialog.show()
         # self.color_dialog.open()
+        self.color_dialog.show()
 
     def finished_color(self, event: int) -> None:
         """

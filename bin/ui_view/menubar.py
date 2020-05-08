@@ -56,7 +56,7 @@ class OptionMenu(object):
         self.exit = QAction(QIcon(settings.MENUBAR_UI["exit"]), '&Exit', self.menubar)
 
         # 皮肤对象
-        self.skin_color_dialog = SkinColorDialogUI(self.main_window)
+        self.skin_color_dialog = SkinColorDialogUI()
 
     def setup_ui(self) -> None:
         self.setting.setShortcut('Ctrl+Alt+S')
@@ -104,12 +104,16 @@ class OptionMenu(object):
         """
         print("make_server_receive")
 
+    # @staticmethod
     def skin_receive(self) -> None:
         """
-        调色
+        皮肤调节信号 
+        状态栏 -> 皮肤信号
         :return:
         """
-        self.skin_color_dialog.start()
+        # self.skin_color_dialog.start()
+        # communicate.skin_color_clicked.emit()
+        self.skin_color_dialog.setup_ui()
 
     def exit_receive(self) -> None:
         """

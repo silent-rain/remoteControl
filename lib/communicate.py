@@ -19,6 +19,7 @@ class Communicate(QObject):
     group_tree_show = pyqtSignal(bool)  # 分组信息是否显示
     group_tree_checked = pyqtSignal(bool)  # 菜单栏中的分组信息是否选中
 
+    skin_color_clicked = pyqtSignal()  # 皮肤调节信号：状态栏 -> 皮肤信号
     skin_color = pyqtSignal(QColor)  # 皮肤调节
 
     # 数据交互
