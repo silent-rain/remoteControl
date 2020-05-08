@@ -207,7 +207,7 @@ class MainUI(LoadingUI):
         :return:
         """
         # 启动服务 -> 工具导航
-        communicate.init_start_server.emit()
+        communicate.init_start_server.emit(True)
 
     def setup_ui(self) -> None:
         super().setup_ui()

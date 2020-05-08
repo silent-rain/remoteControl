@@ -39,17 +39,22 @@ class ServerStartConnect(object):
 
     def setup_ui(self) -> None:
         self.communicate_connect()
+        self.server_start_ui.start_stop.triggered.connect(self.start_stop_receive)
 
     def communicate_connect(self) -> None:
         # 服务启动/停止, 初始化
-        communicate.init_start_server.connect(self.start_stop_receive)
+        communicate.init_start_server.connect(self.init_start_server)
 
     # noinspection PyArgumentList
-    def start_stop_receive(self):
+    def start_stop_receive(self, event: bool) -> None:
         """
         启动/停止服务
+        按钮
+        :param event:
         :return:
         """
+        if event:
+            pass
         if self.start_flag:
             # 停止服务
             self.start_flag = False
@@ -58,6 +63,22 @@ class ServerStartConnect(object):
             self.server_start_ui.start_stop.setToolTip("启动服务")
             communicate.start_server.emit(False)  # -> 服务器开关
         else:
+            # 启动服务
+            self.start_flag = True
+            self.server_start_ui.start_stop.setIcon(QIcon(settings.TOOLBAR_UI["stop"]))
+            self.server_start_ui.start_stop.setText(_translate("ToolbarUI", "停止"))
+            self.server_start_ui.start_stop.setToolTip("停止服务")
+            communicate.start_server.emit(True)  # -> 服务器开关
+
+
+    # noinspection PyArgumentList
+    def init_start_server(self, event: bool) -> None:
+        """
+        启动/停止服务
+        初始化
+        :return:
+        """
+        if event:
             # 启动服务
             self.start_flag = True
             self.server_start_ui.start_stop.setIcon(QIcon(settings.TOOLBAR_UI["stop"]))

@@ -74,7 +74,7 @@ class GroupTreeWidgetUI(object):
             # _translate("DisplayInfoUI", "外网"),
             _translate("DisplayInfoUI", "主机信息"),
             _translate("DisplayInfoUI", "内网"),
-            _translate("DisplayInfoUI", "计算机"),
+            _translate("DisplayInfoUI", "计算机名"),
             _translate("DisplayInfoUI", "操作系统"),
             _translate("DisplayInfoUI", "处理器"),
             _translate("DisplayInfoUI", "内存"),
@@ -164,6 +164,15 @@ class GroupTreeWidgetUI(object):
         # self.group_tree.hideColumn(0)
         for column in self.hide_column:
             self.group_tree.hideColumn(column)
+
+        # 设置某一行的内容可编辑
+        # QTreeWidgetItem *->setFlags(Qt::ItemIsEnabled | Qt::ItemIsSelectable | Qt::ItemIsEditable);
+
+        # 可用来打开某一行的某一列的编辑状态
+        # QTreeWidget::openPersistentEditor ( QTreeWidgetItem * item, int column = 0 )
+        # self.group_tree.openPersistentEditor()
+        # 则可以用来关闭某一行某一列的始终编辑状态
+        #  QTreeWidget::closePersistentEditor ( QTreeWidgetItem * item, int column = 0 )
 
     def default_master_node(self) -> None:
         """
@@ -340,6 +349,9 @@ class GroupTreeWidgetUI(object):
         child.setCheckState(0, Qt.Unchecked)
         for index, value in enumerate(item):
             child.setText(index, str(value))
+            if index == 14:
+                # 备注列
+                child.setFlags(Qt.ItemIsEnabled | Qt.ItemIsEditable)  # 设为可编辑
         master.addChild(child)
 
         # 更新分组计数

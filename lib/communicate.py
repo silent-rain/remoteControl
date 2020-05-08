@@ -31,7 +31,7 @@ class Communicate(QObject):
     online_sound = pyqtSignal((bool, str))  # 上线/下线提示音
 
     # 工具导航
-    init_start_server = pyqtSignal()  # 服务启动 初始化信号
+    init_start_server = pyqtSignal(bool)  # 服务启动 初始化信号
     start_server = pyqtSignal(bool)  # 服务启动/停止
 
 
