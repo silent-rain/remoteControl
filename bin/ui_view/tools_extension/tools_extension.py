@@ -26,7 +26,7 @@ class ToolsExtensionUI(DockWidgetBase):
         super().__init__(main_window)
         self.main_window = main_window
 
-        self.tab_widget = QTabWidget(self.layout_widget)
+        self.tab_widget = QTabWidget(self.widget_contents)
 
         self.ui_list = []
         self.log_info_ui = LogInfoUI(self.tab_widget)  # 日志信息

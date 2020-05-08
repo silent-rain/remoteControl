@@ -106,7 +106,7 @@ class MainUI(LoadingUI):
 
         # 观察者模式
         self.skin_color_dialog_connect = SkinColorDialogConnect()  # 皮肤调节信号
-        self.window_transparent_connect = WindowTransparentConnect()  # 透明度装饰
+        # self.window_transparent_connect = WindowTransparentConnect()  # 透明度装饰
 
         # 插件
         self.orm_connect = ORMConnect()  # 数据库注册
@@ -144,7 +144,7 @@ class MainUI(LoadingUI):
 
         # 观察者
         self.connect_list.append(self.skin_color_dialog_connect)
-        self.connect_list.append(self.window_transparent_connect)
+        # self.connect_list.append(self.window_transparent_connect)
 
         # 插件
         self.connect_list.append(self.orm_connect)
@@ -215,7 +215,7 @@ class MainUI(LoadingUI):
         self.load_ui()
         self.load_connect()
         self.load_window()
-        self.load_transparent()
+        # self.load_transparent()
 
         self.show_ui()
 

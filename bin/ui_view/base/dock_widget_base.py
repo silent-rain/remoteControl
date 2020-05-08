@@ -22,11 +22,11 @@ class DockWidgetBase(object):
 
         # QDockWidget
         self.dock_widget = QDockWidget(self.main_window)
-        self.dock_widget_contents = QWidget(self.dock_widget, Qt.WindowFlags())
+        self.widget_contents = QWidget(self.dock_widget, Qt.WindowFlags())
 
         # QHBoxLayout
-        self.layout_widget = QWidget(self.dock_widget_contents, Qt.WindowFlags())
-        self.layout = QHBoxLayout(self.layout_widget)
+        # self.layout_widget = QWidget(self.dock_widget_contents, Qt.WindowFlags())
+        self.layout = QHBoxLayout(self.widget_contents)
 
     @staticmethod
     def size_hint() -> QSize:
@@ -42,14 +42,14 @@ class DockWidgetBase(object):
         :return:
         """
         self.dock_widget.setObjectName("dock_widget")
-        self.dock_widget_contents.setObjectName("dock_widget_contents")
-        self.layout_widget.setObjectName("layout_widget")
+        self.widget_contents.setObjectName("dock_widget_contents")
+        # self.layout_widget.setObjectName("layout_widget")
         self.layout.setObjectName("layout")
 
         self.layout.setContentsMargins(0, 0, 0, 0)
 
-        self.dock_widget_contents.setLayout(self.layout)
-        self.dock_widget.setWidget(self.dock_widget_contents)
+        self.widget_contents.setLayout(self.layout)
+        self.dock_widget.setWidget(self.widget_contents)
 
         # 显示位置,子类进行设置
         # MainWindow.addDockWidget(Qt.DockWidgetArea(8), self.dock_widget)
@@ -59,7 +59,7 @@ class DockWidgetBase(object):
         self.options()
 
         # 初始化QDockWidget的高度
-        self.dock_widget_contents.sizeHint = self.size_hint
+        self.widget_contents.sizeHint = self.size_hint
 
         # QDockWidget 位置发生变动
         self.dock_widget.dockLocationChanged.connect(self.dock_location_changed)
@@ -77,4 +77,4 @@ class DockWidgetBase(object):
         if event:
             pass
         if settings.LOAD_EFFECT_ON:
-            load_animation.load_animation(self.dock_widget)
+            load_animation.load_animation(self.widget_contents)

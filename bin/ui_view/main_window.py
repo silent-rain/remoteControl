@@ -36,7 +36,7 @@ class MainWindowUI(object):
         QMetaObject.connectSlotsByName(self.main_window)
 
         self.set_window_icon()
-        self.set_window_background()
+        # self.set_window_background()
         self.set_window_background4()
         self.center()
         # self.main_window.resizeEvent = self.resize_event
@@ -119,6 +119,8 @@ class MainWindowUI(object):
         使用调色板
         :return:
         """
+        # self.color_init.setAlpha(0.3)
+        # https://blog.csdn.net/addfourliu/article/details/6730688?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1
         self.palette.setColor(QPalette.Background, self.color_init)  # 给调色板设置颜色
         self.main_window.setPalette(self.palette)  # 给控件设置颜色
 
