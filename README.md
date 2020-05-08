@@ -1,3 +1,16 @@
+# 部署
+## windows 10 
+- 安装 python3.7
+- 安装库
+    - pyaudio 需要编译环境才能安装
+    - 安装编译好的pyaudio： 
+        - 下载地址：[pyaudio](https://download.lfd.uci.edu/pythonlibs/s2jqpv5t/PyAudio-0.2.11-cp38-cp38-win_amd64.whl)
+        - pip install PyAudio-0.2.11-cp38-cp38-win_amd64.whl
+    - 安装其他库:
+        - pip install -r requirements.txt
+- 运行：
+    python run.py
+
 
 # 程序模块
 ## 菜单栏
