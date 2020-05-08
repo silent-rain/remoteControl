@@ -1,11 +1,13 @@
 # -*- coding: utf-8 -*-
-import json
+# import json
 import struct
 # import socketserver
 from socketserver import BaseRequestHandler, ThreadingMixIn, TCPServer
-from threading import Thread
+from json import loads, dumps
+from PyQt5.QtCore import QThread
 
 from lib import settings
+from lib.communicate import communicate
 from lib.logger import logger
 
 """
@@ -13,9 +15,6 @@ from lib.logger import logger
 """
 
 CONNECTION_POOL = {}  # 连接池
-
-
-# cmd_list = queue.Queue()
 
 
 class ThreadingTCPRequestHandler(BaseRequestHandler):
@@ -27,6 +26,18 @@ class ThreadingTCPRequestHandler(BaseRequestHandler):
     # 数据流大小
     buf_size = 1024
 
+    def online_info(self):
+        data = [None, self.client_address[0], '', '', '', '', '', '', False, False, '', '', '爱好者线主机', '', '']
+        communicate.online_data.emit(data)
+        out_net = data[1]
+        communicate.online_sound.emit(True, out_net)
+
+    def offline_info(self):
+        data = [None, self.client_address[0], '', '', '', '', '', '', False, False, '', '', '爱好者线主机', '', '']
+        communicate.offline_data.emit(data)
+        out_net = data[1]
+        communicate.online_sound.emit(False, out_net)
+
     def setup(self) -> None:
         """
         1. 连接成功的服务器
@@ -37,7 +48,7 @@ class ThreadingTCPRequestHandler(BaseRequestHandler):
         # 连接池加入客户端
         if self.request not in CONNECTION_POOL:
             CONNECTION_POOL.update({self.request: self.client_address[0]})
-        print("连接池加入客户端: ", self.client_address)
+            self.online_info()
 
     def finish(self) -> None:
         """
@@ -46,7 +57,8 @@ class ThreadingTCPRequestHandler(BaseRequestHandler):
         """
         # 连接池删除客户端
         CONNECTION_POOL.pop(self.request)
-        print("连接池删除客户端: ", self.client_address)
+        # logger.warning("离线信息 - 有主机离线...")
+        self.offline_info()
 
     def handle(self) -> None:
         """
@@ -55,12 +67,17 @@ class ThreadingTCPRequestHandler(BaseRequestHandler):
         :return:
         """
         while True:
-            # msg = self.request.recv(1024).decode('utf-8')
-            msg = self.recv_data()
-            print(msg)
-            info = input('>>>')
-            # self.request.send(info.encode('utf-8'))
-            self.send_data(info)
+            try:
+                msg = self.recv_data()
+                print(msg)
+                # info = input('>>>')
+                # # self.request.send(info.encode('utf-8'))
+                # self.send_data(info)
+            except (BrokenPipeError, OSError, struct.error) as e:
+                logger.debug("系统信息 - " + str(e))
+                # CONNECTION_POOL.pop(self.request)
+                return None
+
 
     def recv_data(self) -> str:
         """
@@ -84,7 +101,7 @@ class ThreadingTCPRequestHandler(BaseRequestHandler):
         # 最后根据报头的内容提取真实的数据
         recv_data = recv_data.decode('utf-8')  # 解码
         # 反序列化
-        data = json.loads(recv_data)
+        data = loads(recv_data)
 
         return data
 
@@ -96,7 +113,7 @@ class ThreadingTCPRequestHandler(BaseRequestHandler):
         :return:
         """
         # 序列化数据
-        head_json = json.dumps(data)
+        head_json = dumps(data)
 
         # 转成bytes数据,用于传输
         head_bytes = bytes(head_json, encoding='utf-8')
@@ -119,55 +136,138 @@ class ThreadingTCPServer(ThreadingMixIn, TCPServer):
     pass
 
 
-class Server(Thread):
-    def __init__(self, server_address: tuple):
+class Server(QThread):
+    def __init__(self):
         """
         实例化服务类对象
-        :param server_address: ("127.0.0.1", 8090)
+        server_address: ("127.0.0.1", 8090)
+        :param
         """
         super().__init__()
         # server_address = ("127.0.0.1", 8090)
-        # 单线程
-        # self.server = ThreadingTCPServer(('127.0.0.1', 8090), ThreadingTCPRequestHandler)
-        # 实现异步，支持多连接
-        self.server = ThreadingTCPServer(server_address, ThreadingTCPRequestHandler)
 
-        self.stop_flag = False
+        # 服务器实例化对象
+        self.server = None
 
-    def stop_server(self):
+        # 控制开关
+        self.flag = False
+
+    def stop_server(self) -> None:
         """
         服务器停止
         :return:
         """
         # 关闭所有链接
-        # for conn in connection_pool:
-        #     # self.server.close_request(conn)
-        #     self.server.block_on_close()
+        for conn in CONNECTION_POOL:
+            self.server.close_request(conn)
+            # self.server.block_on_close()
 
         # 关闭服务器
-        self.server.shutdown()
-        self.server.server_close()
+        if self.server:
+            self.server.shutdown()
+            self.server.server_close()
+        logger.info("操作 - 服务器停止...")
 
-    def run(self) -> None:
+    def start_server(self) -> None:
         """
         服务器启动
         :return:
         """
-        logger.info("系统信息 - 服务器启动....")
+        # 开始监听
+        logger.info("操作 - 服务器启动...")
+        logger.info("系统信息 - 本地IP: [{}]    监听端口: [{}]".format(settings.IP, settings.PORT))
+        # 单线程
+        # self.server = ThreadingTCPServer(('127.0.0.1', 2020), ThreadingTCPRequestHandler)
+        # 实现异步，支持多连接
+        self.server = ThreadingTCPServer((settings.IP, settings.PORT), ThreadingTCPRequestHandler)
         self.server.serve_forever()
 
-        # while True:
-        #     cmd = input("输入指令: ")
-        #     if cmd == "quit()":
-        #         self.stop_flag = True
-        #
-        #     if self.stop_flag:
-        #         self.stop_server()
-        #         self.stop_flag = False
-        #         break
+    def close(self) -> None:
+        """
+        关闭线程
+        :return:
+        """
+        self.stop_server()
+        self.quit()
+
+
+class ServerStart(QThread):
+    def __init__(self, server: Server):
+        """
+        实例化服务类对象
+        server_address: ("127.0.0.1", 8090)
+        :param server:
+        :param
+        """
+        super().__init__()
+        self.server = server
+
+    def run(self) -> None:
+        """
+        主运行
+        :return:
+        """
+        try:
+            # 服务器启动
+            self.server.start_server()
+        except OSError as e:
+            logger.error("系统信息 - " + str(e))
+
+
+class ServerStop(QThread):
+    def __init__(self, server: Server):
+        """
+        实例化服务类对象
+        server_address: ("127.0.0.1", 8090)
+        :param server:
+        :param
+        """
+        super().__init__()
+        self.server = server
+
+    def run(self) -> None:
+        """
+        主运行
+        :return:
+        """
+        # 服务器启动
+        self.server.stop_server()
+
+
+class ServerConnect(object):
+    def __init__(self):
+        """
+        服务器信号
+        """
+        super().__init__()
+        # self.server = server
+        self.server = Server()
+        self.server_start: object = None
+        self.server_stop: object = None
+
+    def setup_ui(self) -> None:
+        self.communicate_connect()
+
+    def retranslate_ui(self) -> None:
+        pass
+
+    def communicate_connect(self) -> None:
+        # 服务启动/停止
+        communicate.start_server.connect(self.start_server)
+
+    def start_server(self, event: bool) -> None:
+        if event:
+            # logger.info("操作 - 服务器启动...")
+            # logger.info("系统信息 - 本地IP: [{}]    监听端口: [{}]".format(settings.IP, settings.PORT))
+            self.server_start = ServerStart(self.server)
+            self.server_start.start()
+        else:
+            # logger.info("操作 - 服务器停止...")
+            self.server_stop = ServerStop(self.server)
+            self.server_stop.start()
 
 
 if __name__ == '__main__':
-    server = Server((settings.IP, settings.PORT))
-    server.start()
-    server.join()  # 阻塞
+    app = Server()
+    app.start()
+    app.join()  # 阻塞

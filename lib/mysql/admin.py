@@ -46,27 +46,28 @@ if __name__ == '__main__':
     # orm.create()
 
     # 创建多条数据
-    hosts = []
-    for i in range(50):
-        host = OnlineInfo()
-        host.out_net = "192.168.0.%s" % i
-        host.group = "在线主机"
-        hosts.append(host)
-    session.add_all(hosts)
-    session.commit()
-    print("添加测试上线数据成功！")
+    # hosts = []
+    # for i in range(50):
+    #     host = OnlineInfo()
+    #     host.out_net = "192.168.0.%s" % i
+    #     host.group = "在线主机"
+    #     hosts.append(host)
+    # session.add_all(hosts)
+    # session.commit()
+    # print("添加测试上线数据成功！")
 
     # 获取数据
     # stus = session.query(OnlineInfo).values()
     # print(list(stus))
 
     # 查询所有数据 [[],[]]
-    # hosts = session.query(OnlineInfo).all()
-    # new_hosts_list = []
-    # for host in hosts:
-    #     new_hosts = []
-    #     for title in DB_ONLINE_TITLE:
-    #         new_hosts.append(host.__dict__.get(title, None))
-    #     new_hosts_list.append(new_hosts)
+    hosts = session.query(OnlineInfo).all()
+    new_hosts_list = []
+    for host in hosts:
+        new_hosts = []
+        for title in DB_ONLINE_TITLE:
+            new_hosts.append(host.__dict__.get(title, None))
+        new_hosts_list.append(new_hosts)
+        print(new_hosts)
     # print(new_hosts_list)
 

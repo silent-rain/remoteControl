@@ -6,6 +6,7 @@ from PyQt5.QtGui import QPixmap, QFont
 from PyQt5.QtWidgets import QApplication, QMainWindow, QSplashScreen
 from PyQt5.QtWidgets import qApp
 
+from bin.logic.server.server import ServerConnect
 from bin.ui_view.info_display import DisplayInfoUI, GroupInfoUI, GroupInfoRightMenuConnect, GroupInfoConnect
 from bin.ui_view.main_window import MainWindowUI
 from bin.ui_view.test_data import TestDataConnect
@@ -111,6 +112,9 @@ class MainUI(LoadingUI):
         self.orm_connect = ORMConnect()  # 数据库注册
         self.test_data_connect = TestDataConnect()  # 数据库测试数据
 
+        # 服务器信号
+        self.server_connect = ServerConnect()
+
     def load_ui(self) -> None:
         """
         加载UI模块
@@ -144,6 +148,9 @@ class MainUI(LoadingUI):
         # 插件
         self.connect_list.append(self.orm_connect)
         self.connect_list.append(self.test_data_connect)
+
+        # 服务器信号
+        self.connect_list.append(self.server_connect)
 
     def load_window(self) -> None:
         """

@@ -84,7 +84,6 @@ logging_config = {
         'simple': {
             'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
             'default_time_format': '%Y%b%d-%H:%M:%S',
-
         },
         'standard': {
             'format': '%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(levelname)s] - %(message)s'
@@ -199,7 +198,7 @@ logging_config = {
         # 需要实例化才能用
         'simple': {
             # 'handlers': ['console'],
-            'handlers': ['qt_console'],
+            'handlers': ['qt_console', 'console'],
             'level': 'DEBUG',
             'propagate': False,  # 是否传递给父记录器,
         }

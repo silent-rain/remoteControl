@@ -10,7 +10,7 @@ from bin.ui_view.utils.keyboard import KeyboardUI
 from bin.ui_view.utils.make_client import MakeClientUI
 from bin.ui_view.utils.remote_control import RemoteControlUI
 from bin.ui_view.utils.server_manager import ServiceManagerUI
-from bin.ui_view.utils.server_start import ServerStartUI
+from bin.ui_view.utils.server_start import ServerStartUI, ServerStartConnect
 from bin.ui_view.utils.terminal import TerminalUI
 from bin.ui_view.utils.videomonitor import VideoMonitorUI
 from bin.ui_view.utils.voice_montor import VoiceMonitorUI
@@ -47,6 +47,10 @@ class ToolbarUI(object):
         self.service_manager_ui = ServiceManagerUI(self.toolbar)  # 服务管理
         self.exit_ui = ExitUI(self.toolbar, self.main_window)  # 退出程序
 
+        # 子类信号
+        self.connect_list = []
+        self.server_start_connect = ServerStartConnect(self.server_start_ui)
+
     def options(self) -> None:
         """
         参数设置
@@ -81,6 +85,7 @@ class ToolbarUI(object):
             self.toolbar.hide()
 
         self.load_ui()
+        self.load_connect()
         self.show_ui()
 
         # QDockWidget 位置发生变动
@@ -117,14 +122,22 @@ class ToolbarUI(object):
         self.ui_list.append(self.service_manager_ui)
         self.ui_list.append(self.exit_ui)
 
+    def load_connect(self) -> None:
+        """
+        加载 链接信号
+        :return:
+        """
+        self.connect_list.append(self.server_start_connect)
+
     def show_ui(self) -> None:
         """
         显示数据
         :return:
         """
-        for view in self.ui_list:
-            view.setup_ui()
-            view.retranslate_ui()
+        all_list = self.ui_list + self.connect_list
+        for item in all_list:
+            item.setup_ui()
+            item.retranslate_ui()
 
 
 class ToolbarConnect(object):
@@ -143,15 +156,6 @@ class ToolbarConnect(object):
     def communicate_connect(self) -> None:
         # 工具导航栏是否显示
         communicate.toolbar_show.connect(self.toolbar_show)
-        # 服务启动/停止
-        communicate.init_start_server.connect(self.init_start_server)
-
-    def init_start_server(self):
-        """
-        开启服务,初始化
-        :return:
-        """
-        self.toolbar_ui.server_start_ui.start_stop_receive()
 
     def toolbar_show(self, flag: bool) -> None:
         if flag:

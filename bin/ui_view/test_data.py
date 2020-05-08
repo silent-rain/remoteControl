@@ -12,8 +12,9 @@ class TestDataConnect(object):
 
     def setup_ui(self) -> None:
         # self.online_data_db_create()
-        self.online_data_emit()
-        self.offline_data_emit()
+        # self.online_data_emit()
+        # self.offline_data_emit()
+        pass
 
     @staticmethod
     def online_data_db_create() -> None:

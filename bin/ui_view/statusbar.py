@@ -314,12 +314,11 @@ class StatusbarConnect(object):
         # 状态栏是否显示
         communicate.statusbar_show.connect(self.statusbar_show)
         # 监听端口
-        # communicate.monitor_port.connect(self.monitor_port)
+        communicate.monitor_port.connect(self.monitor_port)
         # 上线主机计数
         communicate.online_count.connect(self.online_count)
-        if settings.SOUND_ON and settings.SOUND_OFFLINE and settings.SOUND_OFFLINE:
-            # 上线/下线提示音
-            communicate.online_sound.connect(self.online_sound)
+        # 上线/下线提示音
+        communicate.online_sound.connect(self.online_sound)
 
     def online_sound(self, flag: bool, data: str) -> None:
         """
@@ -331,27 +330,28 @@ class StatusbarConnect(object):
         try:
             if flag:
                 logger.info("主机上线 - 有主机上线请注意! 主机信息: {0}".format(data))
-                self.play_music.stop()
-                self.play_music.open(settings.SOUND_ONLINE)
-                self.play_music.start()
-
+                if settings.SOUND_ON and settings.SOUND_OFFLINE and settings.SOUND_OFFLINE:
+                    self.play_music.stop()
+                    self.play_music.open(settings.SOUND_ONLINE)
+                    self.play_music.start()
             else:
                 logger.info("主机下线 - 有主机下线请注意! 主机信息: {0}".format(data))
-                self.play_music.stop()
-                self.play_music.open(settings.SOUND_OFFLINE)
-                self.play_music.start()
+                if settings.SOUND_ON and settings.SOUND_OFFLINE and settings.SOUND_OFFLINE:
+                    self.play_music.stop()
+                    self.play_music.open(settings.SOUND_OFFLINE)
+                    self.play_music.start()
         except OSError:
             pass
 
-    def monitor_port(self, event: int) -> None:
+    def monitor_port(self) -> None:
         """
+        程序修改端口时
         监听端口 信号
-        :param event:
+        更新端口显示
         :return:
         """
-        # settings.PORT = event
         # noinspection PyArgumentList
-        self.statusbar_ui.monitor_port.port_label.setText(_translate("StatusbarUI", "监控端口: %s" % event))
+        self.statusbar_ui.monitor_port.port_label.setText(_translate("StatusbarUI", "监控端口: %s" % settings.PORT))
 
     def online_count(self, event: int) -> None:
         """

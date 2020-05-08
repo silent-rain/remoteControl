@@ -1,7 +1,8 @@
-import json
+# -*- coding: utf-8 -*-
+# import json
 import socket
 import struct
-
+from json import loads, dumps
 from time import sleep
 
 from lib import settings
@@ -65,7 +66,7 @@ class Client(object):
         # 最后根据报头的内容提取真实的数据
         recv_data = recv_data.decode('utf-8')  # 解码
         # 反序列化
-        data = json.loads(recv_data)
+        data = loads(recv_data)
 
         return data
 
@@ -77,7 +78,7 @@ class Client(object):
         :return:
         """
         # 序列化数据
-        head_json = json.dumps(data)
+        head_json = dumps(data)
 
         # 转成bytes数据,用于传输
         head_bytes = bytes(head_json, encoding='utf-8')
@@ -97,12 +98,16 @@ class Client(object):
         :return:
         """
         while True:
-            msg = input('>>>>>')
+            # msg = input('>>>>>')
+            msg = "input('>>>>>')"
             # self.tcp_client.send(msg.encode('utf-8'))
             self.send_data(msg)
             # ret = self.tcp_client.recv(1024).decode('utf-8')
-            ret = self.recv_data()
-            print(ret)
+            try:
+                ret = self.recv_data()
+                print(ret)
+            except (struct.error, ConnectionResetError):
+                pass
 
     def run(self) -> None:
         """

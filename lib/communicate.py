@@ -21,18 +21,18 @@ class Communicate(QObject):
 
     # 数据交互
     online_data = pyqtSignal(list)  # 单条上线数据
-    offline_data = pyqtSignal(list)  # 单条下线数据  # 未使用
+    offline_data = pyqtSignal(list)  # 单条下线数据
     mysql_db = pyqtSignal(list)  # 单条上线数据  # 未使用
-
     display_info = pyqtSignal(list)  # 展示信息
 
     # 状态栏
-    monitor_port = pyqtSignal(int)  # 监听端口  # 未使用
+    monitor_port = pyqtSignal()  # 程序修改端口时,更新状态栏端口  # 还未发送程序设置模块未完成
     online_count = pyqtSignal(int)  # 上线主机计数
-    online_sound = pyqtSignal((bool, str))  # 上线/下线提示音  # 上线
+    online_sound = pyqtSignal((bool, str))  # 上线/下线提示音
 
     # 工具导航
     init_start_server = pyqtSignal()  # 服务启动 初始化信号
+    start_server = pyqtSignal(bool)  # 服务启动/停止
 
 
 communicate = Communicate()

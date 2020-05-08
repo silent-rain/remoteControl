@@ -5,7 +5,6 @@ from PyQt5.QtWidgets import QToolBar, QAction
 
 from lib import settings
 from lib.communicate import communicate
-from lib.logger import logger
 
 _translate = QCoreApplication.translate
 
@@ -20,13 +19,30 @@ class ServerStartUI(object):
         self.toolbar = toolbar
 
         self.start_stop = QAction(QIcon(settings.TOOLBAR_UI["start"]), "启动", self.toolbar)
-        # 控制开关
-        self.start_flag = False
 
     def setup_ui(self):
         self.start_stop.setToolTip("启动服务")
-        self.start_stop.triggered.connect(self.start_stop_receive)
+        # self.start_stop.triggered.connect(self.start_stop_receive)
         self.toolbar.addAction(self.start_stop)
+
+    def retranslate_ui(self):
+        # noinspection PyArgumentList
+        self.start_stop.setText(_translate("ToolbarUI", "启动"))
+
+
+class ServerStartConnect(object):
+    def __init__(self, server_start_ui: ServerStartUI):
+        self.server_start_ui = server_start_ui
+
+        # 控制开关
+        self.start_flag = False
+
+    def setup_ui(self) -> None:
+        self.communicate_connect()
+
+    def communicate_connect(self) -> None:
+        # 服务启动/停止, 初始化
+        communicate.init_start_server.connect(self.start_stop_receive)
 
     # noinspection PyArgumentList
     def start_stop_receive(self):
@@ -37,21 +53,17 @@ class ServerStartUI(object):
         if self.start_flag:
             # 停止服务
             self.start_flag = False
-            self.start_stop.setIcon(QIcon(settings.TOOLBAR_UI["start"]))
-            self.start_stop.setText(_translate("ToolbarUI", "启动"))
-            self.start_stop.setToolTip("启动服务")
-            logger.info("操作 - 停止服务...")
+            self.server_start_ui.start_stop.setIcon(QIcon(settings.TOOLBAR_UI["start"]))
+            self.server_start_ui.start_stop.setText(_translate("ToolbarUI", "启动"))
+            self.server_start_ui.start_stop.setToolTip("启动服务")
+            communicate.start_server.emit(False)  # -> 服务器开关
         else:
             # 启动服务
             self.start_flag = True
-            self.start_stop.setIcon(QIcon(settings.TOOLBAR_UI["stop"]))
-            self.start_stop.setText(_translate("ToolbarUI", "停止"))
-            self.start_stop.setToolTip("停止服务")
-            logger.info("操作 - 启动服务...")
-            logger.info("系统信息 - 本地IP:  [{}]    监听端口:  [{}]".format(settings.IP, settings.PORT))
+            self.server_start_ui.start_stop.setIcon(QIcon(settings.TOOLBAR_UI["stop"]))
+            self.server_start_ui.start_stop.setText(_translate("ToolbarUI", "停止"))
+            self.server_start_ui.start_stop.setToolTip("停止服务")
+            communicate.start_server.emit(True)  # -> 服务器开关
 
-        print("启动/停止服务----信号未处理")
-
-    def retranslate_ui(self):
-        # noinspection PyArgumentList
-        self.start_stop.setText(_translate("ToolbarUI", "启动"))
+    def retranslate_ui(self) -> None:
+        pass
