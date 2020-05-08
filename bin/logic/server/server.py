@@ -2,6 +2,7 @@
 # import json
 import struct
 # import socketserver
+from socket import socket, SHUT_WR, SHUT_RDWR
 from socketserver import BaseRequestHandler, ThreadingMixIn, TCPServer
 from json import loads, dumps
 from PyQt5.QtCore import QThread
@@ -157,15 +158,19 @@ class Server(QThread):
         :return:
         """
         # 关闭所有链接
+        # 在close()之前加上shutdown(num)即可  [shut_rd(), shut_wr(), shut_rdwr()分别代表num 为0  1  2 ]
         for conn in CONNECTION_POOL:
-            self.server.close_request(conn)
-            # self.server.block_on_close()
+            # conn: socket = CONNECTION_POOL.popitem()[0]
+            # self.server.close_request(conn)  # 无效
+            # print(dir(conn))
+            conn.shutdown(2)
+            conn.close()
 
         # 关闭服务器
         if self.server:
             self.server.shutdown()
             self.server.server_close()
-        logger.info("操作 - 服务器停止...")
+            logger.info("操作 - 服务器停止...")
 
     def start_server(self) -> None:
         """

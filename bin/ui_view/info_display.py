@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtGui import QCursor, QHideEvent
 from PyQt5.QtWidgets import QMainWindow, QTreeWidget, QTreeWidgetItem, QWidget, QAction, QMenu, QInputDialog
-from PyQt5.QtCore import QCoreApplication, Qt, QRect, QSize
+from PyQt5.QtCore import QCoreApplication, Qt, QRect, QSize, QModelIndex
 
 from bin.ui_view.base.dock_widget_base import DockWidgetBase
 from bin.ui_view.base.table_widget_base import TableWidgetBase
@@ -349,9 +349,9 @@ class GroupTreeWidgetUI(object):
         child.setCheckState(0, Qt.Unchecked)
         for index, value in enumerate(item):
             child.setText(index, str(value))
-            if index == 14:
-                # 备注列
-                child.setFlags(Qt.ItemIsEnabled | Qt.ItemIsEditable)  # 设为可编辑
+            # if index == 14:
+            #     # 备注列
+            #     child.setFlags(Qt.ItemIsEnabled | Qt.ItemIsEditable)  # 设为可编辑,整行可编辑
         master.addChild(child)
 
         # 更新分组计数
@@ -590,6 +590,28 @@ class GroupInfoRightMenuConnect(object):
         # 删除分组
         self.pop_menu.addAction(self.delete)
         self.delete.triggered.connect(self.delete_event)
+
+        # 双击信号
+        self.group_tree.doubleClicked.connect(self.double_clicked)
+        #   # 可用来打开某一行的某一列的编辑状态
+        #         # QTreeWidget::openPersistentEditor ( QTreeWidgetItem * item, int column = 0 )
+        #         # self.group_tree.openPersistentEditor()
+
+    def double_clicked(self, event: QModelIndex):
+        """
+        双击事件
+        :param event:
+        :return:
+        """
+        if event:
+            pass
+        # 主机信息
+        node: QTreeWidgetItem = self.group_tree.currentItem()
+        if node.parent() is not None:
+            # 此为根节点
+            return
+        self.group_tree.openPersistentEditor(node, 14)
+        print(node)
 
     def right_menu_pos_show(self) -> None:
         """

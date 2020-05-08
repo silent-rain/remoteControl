@@ -8,7 +8,7 @@ from PyQt5.QtWidgets import qApp
 
 from bin.logic.server.server import ServerConnect
 from bin.ui_view.info_display import DisplayInfoUI, GroupInfoUI, GroupInfoRightMenuConnect, GroupInfoConnect
-from bin.ui_view.main_window import MainWindowUI
+from bin.ui_view.main_window import MainWindowUI, MainWindowConnect
 from bin.ui_view.test_data import TestDataConnect
 from bin.ui_view.toolbar import ToolbarUI, ToolbarConnect
 from bin.ui_view.statusbar import StatusbarUI, StatusbarConnect
@@ -96,7 +96,7 @@ class MainUI(LoadingUI):
 
         # 模块信号
         self.connect_list = []
-        # self.main_window_connect = MainWindowConnect(self.main_window_ui)  # 主窗口信号
+        self.main_window_connect = MainWindowConnect(self.main_window_ui)  # 主窗口信号
         self.menubar_connect = MenubarConnect(self.menubar_ui)  # 菜单栏信号
         self.toolbar_connect = ToolbarConnect(self.toolbar_ui)  # 工具导航信号
         self.group_info_connect = GroupInfoConnect(self.group_info_ui, self.display_info_ui)  # 分组信息信号
@@ -134,6 +134,7 @@ class MainUI(LoadingUI):
         :return:
         """
         # 外观模式
+        self.connect_list.append(self.main_window_connect)
         self.connect_list.append(self.menubar_connect)
         self.connect_list.append(self.toolbar_connect)
         self.connect_list.append(self.tools_extension_connect)

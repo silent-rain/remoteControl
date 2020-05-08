@@ -5,6 +5,7 @@ from PyQt5.QtCore import QCoreApplication, QMetaObject
 
 from bin.ui_view.utils import load_animation
 from lib import settings
+from lib.communicate import communicate
 
 _translate = QCoreApplication.translate
 
@@ -39,7 +40,7 @@ class MainWindowUI(object):
         self.set_window_background4()
         self.center()
         # self.main_window.resizeEvent = self.resize_event
-        self.main_window.closeEvent = self.close_event
+        # self.main_window.closeEvent = self.close_event  # 放在信号区
 
         # 隐藏工具栏上的右键菜单
         # self.main_window.setContextMenuPolicy(Qt.NoContextMenu)
@@ -175,3 +176,49 @@ class MainWindowUI(object):
             event.accept()
         else:
             event.ignore()
+
+
+class MainWindowConnect(object):
+    def __init__(self, main_window_ui: MainWindowUI):
+        """
+        主窗口信号
+        :param main_window_ui:
+        """
+        self.main_window_ui = main_window_ui
+
+    def setup_ui(self) -> None:
+        self.communicate_connect()
+
+        # 主窗口关闭 事件
+        self.main_window_ui.main_window.closeEvent = self.close_event
+
+    def communicate_connect(self) -> None:
+        pass
+
+    def close_event(self, event: QCloseEvent) -> None:
+        """
+        主窗口重置退出事件
+        退出消息提示框
+        直接继承main_window的背景色
+        :param event:
+        :return:
+        """
+        message_box = QMessageBox(self.main_window_ui.main_window)
+        # noinspection PyArgumentList
+        reply = message_box.information(
+            self.main_window_ui.main_window,
+            _translate("MainWindowUI", "温馨提示"),
+            _translate("MainWindowUI", "您确认要退出???"),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes
+        )
+        if reply == QMessageBox.Yes:
+            communicate.start_server.emit(False)  # 程序退出后关闭服务器
+            communicate.log_info.emit("系统信息 - 正在关闭服务器...")
+            communicate.log_info.emit("系统信息 - 程序退出...")
+            event.accept()
+        else:
+            event.ignore()
+
+    def retranslate_ui(self) -> None:
+        pass

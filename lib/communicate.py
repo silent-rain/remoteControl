@@ -7,6 +7,8 @@ class Communicate(QObject):
     # 系统信息
     log_info = pyqtSignal(str)  # 日志信息
 
+    main_window_close = pyqtSignal()  # 主窗口关闭信息
+
     # 模块显示/隐藏
     tools_extension_show = pyqtSignal(bool)  # 工具箱扩展是否显示
     tools_extension_checked = pyqtSignal(bool)  # 菜单栏中的工具箱扩展是否选中
