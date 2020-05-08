@@ -33,6 +33,7 @@ class Communicate(QObject):
     # 工具导航
     init_start_server = pyqtSignal(bool)  # 服务启动 初始化信号
     start_server = pyqtSignal(bool)  # 服务启动/停止
+    start_server_error = pyqtSignal(bool)  # 服务异常停止
 
 
 communicate = Communicate()

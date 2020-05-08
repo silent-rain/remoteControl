@@ -106,7 +106,7 @@ class Client(object):
             try:
                 ret = self.recv_data()
                 print(ret)
-            except (struct.error, ConnectionResetError):
+            except (struct.error, UnicodeDecodeError):
                 pass
 
     def run(self) -> None:
@@ -121,7 +121,7 @@ class Client(object):
             self.connect()
             # 监听循环
             self.io_loop()
-        except BrokenPipeError:
+        except(BrokenPipeError, ConnectionResetError):
             # print("服务器断开")
             self.run()
 

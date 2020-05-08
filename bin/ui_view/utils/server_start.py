@@ -44,6 +44,8 @@ class ServerStartConnect(object):
     def communicate_connect(self) -> None:
         # 服务启动/停止, 初始化
         communicate.init_start_server.connect(self.init_start_server)
+        # 服务异常停止
+        communicate.start_server_error.connect(self.start_stop_receive)
 
     # noinspection PyArgumentList
     def start_stop_receive(self, event: bool) -> None:
@@ -69,7 +71,6 @@ class ServerStartConnect(object):
             self.server_start_ui.start_stop.setText(_translate("ToolbarUI", "停止"))
             self.server_start_ui.start_stop.setToolTip("停止服务")
             communicate.start_server.emit(True)  # -> 服务器开关
-
 
     # noinspection PyArgumentList
     def init_start_server(self, event: bool) -> None:

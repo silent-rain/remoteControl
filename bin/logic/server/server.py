@@ -72,12 +72,11 @@ class ThreadingTCPRequestHandler(BaseRequestHandler):
                 print(msg)
                 # info = input('>>>')
                 # # self.request.send(info.encode('utf-8'))
-                # self.send_data(info)
+                # self.send_data("info")
             except (BrokenPipeError, OSError, struct.error) as e:
                 logger.debug("系统信息 - " + str(e))
                 # CONNECTION_POOL.pop(self.request)
                 return None
-
 
     def recv_data(self) -> str:
         """
@@ -212,6 +211,9 @@ class ServerStart(QThread):
             self.server.start_server()
         except OSError as e:
             logger.error("系统信息 - " + str(e))
+            logger.error("系统信息 - 服务启动失败!!!")
+            # 服务器异常停止
+            communicate.start_server_error.emit(False)
 
 
 class ServerStop(QThread):
