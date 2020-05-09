@@ -512,21 +512,22 @@ class DisplayInfoUI(object):
         pass
 
 
-class GroupInfoUI(DockWidgetBase):
+class GroupInfoUI(object):
     def __init__(self, main_window: QMainWindow):
         """
         分组信息
         :param main_window:
         """
-        super().__init__(main_window)
         self.main_window = main_window
 
-        self.tree_widget = GroupTreeWidgetUI(self.widget_contents)
+        self.dock_widget = DockWidgetBase(self.main_window)
+
+        self.tree_widget = GroupTreeWidgetUI(self.dock_widget.widget_contents)
 
     def setup_ui(self) -> None:
-        super().setup_ui()
+        self.dock_widget.setup_ui()
         # noinspection PyArgumentList
-        self.layout.addWidget(self.tree_widget.group_tree)
+        self.dock_widget.layout.addWidget(self.tree_widget.group_tree)
 
         self.tree_widget.setup_ui()
 
@@ -541,7 +542,7 @@ class GroupInfoUI(DockWidgetBase):
         self.main_window.addDockWidget(Qt.LeftDockWidgetArea, self.dock_widget)
 
         # 初始化QDockWidget的高度
-        self.widget_contents.sizeHint = self.size_hint
+        self.dock_widget.widget_contents.sizeHint = self.size_hint
 
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:

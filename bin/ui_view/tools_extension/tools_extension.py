@@ -16,17 +16,17 @@ _translate = QCoreApplication.translate
 """
 
 
-class ToolsExtensionUI(DockWidgetBase):
+class ToolsExtensionUI(object):
     def __init__(self, main_window: QMainWindow):
         """
         工具扩展
         外观模式
         :param main_window:
         """
-        super().__init__(main_window)
         self.main_window = main_window
 
-        self.tab_widget = QTabWidget(self.widget_contents)
+        self.dock_widget = DockWidgetBase(self.main_window)
+        self.tab_widget = QTabWidget(self.dock_widget.widget_contents)
 
         self.ui_list = []
         self.log_info_ui = LogInfoUI(self.tab_widget)  # 日志信息
@@ -54,7 +54,6 @@ class ToolsExtensionUI(DockWidgetBase):
         参数设置
         :return:
         """
-        super().options()
         self.tab_widget.setObjectName("tab_widget")
 
         # 设置焦点
@@ -84,12 +83,12 @@ class ToolsExtensionUI(DockWidgetBase):
         self.main_window.addDockWidget(Qt.BottomDockWidgetArea, self.dock_widget)
 
     def setup_ui(self) -> None:
-        super().setup_ui()
+        self.dock_widget.setup_ui()
         self.options()
 
         self.tab_widget.setCurrentIndex(1)
         # noinspection PyArgumentList
-        self.layout.addWidget(self.tab_widget)
+        self.dock_widget.layout.addWidget(self.tab_widget)
 
         # 窗口移动事件重写
         # self.dock_widget.moveEvent = self.move_event
