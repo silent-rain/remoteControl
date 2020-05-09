@@ -1,16 +1,16 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtGui import QColor, QPalette
-from PyQt5.QtWidgets import QColorDialog, QMainWindow, QWidget
-from PyQt5.QtCore import QCoreApplication, QThread, QPropertyAnimation
+from PyQt5.QtGui import QColor, QPalette, QBrush
+from PyQt5.QtWidgets import QColorDialog, QWidget
+from PyQt5.QtCore import QCoreApplication, QPropertyAnimation
 
 from lib import settings
 from lib.communicate import communicate
 
-_translate = QCoreApplication.translate
-
 """
 皮肤调色模块
 """
+
+_translate = QCoreApplication.translate
 
 
 class SkinColorDialogUI(QWidget):
@@ -41,6 +41,7 @@ class SkinColorDialogUI(QWidget):
         # QPalette.Background   表示设置背景色
         # QPalette.WindowText  表示设置文本颜色
         self.palette.setColor(QPalette.Background, event)  # 给调色板设置颜色
+        self.palette.setBrush(QPalette.Base, QBrush(QColor(*event.getRgb())))
         # self.palette.setColor(QPalette.Background, self.color_dialog.selectedColor())  # 给调色板设置颜色
 
         # 给控件设置颜色
@@ -96,10 +97,10 @@ class SkinColorDialogConnect(object):
         皮肤调节 信号
         观察者模式
         """
+        self.window_list = []
+
         # 创建调色板
         self.palette = QPalette()
-
-        self.window_list = []
 
     def setup_ui(self) -> None:
         self.communicate_connect()
@@ -118,32 +119,49 @@ class SkinColorDialogConnect(object):
         """
         self.window_list.append(window)
 
-    def update_window_skin_color(self, event: QColor) -> None:
+    def update_window_skin_color(self, event: QPalette) -> None:
         """
         窗口皮肤调节
         :return:
         """
-        self.palette.setColor(QPalette.Background, event)  # 给调色板设置颜色
         # 给控件设置颜色
         if event.isValid():
+            self.palette.setColor(QPalette.Background, event)  # 给调色板设置颜色
+            self.palette.setBrush(QPalette.Base, QBrush(QColor(*event.getRgb())))
+
             for window in self.window_list:
                 # self.main_window_ui.main_window.setStyleSheet('QWidget {background-color:%s}' % event.name())
                 # self.main_window_ui.main_window.setPalette(self.palette)
-                window.setStyleSheet('QWidget {background-color:%s}' % event.name())
+                # window.setStyleSheet('QWidget {background-color:%s}' % event.name())  # 控件
+                window.setStyleSheet("background-color: rgb{};".format(event.getRgb()[:3]))
                 window.setPalette(self.palette)
 
 
-class WindowTransparentConnect(object):
+class WindowTransparentConnect2(object):
     def __init__(self):
         """
         窗口如透明效果,非阻塞
         观察者模式
+        废弃
         """
         self.window_list = []
         self.load_window_list = []
 
+        # 创建调色板
+        self.palette = QPalette()
+        # 颜色初始化
+        # self.color_init = QColor(107, 173, 246)
+        self.color_init = QColor(*settings.SKIN_COLOR)
+
     @staticmethod
     def options(animation: QPropertyAnimation, property_name: bytes = b'windowOpacity') -> None:
+        """
+        废弃
+        更改透明度
+        :param animation:
+        :param property_name:
+        :return:
+        """
         # 创建对象
 
         # 设置动画属性
@@ -176,23 +194,6 @@ class WindowTransparentConnect(object):
         # animation.setEasingCurve(QEasingCurve.InQuad)  # 设置动画的节奏
         animation.start()  # 动画开始---非阻塞
 
-    def load_window(self, window: object) -> None:
-        """
-        加载窗口对象
-        :return:
-        """
-        if not settings.LOAD_EFFECT_ON:
-            # 特效模式
-            return None
-        self.window_list.append(window)
-
-    def show_window(self) -> None:
-        for window in self.window_list:
-            animation = QPropertyAnimation()
-            animation.setTargetObject(window)  # 设置动画目标对象
-            self.options(animation)
-            self.load_window_list.append(animation)
-
     def stop(self) -> None:
         """
         效果全部终止
@@ -202,6 +203,67 @@ class WindowTransparentConnect(object):
             window.stop()
 
     def setup_ui(self) -> None:
+        pass
+
+    def retranslate_ui(self) -> None:
+        pass
+
+
+class WindowTransparentConnect(object):
+    def __init__(self):
+        """
+        窗口如透明效果,非阻塞
+        观察者模式
+        """
+        self.window_list = []
+        self.load_window_list = []
+
+        # 创建调色板
+        self.palette = QPalette()
+        # 颜色初始化
+        # self.color_init = QColor(107, 173, 246)
+        self.color_init = QColor(*settings.SKIN_COLOR)
+
+    def options(self) -> None:
+        """
+        参数设置
+        :return:
+        """
+        self.palette.setColor(QPalette.Background, self.color_init)  # 给调色板设置颜色
+        # self.palette.setBrush(QPalette.Base, QBrush(QColor(255, 255, 255, 0)))
+        self.palette.setBrush(QPalette.Base, QBrush(self.color_init))
+
+    def set_window_transparent(self, window: QWidget) -> None:
+        """
+        设置窗口背景色
+        :param window:
+        :return:
+        """
+        # 窗口透明度
+        # self.main_window.setWindowOpacity(0.5)
+        window.setAutoFillBackground(True)
+        window.setWindowOpacity(0.8)  # 0.0-1.0
+
+        # 给控件设置颜色
+        window.setStyleSheet("background-color: rgb{};".format(self.color_init.getRgb()[:3]))
+        window.setPalette(self.palette)
+
+    def load_window(self, window: object) -> None:
+        """
+        加载窗口对象
+        :return:
+        """
+        self.window_list.append(window)
+
+    def show_window(self) -> None:
+        if not settings.LOAD_EFFECT_ON:
+            # 特效模式
+            return None
+        for window in self.window_list:
+            self.set_window_transparent(window)
+
+    def setup_ui(self) -> None:
+        self.options()
         self.show_window()
 
     def retranslate_ui(self) -> None:

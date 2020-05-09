@@ -1,7 +1,9 @@
 # -*- coding: utf-8 -*-
-from PyQt5.QtGui import QFont
+from PyQt5.QtGui import QFont, QPalette, QColor, QBrush
 from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QTableWidgetItem
 from PyQt5.QtCore import Qt, QCoreApplication
+
+from lib import settings
 
 _translate = QCoreApplication.translate
 
@@ -75,6 +77,9 @@ class TableWidgetBase(QTableWidget):
         # font.setFamily("Arial")  # 括号里可以设置成自己想要的其它字体
         font.setPointSize(9)  # 括号里的数字可以设置成自己想要的字体大小
         self.setFont(font)
+
+        # 表格数据背景色交替
+        # self.setAlternatingRowColors(True)
 
     def set_headers(self) -> None:
         """

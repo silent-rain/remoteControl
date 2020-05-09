@@ -142,11 +142,24 @@ Id
 - 日志待解析
 
 
-## 报错集合
-### qt.qpa.xcb: QXcbConnection: XCB error: 8 (BadMatch), sequence: 770, resource id: 136314920, major code: 130 (Unknown), minor code: 3
+# 报错集合
+## qt.qpa.xcb: QXcbConnection: XCB error: 8 (BadMatch), sequence: 770, resource id: 136314920, major code: 130 (Unknown), minor code: 3
 sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
 
-## HTML颜色:
+## warning: LF will be replaced by CRLF in
+### 简介
+- 问题出在不同操作系统所使用的换行符是不一样的，下面罗列一下三大主流操作系统的换行符：
+- Uinx/Linux采用换行符LF表示下一行（LF：LineFeed，中文意思是换行）；
+- Dos和Windows采用回车+换行CRLF表示下一行（CRLF：CarriageReturn LineFeed，中文意思是回车换行）；
+- Mac OS采用回车CR表示下一行（CR：CarriageReturn，中文意思是回车）。
+### 解决
+- 为true时，Git会将你add的所有文件视为文本问价你，将结尾的CRLF转换为LF，而checkout时会再将文件的LF格式转为CRLF格式。
+- 为false时，line endings不做任何改变，文本文件保持其原来的样子。
+- 为input时，add时Git会把CRLF转换为LF，而check时仍旧为LF，所以Windows操作系统不建议设置此值。
+git config --global core.autocrlf true
+
+
+# HTML颜色:
 - 导航栏透明(linux无效): 
     border-top-color: transparent;
 - 背景透明(linux背景漆黑): 
@@ -161,3 +174,191 @@ sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
     background-color: qlineargradient(x1: 0, y1: 1, x2: 0, y2: 0, stop: 0 rgba(255, 255, 255, 100%),stop: 1 rgba(10, 144, 255, 100%));
 - 按钮颜色: 
     QPushButton { background-color: rgb(255, 85, 0); color: rgb(85, 255, 0); };
+
+
+# 窗口调节
+## setWindowOpacity(0.6)
+- 窗体的透明度
+- 透明度的有效范围从1.0(完全不透明)到0.0(完全透明的)
+- 这个特性可以在嵌入式Linux、Mac OS X、Windows、和X11平台上使用
+- 此功能不可用在Windows CE
+- 注意：
+    - 半透明的windows更新和调整明显慢于不透明的窗口（透明窗体的刷新速度会变慢）
+    - QDockWidget：悬浮后 window下会失效
+
+
+# 资料备份
+## 背景色的使用，以及窗口事件
+```python
+class MainWindowUI(object):
+    def __init__(self, main_window: QMainWindow):
+        """
+        主窗口
+        :param main_window:
+        """
+        self.main_window = main_window
+
+        # 创建调色板
+        self.palette = QPalette()
+        # 颜色初始化
+        # self.color_init = QColor(107, 173, 246)
+        self.color_init = QColor(*settings.SKIN_COLOR)
+
+    def setup_ui(self) -> None:
+        self.main_window.setObjectName("main_window")
+        self.main_window.resize(850, 500)
+
+        # noinspection PyArgumentList,PyCallByClass
+        QMetaObject.connectSlotsByName(self.main_window)
+
+        self.set_window_icon()
+        # self.set_window_background()
+        # self.set_window_background4()
+        self.center()
+        # self.main_window.resizeEvent = self.resize_event
+        # self.main_window.closeEvent = self.close_event  # 放在信号区
+
+        # 隐藏工具栏上的右键菜单
+        # self.main_window.setContextMenuPolicy(Qt.NoContextMenu)
+
+    # noinspection PyArgumentList
+    def retranslate_ui(self) -> None:
+        self.main_window.setWindowTitle(_translate("MainWindowUI", "远程协助"))
+
+    def set_window_icon(self) -> None:
+        """
+        设置窗口的图标
+        引用资源 qtResource.py
+        :return:
+        """
+        self.main_window.setWindowIcon(QIcon(settings.MAIN_UI["app"]))
+
+    def set_window_background(self) -> None:
+        """
+        设置背景: 背景色
+        :return:
+        """
+        # 导航栏透明(linux无效): border-top-color: transparent;
+        # 背景透明(linux背景漆黑): background:transparent;
+        # 边框透明(linux无效果): border: transparent;
+        # 背景色: background-color: rgb(100, 200, 255);
+
+        # 整体背景
+        # 如果设置背景色,透明失效
+        # self.main_window.setStyleSheet("background-color: rgb(100, 200, 255);")
+        # self.main_window.setStyleSheet("background-color: rgb(107, 173, 246);")
+        self.main_window.setStyleSheet("background-color: rgb{};".format(self.color_init.getRgb()[:3]))
+
+        # 不显示标题栏，亦无边框
+        # 无法移动
+        # self.main_window.setWindowFlags(Qt.FramelessWindowHint | Qt.Tool | Qt.WindowStaysOnTopHint)
+
+        # 设置背景（全透明）
+        # 如果设置背景色,透明失效
+        # 效果为一般为漆黑
+        # self.main_window.setAttribute(Qt.WA_TranslucentBackground, True)
+
+        #  设置透明用
+        # self.main_window.setWindowOpacity(0.5)
+
+    def set_window_background2(self) -> None:
+        """
+        设置背景: 填充图片
+        :return:
+        """
+        # 图片背景: background-image: url(:/images/background.png);
+        self.main_window.setStyleSheet("background-image: url({0});".format(settings.MAIN_UI["background"]))
+        # 自动填充背景
+        # self.main_window.setAutoFillBackground(False)
+
+    def set_window_background3(self, event: QResizeEvent = None) -> None:
+        """
+        设置背景: 平铺图片
+        :return:
+        """
+        palette = QPalette()
+        # 需要png格式，jpg失败！
+        # pix = QPixmap("../src/image/background.jpg")  # 直接使用
+        pix = QPixmap(settings.MAIN_UI["background"])  # 打包资源
+        # pix = pix.scaled(self.main_window.width(), self.main_window.height())
+        if event:
+            # 窗口变化,重新获取窗口大小
+            pix = pix.scaled(event.size())
+        else:
+            # 平铺
+            pix = pix.scaled(self.main_window.size())
+        palette.setBrush(QPalette.Background, QBrush(pix))
+        self.main_window.setPalette(palette)
+
+    def set_window_background4(self) -> None:
+        """
+        使用调色板
+        :return:
+        """
+        # self.main_window.setAutoFillBackground(True)
+        self.main_window.setWindowOpacity(0.5)
+        # self.main_window.setAttribute(Qt.WA_TranslucentBackground)
+        # self.color_init.setAlpha(0.3)
+        # # https://blog.csdn.net/addfourliu/article/details/6730688?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1&depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-1
+        self.palette.setColor(QPalette.Background, self.color_init)  # 给调色板设置颜色
+        # self.palette.setColor(QPalette.Background, Qt.transparent)  # 给调色板设置颜色
+        self.main_window.setPalette(self.palette)  # 给控件设置颜色
+
+    def center(self) -> None:
+        """
+        控制窗口显示在屏幕中心
+        :return:
+        """
+        # 获得窗口
+        qr = self.main_window.frameGeometry()
+        # 获得屏幕中心点
+        cp = QDesktopWidget().availableGeometry().center()
+        # 显示到屏幕中心
+        qr.moveCenter(cp)
+        self.main_window.move(qr.topLeft())
+
+    def resize_event(self, event: QResizeEvent) -> None:
+        """
+        重置窗口事件
+        :param event:
+        :return:
+        """
+        self.set_window_background3(event)
+
+        # noinspection PyArgumentList
+
+    def close_event(self, event: QCloseEvent) -> None:
+        """
+        重置退出事件
+        退出消息提示框
+        直接继承main_window的背景色
+        :param event:
+        :return:
+        """
+        # self.message_box = QMessageBox(self.main_window)
+        # 标题图标
+        # msg.setWindowIcon(QIcon(settings.mainUi["confirm"]))
+
+        # 设置背景图片
+        # 背景图片： "background-image: url(:/image/mainUi/background.png);"
+        # msg.setStyleSheet("background-image: url({0});".format(settings.mainUi["background"]))
+        message_box = QMessageBox(self.main_window)
+        # noinspection PyArgumentList
+        reply = message_box.information(
+            self.main_window,
+            _translate("MainWindowUI", "温馨提示"),
+            _translate("MainWindowUI", "您确认要退出???"),
+            QMessageBox.Yes | QMessageBox.No,
+            QMessageBox.Yes
+        )
+        if reply == QMessageBox.Yes:
+            # self.communicate.server_status.emit(False)  # 程序退出后关闭服务器
+            # self.communicate.log_info.emit(self.logger.info("正在关闭服务器..."))
+            # self.communicate.log_info.emit(self.logger.info("程序退出..."))
+            event.accept()
+        else:
+            event.ignore()
+
+```
+
+## 

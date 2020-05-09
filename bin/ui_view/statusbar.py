@@ -32,14 +32,26 @@ class ShowTime(object):
         """
         self.statusbar = statusbar
 
-        self.time_abel = QLabel(self.statusbar)
+        self.time_label = QLabel(self.statusbar)
         self.timer = QTimer()
         self.time_text = ""
         self.stretch = stretch
 
     def setup_ui(self) -> None:
-        self.time_abel.setFixedWidth(230)
-        self.statusbar.addWidget(self.time_abel, self.stretch)
+        # self.time_abel.setFixedWidth(250)
+        self.statusbar.addWidget(self.time_label, self.stretch)
+
+        # QLabel 无边框
+        # self.time_label.setFrameStyle(QFrame.NoFrame)
+        # self.time_label.setFrameShape(QFrame.NoFrame)
+
+        """
+        QLabel的边框设定：使用copysetFrameStyle()
+        如：label.setFrameStyle(QFrame.NoFrame)
+        或者使用函数setFrameShape()
+        如：label.setFrameShape(QFrame.NoFrame)
+        边框属zd性可查看QT帮助文件 enum QFrame::Shape
+        """
 
         self.timer.timeout.connect(self.time_refresh_receive)
         self.timer.start(1000)  # 设置间隔时间,否则cpu占用会上升
@@ -54,7 +66,7 @@ class ShowTime(object):
 
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
-        self.time_abel.setText(_translate("StatusbarUI", "北京时间: " + self.time_text))
+        self.time_label.setText(_translate("StatusbarUI", "北京时间: " + self.time_text))
 
 
 class Placeholder(object):
@@ -109,9 +121,10 @@ class OnlineHost(object):
     def setup_ui(self) -> None:
         self.online_icon.setScaledContents(True)  # 让图片自适应label大
         self.online_icon.setFixedWidth(25)  # 图片宽度
+
         self.set_background2()
 
-        self.online.setFixedWidth(100)
+        self.online.setMinimumWidth(100)
 
         stretch_icon = - (abs(self.stretch) + 1)
         self.statusbar.addWidget(self.online_icon, stretch_icon)
@@ -196,7 +209,8 @@ class NetSpeed(object):
         self.net_speed = NetSpeedThread()
 
     def setup_ui(self) -> None:
-        self.send_recv_text.setFixedWidth(180)
+        self.send_recv_text.setMinimumWidth(190)
+
         self.statusbar.addWidget(self.send_recv_text, self.stretch)
 
         self.net_speed.update(self.send_recv_text)
