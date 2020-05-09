@@ -3,3 +3,4 @@ psutil
 chardet
 sqlalchemy
 pyaudio
+aiohttp
