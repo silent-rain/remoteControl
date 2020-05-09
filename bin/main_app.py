@@ -169,8 +169,8 @@ class MainUI(LoadingUI):
         """
         self.window_transparent_connect.load_window(self.main_window)
         self.window_transparent_connect.load_window(self.menubar_ui.help_menu.about_ui.layout_widget)
-        self.window_transparent_connect.load_window(self.menubar_ui.option_menu.skin_color_dialog.color_dialog)
         self.window_transparent_connect.load_window(self.menubar_ui.option_menu.skin_color_dialog)
+        self.window_transparent_connect.load_window(self.tools_extension_ui.log_info_ui.log_tab.horizontal_header)
 
     def show_ui(self) -> None:
         """

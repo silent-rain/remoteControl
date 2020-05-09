@@ -87,6 +87,7 @@ class DockWidgetBase(QDockWidget):
         :param main_window:
         """
         super().__init__(main_window)
+        self.main_window = main_window
 
         # QDockWidget
         self.widget_contents = QWidget(self, Qt.WindowFlags())
@@ -120,6 +121,8 @@ class DockWidgetBase(QDockWidget):
         # MainWindow.addDockWidget(Qt.DockWidgetArea(8), self)
         # self.main_window.addDockWidget(Qt.BottomDockWidgetArea, self)
 
+        # self.main_window.setStyleSheet("QDockWidget#" + str(self.objectName()) + "::title {background-color:red}")
+
     def setup_ui(self) -> None:
         self.options()
 
@@ -127,19 +130,8 @@ class DockWidgetBase(QDockWidget):
         self.widget_contents.sizeHint = self.size_hint
 
         # QDockWidget 位置发生变动
-        self.dockLocationChanged.connect(self.dock_location_changed)
+        # self.dockLocationChanged.connect(self.dock_location_changed)
 
     # noinspection PyArgumentList
     def retranslate_ui(self) -> None:
         self.setWindowTitle(_translate("ToolsExtensionView", "工具扩展"))
-
-    def dock_location_changed(self, event: Qt.DockWidgetArea) -> None:
-        """
-        QDockWidget 浮动事件
-        :param event:
-        :return:
-        """
-        if event:
-            pass
-        if settings.LOAD_EFFECT_ON:
-            load_animation.load_animation(self.widget_contents)

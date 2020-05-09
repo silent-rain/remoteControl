@@ -1,6 +1,6 @@
 # -*- coding: utf-8 -*-
 from PyQt5.QtGui import QFont, QPalette, QColor, QBrush
-from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QTableWidgetItem
+from PyQt5.QtWidgets import QTableWidget, QAbstractItemView, QTableWidgetItem, QHeaderView
 from PyQt5.QtCore import Qt, QCoreApplication
 
 from lib import settings
@@ -25,10 +25,22 @@ class TableWidgetBase(QTableWidget):
         ]
         self.header_width = [60, 150, 80]
 
+        self.horizontal_header: QHeaderView = self.horizontalHeader()
+
     def setup_ui(self) -> None:
         # self.setMinimumHeight(100)
         self.options()
         self.set_headers()
+
+        # self.horizontal_header.setAutoFillBackground(True)
+        # self.horizontal_header.setWindowOpacity(0.8)  # 0.0-1.0
+
+        # 颜色初始化
+        # self.color_init = QColor(107, 173, 246)
+        # color_init = QColor(*settings.SKIN_COLOR)
+        # 给控件设置颜色
+        # self.horizontal_header.setStyleSheet("QHeaderView::section { background-color: " + color_init.name() + ";}")
+        # self.horizontalHeader().setStyleSheet("QHeaderView::section { background-color: blue}; }")
 
     def retranslate_ui(self) -> None:
         pass
