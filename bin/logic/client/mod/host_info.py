@@ -1,17 +1,17 @@
 # -*- coding: utf-8 -*-
-import asyncio
-import platform
+import time
 import pynvml
-import aiohttp
-import psutil
-from datetime import datetime
+from platform import platform, node, machine
+from asyncio import get_event_loop
+from aiohttp import ClientSession
 from aiohttp.client_exceptions import ClientConnectorError
-from pyaudio import PyAudio, paInt16
-from wmi import WMI
 from socket import socket, AF_INET, SOCK_DGRAM, error
 from lxml import etree
-from psutil import net_if_addrs
+from psutil import net_if_addrs, cpu_count, boot_time
+
 from cv2 import VideoCapture
+from pyaudio import PyAudio, paInt16
+from wmi import WMI
 
 
 class LocalIp(object):
@@ -106,7 +106,7 @@ class PublicIp(object):
         self.headers_title = {}
 
     async def fetch_async2(self, url) -> None:
-        async with aiohttp.ClientSession() as session:  # 协程嵌套，只需要处理最外层协程即可fetch_async
+        async with ClientSession() as session:  # 协程嵌套，只需要处理最外层协程即可fetch_async
             headers = {
                 'Connection': 'keep-alive',
                 'User-Agent': 'Mozilla/5.0 (Windows NT 6.1; Win64; x64) '
@@ -137,9 +137,8 @@ class PublicIp(object):
         :return:
         """
         try:
-            tasks = [self.fetch_async2('https://ip.cn')]
-            event_loop = asyncio.get_event_loop()
-            event_loop.run_until_complete(asyncio.gather(*tasks))
+            event_loop = get_event_loop()
+            event_loop.run_until_complete(self.fetch_async2('https://ip.cn'))
             event_loop.close()
         except ClientConnectorError:
             pass
@@ -161,7 +160,7 @@ class ComputerInfo(object):
         # host_name = getfqdn(gethostname())
         # self.headers_title["host_name"] = host_name
 
-        self.headers_title["host_name"] = platform.node()
+        self.headers_title["host_name"] = node()
 
     def get_system(self) -> None:
         """
@@ -178,7 +177,7 @@ class ComputerInfo(object):
         platform.uname()           #包含上面所有的信息汇总，('Linux', 'XF654', '3.13.0-46-generic',
         :return:
         """
-        system = platform.platform() + "/" + platform.machine()
+        system = platform() + "/" + machine()
         self.headers_title["system"] = system
 
     def get_boot_time(self) -> None:
@@ -186,8 +185,10 @@ class ComputerInfo(object):
         获取系统的开机时间
         :return:
         """
-        boot_time = datetime.fromtimestamp(psutil.boot_time()).strftime("%Y-%m-%d %H:%M:%S")  # 转换成自然时间格式
-        self.headers_title["boot_time"] = boot_time
+        time_array = time.localtime(boot_time())
+        boot_time1 = time.strftime("%Y-%m-%d %H:%M:%S", time_array)
+        # boot_time1 = datetime.fromtimestamp(boot_time()).strftime("%Y-%m-%d %H:%M:%S")  # 转换成自然时间格式
+        self.headers_title["boot_time"] = boot_time1
 
     def get_cpu_info_win(self) -> bool:
         """
@@ -199,8 +200,8 @@ class ComputerInfo(object):
         cpu_obj = self.wmi.Win32_Processor()
         if not cpu_obj:
             return False
-        self.headers_title["cpu"] = cpu_obj[0].Name + "*{}*{}".format(psutil.cpu_count(logical=False),
-                                                                      psutil.cpu_count())
+        self.headers_title["cpu"] = cpu_obj[0].Name + "*{}*{}".format(cpu_count(logical=False),
+                                                                      cpu_count())
         return True
 
     @staticmethod
