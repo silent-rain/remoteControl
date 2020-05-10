@@ -99,7 +99,7 @@ logging_config = {
             # 'level': 'DEBUG',  # 输出信息的最低级别
             'level': LOGGING_LEVEL,  # 输出信息的最低级别
             # 'class': CustomQtSignalHandler,
-            'class': "logger.CustomQtSignalHandler",
+            'class': "logging.CustomQtSignalHandler",
             'formatter': 'qt_console',  # 使用standard格式
             # 'filters': ['filter_single_level_debug', ],
             # "stream": "ext://sys.stdout"

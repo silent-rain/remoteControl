@@ -43,7 +43,11 @@ headers_title_us = ["Id", "out_net", "in_net", "host_name", "system", "cpu", "me
 #     _translate("DisplayInfoUI", "备注"),
 # ]
 # self.header_width = [90, 100]
-print(len(headers_title_us))
-hide_column = headers_title_us[2:-1]
-print(hide_column)
-print(len(hide_column))
+# print(len(headers_title_us))
+# hide_column = headers_title_us[2:-1]
+# print(hide_column)
+# print(len(hide_column))
+
+# print("/465GB/149GB".strip("/"))
+info = {'Id': '', 'version': '', 'note': '', 'host_name': 'DESKTOP-ONE', 'system': 'Windows-10-10.0.18362-SP0/AMD64', 'boot_time': '2020-05-10 11:43:04', 'cpu': 'Intel(R) Core(TM) i7-4700HQ CPU @ 2.40GHz*4*8', 'disk': 'TOSHIBA MQ01ABF050*465GB/INTEL SSDSA2M160G2LE*149GB', 'memory': '8GB*1600MHz/4GB*1600MHz', 'graphics': True, 'video': True, 'voice': False}
+print(len(info))

@@ -26,17 +26,24 @@ class ThreadingTCPRequestHandler(BaseRequestHandler):
     """
     # 数据流大小
     buf_size = 1024
+    online_data = []
 
-    def online_info(self):
-        data = [None, self.client_address[0], '', '', '', '', '', '', False, False, '', '', '爱好者线主机', '', '']
+    def online_info(self, data: list) -> None:
+        """
+        上线信息
+        :param data:
+        :return:
+        """
+        self.online_data = data
+        # data = [None, self.client_address[0], '', '', '', '', '', '', False, False, '', '', '爱好者线主机', '', '']
         communicate.online_data.emit(data)
         out_net = data[1]
         communicate.online_sound.emit(True, out_net)
 
-    def offline_info(self):
-        data = [None, self.client_address[0], '', '', '', '', '', '', False, False, '', '', '爱好者线主机', '', '']
-        communicate.offline_data.emit(data)
-        out_net = data[1]
+    def offline_info(self) -> None:
+        # self.online_data = [None, self.client_address[0], '', '', '', '', '', '', False, False, '', '', '爱好者线主机', '', '']
+        communicate.offline_data.emit(self.online_data)
+        out_net = self.online_data[1]
         communicate.online_sound.emit(False, out_net)
 
     def setup(self) -> None:
@@ -49,7 +56,7 @@ class ThreadingTCPRequestHandler(BaseRequestHandler):
         # 连接池加入客户端
         if self.request not in CONNECTION_POOL:
             CONNECTION_POOL.update({self.request: self.client_address[0]})
-            self.online_info()
+            # self.online_info()
 
     def finish(self) -> None:
         """
@@ -65,21 +72,21 @@ class ThreadingTCPRequestHandler(BaseRequestHandler):
         """
         处理到的请求
         消息循环
+        # self.request.send(info.encode('utf-8'))
         :return:
         """
+        # 上线信息
+        online_data = self.recv_data()
+        self.online_info(online_data)
         while True:
             try:
-                msg = self.recv_data()
-                print(msg)
-                # info = input('>>>')
-                # # self.request.send(info.encode('utf-8'))
-                # self.send_data("info")
+                self.send_data("info")
             except (BrokenPipeError, OSError, struct.error) as e:
                 logger.debug("系统信息 - " + str(e))
                 # CONNECTION_POOL.pop(self.request)
                 return None
 
-    def recv_data(self) -> str:
+    def recv_data(self):
         """
         接收数据
         报头+数据

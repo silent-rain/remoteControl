@@ -4,3 +4,7 @@ chardet
 sqlalchemy
 pyaudio
 aiohttp
+lxml
+wmi
+pynvml
+cv2

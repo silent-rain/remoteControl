@@ -6,6 +6,7 @@ from json import loads, dumps
 from time import sleep
 
 from lib import settings
+from bin.logic.client.mod.host_info import HostInfo
 
 """
 客户端
@@ -26,6 +27,9 @@ class Client(object):
 
         # 数据流大小
         self.buf_size = 1024
+
+        # 主机信息
+        self.host_info = HostInfo()
 
     def connect(self) -> bool:
         """
@@ -94,18 +98,18 @@ class Client(object):
     def io_loop(self) -> None:
         """
         监听循环
-
+        # self.tcp_client.send(msg.encode('utf-8'))
+        # ret = self.tcp_client.recv(1024).decode('utf-8')
         :return:
         """
+        # 上线信息
+        online_data = self.host_info.headers_title
+        self.send_data(online_data)
         while True:
-            # msg = input('>>>>>')
-            msg = "input('>>>>>')"
-            # self.tcp_client.send(msg.encode('utf-8'))
-            self.send_data(msg)
-            # ret = self.tcp_client.recv(1024).decode('utf-8')
             try:
                 ret = self.recv_data()
                 print(ret)
+                input()
             except (struct.error, UnicodeDecodeError):
                 pass
 
@@ -117,6 +121,9 @@ class Client(object):
         :return:
         """
         try:
+            # 主机信息加载
+            self.host_info.main()
+
             # 连接
             self.connect()
             # 监听循环

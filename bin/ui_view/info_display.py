@@ -27,8 +27,7 @@ class TableWidgetUI(TableWidgetBase):
         super().__init__()
         # self.headers_us = ["Id", "Date", "Type", "Message"]
         # self.headers_title_us = ["Id", "out_net", "in_net", "host_name", "system", "cpu", "memory", "disk",
-        #                          "video", "voice", "boot_time", "version", "group", "position", "note"]
-
+        #                          "graphics", "video", "voice", "boot_time", "version", "group", "position", "note"]
         # noinspection PyArgumentList
         self.headers_title = [
             _translate("DisplayInfoUI", "Id"),
@@ -39,6 +38,7 @@ class TableWidgetUI(TableWidgetBase):
             _translate("DisplayInfoUI", "处理器"),
             _translate("DisplayInfoUI", "内存"),
             _translate("DisplayInfoUI", "硬盘容量"),
+            _translate("DisplayInfoUI", "显卡"),
             _translate("DisplayInfoUI", "视频"),
             _translate("DisplayInfoUI", "语音"),
             _translate("DisplayInfoUI", "开机时间"),
@@ -74,11 +74,12 @@ class GroupTreeWidgetUI(object):
             # _translate("DisplayInfoUI", "外网"),
             _translate("DisplayInfoUI", "主机信息"),
             _translate("DisplayInfoUI", "内网"),
-            _translate("DisplayInfoUI", "计算机名"),
+            _translate("DisplayInfoUI", "计算机"),
             _translate("DisplayInfoUI", "操作系统"),
             _translate("DisplayInfoUI", "处理器"),
             _translate("DisplayInfoUI", "内存"),
             _translate("DisplayInfoUI", "硬盘容量"),
+            _translate("DisplayInfoUI", "显卡"),
             _translate("DisplayInfoUI", "视频"),
             _translate("DisplayInfoUI", "语音"),
             _translate("DisplayInfoUI", "开机时间"),
@@ -87,11 +88,6 @@ class GroupTreeWidgetUI(object):
             _translate("DisplayInfoUI", "区域"),
             _translate("DisplayInfoUI", "备注"),
         ]
-        # self.headers_title = [
-        #     _translate("DisplayInfoUI", "Id"),
-        #     _translate("DisplayInfoUI", "主机信息"),
-        #     _translate("DisplayInfoUI", "备注"),
-        # ]
         self.header_width = [90, 100]
         self.hide_column = [self.headers_title.index(item) for item in self.headers_title[2:-1]]
 
@@ -304,6 +300,9 @@ class GroupTreeWidgetUI(object):
         :param _name: 名称
         :return: 返回存在的节点
         """
+        if not _name:
+            master: QTreeWidgetItem = self.group_tree.topLevelItem(0)
+            return master
         # 获取根节个数
         master_count = self.group_tree.topLevelItemCount()
         for index in range(master_count):
