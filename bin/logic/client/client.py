@@ -10,24 +10,59 @@ from bin.logic.client.mod.host_info import HostInfo
 客户端
 """
 
+import functools
+
+lock_one_app = None
+
+
+def just_one_instance(func):
+    """
+    装饰器
+    端口绑定互斥
+    如果已经有实例在跑则退出
+    :param func:
+    :return:
+    """
+    @functools.wraps(func)
+    def instance(*args, **kwargs):
+        try:
+            # 全局属性，否则变量会在方法退出后被销毁
+            global lock_one_app
+            lock_one_app = socket.socket()
+            host = socket.gethostname()
+            lock_one_app.bind((host, 60123))
+        except OSError:
+            print('already has an instance')
+            return None
+        return func(*args, **kwargs)
+
+    return instance
+
 
 class Client(object):
+    def __new__(cls, *args, **kwargs):
+        if not hasattr(cls, '_instance'):
+            cls._instance = object.__new__(cls)
+            return cls._instance
+
     def __init__(self, server_address):
         """
         客户端初始化
         :param server_address:
         """
-        # self.server_address = ("127.0.0.1", 2020)
-        self.server_address = server_address
+        if not hasattr(self, "_instance_flag"):
+            self._instance_flag = True
+            # self.server_address = ("127.0.0.1", 2020)
+            self.server_address = server_address
 
-        # 创建客户端实例
-        self.tcp_client = None
+            # 创建客户端实例
+            self.tcp_client = None
 
-        # 数据流大小
-        self.buf_size = 1024
+            # 数据流大小
+            self.buf_size = 1024
 
-        # 主机信息
-        self.host_info = HostInfo()
+            # 主机信息
+            self.host_info = HostInfo()
 
     def connect(self) -> bool:
         """
@@ -111,6 +146,7 @@ class Client(object):
             except (struct.error, UnicodeDecodeError):
                 pass
 
+    @just_one_instance
     def run(self) -> None:
         """
         客户端启动连接
