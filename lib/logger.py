@@ -1,13 +1,9 @@
 # -*- coding: utf-8 -*-
 import os
-import sys
 import logging.config
 from logging import StreamHandler
 from lib.settings import LOGGING_LEVEL, LOGGING_DIR, DEBUG
 from lib.communicate import communicate
-
-BASE_PATH = os.path.abspath(os.path.dirname(__file__))
-sys.path.append(BASE_PATH)
 
 
 # 日志打印级别
@@ -49,6 +45,8 @@ class CustomQtSignalHandler(StreamHandler):
             communicate.log_info.emit(msg)
 
 
+logging.CustomQtSignalHandler = CustomQtSignalHandler
+
 logging_config = {
     # 必选项，其值是一个整数值，表示配置格式的版本，当前唯一可用的值就是1
     'version': 1,
@@ -83,7 +81,8 @@ logging_config = {
     'formatters': {
         'simple': {
             'format': '%(asctime)s - %(name)s - %(levelname)s - %(message)s',
-            'default_time_format': '%Y%b%d-%H:%M:%S',
+            'datefmt': '%Y%b%d-%H:%M:%S',
+            # "datefmt": '%a, %d %b %Y %H:%M:%S',
         },
         'standard': {
             'format': '%(asctime)s [%(threadName)s:%(thread)d] [%(name)s:%(lineno)d] [%(levelname)s] - %(message)s'
