@@ -5,7 +5,7 @@ import pynvml
 import aiohttp
 import psutil
 from datetime import datetime
-
+from aiohttp.client_exceptions import ClientConnectorError
 from pyaudio import PyAudio, paInt16
 from wmi import WMI
 from socket import socket, AF_INET, SOCK_DGRAM, error
@@ -136,10 +136,13 @@ class PublicIp(object):
         主接口
         :return:
         """
-        tasks = [self.fetch_async2('https://ip.cn')]
-        event_loop = asyncio.get_event_loop()
-        event_loop.run_until_complete(asyncio.gather(*tasks))
-        event_loop.close()
+        try:
+            tasks = [self.fetch_async2('https://ip.cn')]
+            event_loop = asyncio.get_event_loop()
+            event_loop.run_until_complete(asyncio.gather(*tasks))
+            event_loop.close()
+        except ClientConnectorError:
+            pass
 
 
 class ComputerInfo(object):

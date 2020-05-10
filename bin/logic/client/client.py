@@ -1,11 +1,9 @@
 # -*- coding: utf-8 -*-
-# import json
 import socket
 import struct
 from json import loads, dumps
 from time import sleep
 
-from lib import settings
 from bin.logic.client.mod.host_info import HostInfo
 
 """
@@ -19,7 +17,7 @@ class Client(object):
         客户端初始化
         :param server_address:
         """
-        # self.server_address = ("127.0.0.1", 8090)
+        # self.server_address = ("127.0.0.1", 2020)
         self.server_address = server_address
 
         # 创建客户端实例
@@ -137,5 +135,5 @@ class Client(object):
 
 
 if __name__ == '__main__':
-    client = Client((settings.IP, settings.PORT))
+    client = Client(("127.0.0.1", 2020))
     client.run()

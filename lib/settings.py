@@ -11,6 +11,8 @@ if fix_qt_import_error and qtResource:
     # 防止被软件清理
     pass
 
+APP_NAME = "远程协助"
+
 # 系统图标
 MAIN_UI = {
     "app": ':/ui/images/mainUi/app.png',
@@ -47,27 +49,27 @@ TOOLBAR_UI = {
     "voice": ':/ui/images/toolbar/voice.png',
 }
 
-# 设置
-# options = {
-#     "release_dir": abspath(join(os.path.dirname(BASE_PATH), "release")),  # 编译文件目录
-#     # {{client打包配置
-#     "client_icon": abspath(join(BASE_PATH, "src/images/app.ico")),  # 程序图标
-#     "client_dir": abspath(join(os.path.dirname(BASE_PATH), "release/client")),  # 客户端存放目录
-#     "client_make": abspath(join(BASE_PATH, "core/logicalCode/client/client.py")),  # 客户端文件
-#     "client_temp": abspath(join(os.path.dirname(BASE_PATH), "release/client/temp")),  # 临时文件夹
-#     "client_dist_path": abspath(join(os.path.dirname(BASE_PATH), "release/client")),  # 编译存放位置
-#     "client_name": "suchost",
-#     # }}
-# 
-#     # {{server打包配置
-#     "server_icon": abspath(join(BASE_PATH, "src/images/app.ico")),  # 程序图标
-#     "server_dir": abspath(join(os.path.dirname(BASE_PATH), "release/server")),  # 服务端存放目录
-#     "server_make": abspath(join(os.path.dirname(BASE_PATH), "server/run.py")),  # 服务端文件
-#     "server_temp": abspath(join(os.path.dirname(BASE_PATH), "release/server/temp")),  # 临时文件夹
-#     "server_dist_path": abspath(join(os.path.dirname(BASE_PATH), "release/server")),  # 编译存放位置
-#     "server_name": "远程控制",
-#     # }}
-# }
+MAKE_OPTIONS = {
+    "release_dir": abspath(join(BASE_PATH, "release")),  # 编译文件目录
+    "client_dir": abspath(join(BASE_PATH, "release/client")),  # 客户端存放目录
+    "server_dir": abspath(join(BASE_PATH, "release/server")),  # 服务端存放目录
+
+    # client打包配置
+    "client_icon": abspath(join(BASE_PATH, "src/images/app.ico")),  # 程序图标
+    # "client_file": abspath(join(BASE_PATH, "bin/logic/client/run_client.py")),  # 客户端文件
+    "client_file": abspath(join(BASE_PATH, "run_client.py")),  # 客户端文件
+    "client_temp": abspath(join(BASE_PATH, "release/client/temp")),  # 临时文件夹
+    "client_dist_path": abspath(join(BASE_PATH, "release/client")),  # 编译存放位置
+    "client_name": "suchost",
+
+    # server打包配置
+    "server_icon": abspath(join(BASE_PATH, "src/images/app.ico")),  # 程序图标
+    "server_file": abspath(join(BASE_PATH, "server/run.py")),  # 服务端文件
+    "server_temp": abspath(join(BASE_PATH, "release/server/temp")),  # 临时文件夹
+    "server_dist_path": abspath(join(BASE_PATH, "release/server")),  # 编译存放位置
+    "server_name": APP_NAME,
+
+}
 
 # 系统配置
 CONF_DIR = abspath(join(BASE_PATH, "conf"))  # 配置文件夹

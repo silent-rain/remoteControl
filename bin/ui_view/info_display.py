@@ -305,7 +305,7 @@ class GroupTreeWidgetUI(object):
             return master
         # 获取根节个数
         master_count = self.group_tree.topLevelItemCount()
-        for index in range(master_count):
+        for index in range(master_count - 1, -1, -1):
             # 获取根节点
             master: QTreeWidgetItem = self.group_tree.topLevelItem(index)
             name = master.text(0)
@@ -450,6 +450,8 @@ class GroupTreeWidgetUI(object):
 
         # 更新分组计数
         self.update_count()
+        # 更新索引
+        self.update_index(master)
 
         if settings.REAL_TIME_REFRESH:
             # 实时刷新上线数据
@@ -470,6 +472,21 @@ class GroupTreeWidgetUI(object):
             # 在线主机 (0)
             text = "({})".format(child_count)
             master.setText(1, text)
+
+    @staticmethod
+    def update_index(master: QTreeWidgetItem) -> None:
+        """
+        更新子节点 索引信息
+        :return:
+        """
+        # QTreeWidgetItem(self.group_tree).text(0)
+        # 获取子节点个数
+        count = master.childCount()
+        # 根据索引获取子节点
+        for index in range(count):
+            child = master.child(index)
+            # 在线主机 (0)
+            child.setText(0, str(index + 1))
 
     # noinspection PyArgumentList
     def re_translate_ui(self) -> None:

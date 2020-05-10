@@ -1,7 +1,6 @@
 # -*- coding:utf-8 -*-
 import sys
 from os.path import abspath, dirname, realpath
-from lib import fix_qt_import_error
 
 
 def base_path() -> str:

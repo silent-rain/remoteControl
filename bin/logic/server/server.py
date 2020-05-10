@@ -1,8 +1,6 @@
 # -*- coding: utf-8 -*-
-# import json
 import struct
-# import socketserver
-from socket import socket, SHUT_WR, SHUT_RDWR
+from socket import SHUT_RDWR
 from socketserver import BaseRequestHandler, ThreadingMixIn, TCPServer
 from json import loads, dumps
 from PyQt5.QtCore import QThread
@@ -35,7 +33,7 @@ class ThreadingTCPRequestHandler(BaseRequestHandler):
         :return:
         """
         self.online_data = data
-        # data = [None, self.client_address[0], '', '', '', '', '', '', False, False, '', '', '爱好者线主机', '', '']
+        # self.online_data = [None, self.client_address[0], '', '', '', '', '', '', False, False, '', '', '爱好者线主机', '', '']
         communicate.online_data.emit(data)
         out_net = data[1]
         communicate.online_sound.emit(True, out_net)
@@ -170,7 +168,7 @@ class Server(QThread):
             # conn: socket = CONNECTION_POOL.popitem()[0]
             # self.server.close_request(conn)  # 无效
             # print(dir(conn))
-            conn.shutdown(2)
+            conn.shutdown(SHUT_RDWR)
             conn.close()
 
         # 关闭服务器
