@@ -93,14 +93,18 @@ def test1():
     aaa.main()
 
 
-if __name__ == '__main__':
-    import threading
+# if __name__ == '__main__':
+#     import threading
+#
+#     tt = []
+#     for i in range(20):
+#         t1 = threading.Thread(target=test1)
+#         tt.append(t1)
+#     for t in tt:
+#        t.start()
+#     for t in tt:
+#         t.join()
 
-    tt = []
-    for i in range(20):
-        t1 = threading.Thread(target=test1)
-        tt.append(t1)
-    for t in tt:
-       t.start()
-    for t in tt:
-        t.join()
+from platform import platform
+from sys import platform as sys_platform
+print(sys_platform)

@@ -11,6 +11,16 @@
 - 运行：
     python run.py
 
+## deepin v20
+- 安装 python3.7
+- 安装库
+    - pyaudio 需要编译环境才能安装
+    - 安装依赖包: sudo apt-get install libasound-dev portaudio19-dev libportaudio2 libportaudiocpp0
+    - 安装其他库:
+        - pip install -r requirements.txt
+- 运行：
+    python run.py
+
 
 # 程序模块
 ## 菜单栏
@@ -59,7 +69,7 @@
 - [x] 处理器 win
 - [x] 内存 win
 - [x] 硬盘容量 win
-- [x] 显卡 Y/N
+- [x] 显卡 Y/N win
 - [x] 视频 Y/N
 - [x] 语音 Y/N
 - [x] 开机时间
@@ -92,6 +102,10 @@
 - [x] 上线主机台数
 
 # 更新日志
+## 2020.05.11
+- 客户端/服务端编译模块
+- linux 编译处理
+
 ## 2020.05.10
 - 客户端上线信息完善
 - 客户端生成配置
@@ -152,7 +166,13 @@
 
 # 报错集合
 ## qt.qpa.xcb: QXcbConnection: XCB error: 8 (BadMatch), sequence: 770, resource id: 136314920, major code: 130 (Unknown), minor code: 3
-sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
+- sudo apt-get install qt5-default qtbase5-dev qttools5-dev-tools
+
+## ModuleNotFoundError: No module named 'pkg_resources.py2_warn'
+- setuptools 与 pyinstaller 版本不匹配引起的
+- pyInstaller 3.6  ->  setuptools 44.0.0
+- pip install setuptools==44.1.0
+
 
 ## warning: LF will be replaced by CRLF in
 ### 简介

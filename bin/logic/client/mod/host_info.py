@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import time
 import pynvml
+from pynvml.nvml import NVMLError_LibraryNotFound
 from platform import platform, node, machine
 from asyncio import get_event_loop
 from aiohttp import ClientSession
@@ -8,10 +9,14 @@ from aiohttp.client_exceptions import ClientConnectorError
 from socket import socket, AF_INET, SOCK_DGRAM, error
 from lxml import etree
 from psutil import net_if_addrs, cpu_count, boot_time
-
-from cv2 import VideoCapture
+from sys import platform as sys_platform
+from cv2 import VideoCapture  # pip install opencv-python
 from pyaudio import PyAudio, paInt16
-from wmi import WMI
+
+try:
+    from wmi import WMI
+except ModuleNotFoundError:
+    pass
 
 
 class LocalIp(object):
@@ -75,10 +80,13 @@ class LocalIp(object):
         :return:
         """
         card_address = self.get_card_address()
+        # print(card_address)
         for card in card_address:
             # print(card_address[card])
+            # print(card_address[card].get("AF_INET", {}))
             ip = self.get_local_ip()
-            if ip in card_address[card]["AF_INET"]["address"]:
+            # AF_INET
+            if ip in card_address[card].get("AF_INET", {}).get("address", {}):
                 # print(card_address[card])
                 ipv4 = ip + "/" + card_address[card]["AF_INET"]["netmask"]
                 self.headers_title["in_net"] = ipv4
@@ -150,7 +158,11 @@ class ComputerInfo(object):
         获取计算机基础信息
         """
         self.headers_title = {}
-        self.wmi = WMI()
+
+        if sys_platform == "linux":
+            pass
+        elif sys_platform == "win32":
+            self.wmi = WMI()
 
     def get_hostname(self) -> None:
         """
@@ -243,7 +255,10 @@ class ComputerInfo(object):
         gpu是否存在
         :return:
         """
-        pynvml.nvmlInit()
+        try:
+            pynvml.nvmlInit()
+        except NVMLError_LibraryNotFound:
+            return None
         # handle = pynvml.nvmlDeviceGetHandleByIndex(0)  # 0表示第一块显卡
         # meminfo = pynvml.nvmlDeviceGetMemoryInfo(handle)
         # print(meminfo.total / 1024 ** 2)  # 第二块显卡总的显存大小
@@ -301,12 +316,15 @@ class ComputerInfo(object):
         self.get_hostname()
         self.get_system()
         self.get_boot_time()
-        self.get_cpu_info_win()
-        self.get_disk_win()
-        self.get_memory_win()
         self.get_graphics()
         self.get_video()
         self.get_voice()
+        if sys_platform == "linux":
+            pass
+        elif sys_platform == "win32":
+            self.get_cpu_info_win()
+            self.get_disk_win()
+            self.get_memory_win()
 
 
 class HostInfo(object):

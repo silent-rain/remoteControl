@@ -16,23 +16,23 @@ from lib.settings import MAKE_OPTIONS
 
 """
 编译模块
-客户端端编译
+服务端端编译
 """
 
 
-class MakeClient(object):
+class MakeServer(object):
     def __init__(self):
         self.execute = SubprocessExecute()
 
         self.cmd = "pyinstaller -F -y --clean "
 
         self.release_dir = MAKE_OPTIONS["release_dir"]
-        self.client_dir = MAKE_OPTIONS["client_dir"]
-        self.temp = settings.MAKE_OPTIONS["client_temp"]
-        self.icon = settings.MAKE_OPTIONS["client_icon"]
-        self.make_file = settings.MAKE_OPTIONS["client_file"]
-        self.dist_path = settings.MAKE_OPTIONS["client_dist_path"]
-        self.name = settings.MAKE_OPTIONS["client_name"]
+        self.server_dir = MAKE_OPTIONS["server_dir"]
+        self.temp = settings.MAKE_OPTIONS["server_temp"]
+        self.icon = settings.MAKE_OPTIONS["server_icon"]
+        self.make_file = settings.MAKE_OPTIONS["server_file"]
+        self.dist_path = settings.MAKE_OPTIONS["server_dist_path"]
+        self.name = settings.MAKE_OPTIONS["server_name"]
 
     def init_dir(self):
         """
@@ -41,7 +41,7 @@ class MakeClient(object):
         """
         # 编译
         mkdir(self.release_dir) if not exists(self.release_dir) else None  # 编译文件目录
-        mkdir(self.client_dir) if not exists(self.client_dir) else None  # 服务端编译文件目录
+        mkdir(self.server_dir) if not exists(self.server_dir) else None  # 服务端编译文件目录
         mkdir(self.temp) if not exists(self.temp) else None  # 服务端编缓存文件目录
 
     def init_conf(self) -> str:
@@ -89,7 +89,7 @@ class MakeClient(object):
         logger.info("开始清理缓存文件...")
         if exists(self.temp):
             shutil.rmtree(self.temp)
-            logger.info("清除成功...")
+            logger.info("缓存清除成功...")
         else:
             logger.info("清除临时文件失败，文件不存在：%s" % self.temp)
 
@@ -116,5 +116,5 @@ class MakeClient(object):
 
 
 if __name__ == '__main__':
-    make = MakeClient()
+    make = MakeServer()
     make.main()

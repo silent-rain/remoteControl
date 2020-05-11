@@ -86,4 +86,5 @@ class SubprocessExecute(object):
 if __name__ == '__main__':
     execute = SubprocessExecute()
     # execute.execute("python -V")
-    execute.execute("pip -V")
+    print(execute.execute("pip -V"))
+    # print(execute.execute("pyinstaller -v"))

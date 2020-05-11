@@ -2,6 +2,7 @@
 import socket
 import struct
 from json import loads, dumps
+from json.decoder import JSONDecodeError
 from time import sleep
 
 from bin.logic.client.mod.host_info import HostInfo
@@ -143,7 +144,7 @@ class Client(object):
                 ret = self.recv_data()
                 print(ret)
                 input()
-            except (struct.error, UnicodeDecodeError):
+            except (struct.error, UnicodeDecodeError, JSONDecodeError):
                 pass
 
     @just_one_instance
